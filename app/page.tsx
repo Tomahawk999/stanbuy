@@ -290,26 +290,17 @@ function HomePageContent() {
                   </Link>
                 </div>
               ) : (
-                <div className="flex flex-col items-center text-center" style={{ padding: "64px 16px" }}>
-                  <div
-                    className="flex items-center justify-center"
-                    style={{ width: 72, height: 72, borderRadius: 999, background: "#FFF1EA", marginBottom: 18 }}
-                  >
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="1.6">
-                      <path d="M4 8h3l1.5-2h7L17 8h3v11H4V8Z" />
-                      <circle cx="12" cy="13.5" r="3.3" />
-                    </svg>
-                  </div>
-                  <div style={{ fontSize: 20, fontWeight: 800, color: INK, letterSpacing: "-0.01em" }}>
+                <div className="text-center" style={{ padding: "56px 16px" }}>
+                  <div style={{ fontSize: 18, fontWeight: 700, color: INK }}>
                     No listings near {NEIGHBORHOOD} yet
                   </div>
-                  <div style={{ fontSize: 14, color: MUTED, marginTop: 6, maxWidth: 360, lineHeight: 1.5 }}>
-                    Be the first neighbor to share something — extra food takes seconds to post and never goes to waste.
+                  <div style={{ fontSize: 14, color: MUTED, marginTop: 4 }}>
+                    Be the first neighbor to share something.
                   </div>
                   <Link
                     href="/sell"
-                    className="mt-5 inline-flex items-center"
-                    style={{ height: 44, borderRadius: 999, padding: "0 24px", background: ORANGE, color: "#ffffff", fontSize: 14, fontWeight: 700 }}
+                    className="rd-pill mt-4 inline-flex items-center"
+                    style={{ ...PILL, height: 40, fontSize: 14, padding: "0 18px", background: ORANGE, color: "#ffffff" }}
                   >
                     Post the first listing
                   </Link>
