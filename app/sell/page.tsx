@@ -10,7 +10,7 @@ import { CATEGORIES, CATEGORY_IMAGES } from "@/lib/data";
 
 const INK = "#0F1A1C";
 const MUTED = "#576F76";
-const ORANGE = "#FB4402";
+const ORANGE = "#0B0B0C";
 
 function CategoryPicker({ value, onChange }: { value: Category; onChange: (v: Category) => void }) {
   const [open, setOpen] = useState(false);

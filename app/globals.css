@@ -21,9 +21,9 @@
   --photo-bg: #ededed;
   --photo-text: #9a9a9a;
   --font-sans: var(--font-brand), Arial, Helvetica, "Segoe UI", Verdana, sans-serif;
-  --stan-red: #FB4402;
-  --stan-red-dark: #D93A00;
-  --stan-black: #1a1a1a;
+  --stan-red: #0B0B0C;
+  --stan-red-dark: #2E2E2E;
+  --stan-black: #0B0B0C;
   --rd-ink: #0f1a1c;
   --rd-muted: #576f76;
   --rd-pill: #e5ebee;
@@ -115,12 +115,12 @@ button {
 }
 :focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(251, 68, 2, 0.22);
+  box-shadow: 0 0 0 3px rgba(11, 11, 12, 0.22);
 }
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
-  box-shadow: 0 0 0 3px rgba(251, 68, 2, 0.14);
+  box-shadow: 0 0 0 3px rgba(11, 11, 12, 0.14);
 }
 
 /* Neutralize Chrome's yellow autofill background on inputs. */

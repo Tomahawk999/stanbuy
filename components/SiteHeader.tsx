@@ -46,10 +46,10 @@ function LanguagePicker() {
           </div>
           <div
             className="flex items-center justify-between"
-            style={{ height: 38, borderRadius: 8, padding: "0 10px", fontSize: 14, fontWeight: 600, color: "#FB4402", background: "#FFF1EA" }}
+            style={{ height: 38, borderRadius: 8, padding: "0 10px", fontSize: 14, fontWeight: 600, color: "#0B0B0C", background: "#FFF1EA" }}
           >
             English (US)
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FB4402" strokeWidth="2.4" strokeLinecap="round">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0B0B0C" strokeWidth="2.4" strokeLinecap="round">
               <path d="M5 13l4 4L19 7" />
             </svg>
           </div>
@@ -134,7 +134,7 @@ export default function SiteHeader({
               {savedCount > 0 && (
                 <span
                   className="absolute flex items-center justify-center"
-                  style={{ top: 4, right: 2, minWidth: 16, height: 16, borderRadius: 999, background: "#FB4402", color: "#ffffff", fontSize: 10, fontWeight: 700, padding: "0 4px" }}
+                  style={{ top: 4, right: 2, minWidth: 16, height: 16, borderRadius: 999, background: "#0B0B0C", color: "#ffffff", fontSize: 10, fontWeight: 700, padding: "0 4px" }}
                 >
                   {savedCount}
                 </span>

@@ -7,7 +7,7 @@ import { signIn } from "next-auth/react";
 
 const INK = "#0F1A1C";
 const MUTED = "#576F76";
-const ORANGE = "#FB4402";
+const ORANGE = "#0B0B0C";
 
 const INPUT: React.CSSProperties = {
   border: "1px solid #E5EBEE",

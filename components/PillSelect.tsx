@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 const INK = "#0F1A1C";
-const ORANGE = "#FB4402";
+const ORANGE = "#0B0B0C";
 
 export default function PillSelect<T extends string>({
   value,

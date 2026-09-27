@@ -30,7 +30,7 @@ export default function StarRating({
         </span>
         <span className="absolute inset-0 flex overflow-hidden" style={{ width: `${pct}%` }}>
           {[0, 1, 2, 3, 4].map((i) => (
-            <Star key={i} color="#E8A200" size={size} />
+            <Star key={i} color="#0B0B0C" size={size} />
           ))}
         </span>
       </span>

@@ -19,7 +19,7 @@ const NeighborhoodMap = dynamic(() => import("@/components/NeighborhoodMap"), {
 
 const INK = "#0F1A1C";
 const MUTED = "#576F76";
-const ORANGE = "#FB4402";
+const ORANGE = "#0B0B0C";
 
 function timeAgo(createdAt: number, now: number | null): string | null {
   if (now === null) return null;
@@ -187,7 +187,7 @@ function ItemDetailView({ id }: { id: string }) {
           </h1>
           <div className="flex flex-wrap items-center" style={{ gap: 6, fontSize: 13, color: INK, marginBottom: 10 }}>
             <span className="flex items-center" style={{ gap: 4 }}>
-              <span style={{ color: "#E8A200" }}>★</span>
+              <span style={{ color: "#0B0B0C" }}>★</span>
               <span style={{ fontWeight: 600 }}>{(item.sellerScore / 20).toFixed(1)}</span>
             </span>
             <span style={{ color: MUTED }}>·</span>
@@ -473,7 +473,7 @@ function ItemDetailView({ id }: { id: string }) {
                     {other.title}
                   </div>
                   <div className="flex items-center" style={{ gap: 4, marginTop: 4, fontSize: 12, color: MUTED }}>
-                    <span style={{ color: "#E8A200" }}>★</span>
+                    <span style={{ color: "#0B0B0C" }}>★</span>
                     <span style={{ fontWeight: 600, color: INK }}>{(other.sellerScore / 20).toFixed(1)}</span>
                     <span>· {other.distanceMin} min walk</span>
                   </div>

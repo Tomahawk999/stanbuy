@@ -8,7 +8,7 @@ import { CENTER } from "@/lib/data";
 import { Item } from "@/lib/types";
 
 const INK = "#0F1A1C";
-const ORANGE = "#FB4402";
+const ORANGE = "#0B0B0C";
 const STYLE_URL = "https://tiles.openfreemap.org/styles/liberty";
 
 const SATELLITE_STYLE: StyleSpecification = {

@@ -20,7 +20,7 @@ const NeighborhoodMap = dynamic(() => import("@/components/NeighborhoodMap"), {
 
 const INK = "#0F1A1C";
 const MUTED = "#576F76";
-const ORANGE = "#FB4402";
+const ORANGE = "#0B0B0C";
 
 function timeAgo(createdAt: number, now: number | null): string | null {
   if (now === null) return null;
@@ -59,7 +59,7 @@ function RedditPost({
           {age && <span>· {age}</span>}
           <span>· Posted by {item.seller}</span>
           <span className="flex items-center" style={{ gap: 2 }}>
-            <span style={{ color: "#E8A200" }}>★</span>
+            <span style={{ color: "#0B0B0C" }}>★</span>
             <span style={{ fontWeight: 600, color: INK }}>{(item.sellerScore / 20).toFixed(1)}</span>
           </span>
         </div>
@@ -199,8 +199,27 @@ function HomePageContent() {
       <div className="flex">
         <SideNav activeCategory={urlCategory} counts={categoryCounts} />
 
-        <main className="flex min-w-0 flex-1" style={{ height: "calc(100dvh - 56px)" }}>
-          <div className="min-w-0 flex-none overflow-y-auto" style={{ width: 420, borderRight: "1px solid #E5EBEE", paddingTop: 12, paddingBottom: 40 }}>
+        <main className="relative min-w-0 flex-1" style={{ height: "calc(100dvh - 56px)" }}>
+          <div className="absolute inset-0">
+            <NeighborhoodMap items={visible} highlightedId={hoveredId} onHover={setHoveredId} />
+          </div>
+
+          <div
+            className="absolute overflow-y-auto rd-panel"
+            style={{
+              top: 16,
+              bottom: 16,
+              left: 16,
+              width: 400,
+              maxWidth: "calc(100% - 32px)",
+              background: "#ffffff",
+              borderRadius: 16,
+              boxShadow: "0 12px 36px rgba(0,0,0,0.16)",
+              zIndex: 10,
+              paddingTop: 12,
+              paddingBottom: 24,
+            }}
+          >
             {urlCategory && (
               <div className="flex items-center" style={{ gap: 14, padding: "12px 16px 16px" }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -338,16 +357,20 @@ function HomePageContent() {
             )}
           </div>
 
-          <div className="relative hidden flex-1 sm:block">
-            <NeighborhoodMap items={visible} highlightedId={hoveredId} onHover={setHoveredId} countLabel={`${visible.length} nearby`} />
+          <div
+            className="absolute rd-panel"
+            style={{ top: 16, right: 16, zIndex: 10, background: "#ffffff", borderRadius: 16, padding: "14px 18px", boxShadow: "0 12px 36px rgba(0,0,0,0.16)" }}
+          >
+            <div style={{ fontSize: 12, color: MUTED, fontWeight: 600 }}>Listings nearby</div>
+            <div style={{ fontSize: 22, fontWeight: 800, color: INK, letterSpacing: "-0.02em" }}>{visible.length}</div>
             <a
               href={`https://www.google.com/maps/dir/?api=1&destination=${CENTER[0]},${CENTER[1]}&travelmode=walking`}
               target="_blank"
               rel="noreferrer"
-              className="absolute flex items-center"
-              style={{ top: 12, left: 12, zIndex: 10, height: 34, borderRadius: 999, padding: "0 14px", background: "#ffffff", boxShadow: "0 2px 8px rgba(15,26,28,0.18)", gap: 6, fontSize: 13, fontWeight: 700, color: ORANGE }}
+              className="flex items-center"
+              style={{ gap: 5, marginTop: 6, fontSize: 12, fontWeight: 700, color: INK }}
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={INK} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="m3 11 18-8-8 18-2-8-8-2Z" />
               </svg>
               Get directions

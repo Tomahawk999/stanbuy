@@ -5,7 +5,7 @@ import PageShell from "@/components/PageShell";
 
 const INK = "#0F1A1C";
 const MUTED = "#576F76";
-const ORANGE = "#FB4402";
+const ORANGE = "#0B0B0C";
 
 const FAQS = [
   {

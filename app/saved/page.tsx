@@ -9,7 +9,7 @@ import PageShell from "@/components/PageShell";
 
 const INK = "#0F1A1C";
 const MUTED = "#576F76";
-const ORANGE = "#FB4402";
+const ORANGE = "#0B0B0C";
 
 export default function SavedPage() {
   const router = useRouter();
@@ -93,7 +93,7 @@ export default function SavedPage() {
                         {item.title}
                       </div>
                       <span className="flex flex-none items-center" style={{ gap: 3, fontSize: 13, marginTop: 1 }}>
-                        <span style={{ color: "#E8A200" }}>★</span>
+                        <span style={{ color: "#0B0B0C" }}>★</span>
                         <span style={{ fontWeight: 600, color: INK }}>{(item.sellerScore / 20).toFixed(1)}</span>
                       </span>
                     </div>

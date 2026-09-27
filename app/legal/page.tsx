@@ -17,7 +17,7 @@ const TAB_IDS: TabId[] = ["terms", "privacy", "score", "cookies"];
 
 const INK = "#0F1A1C";
 const MUTED = "#576F76";
-const ORANGE = "#FB4402";
+const ORANGE = "#0B0B0C";
 
 const H2: React.CSSProperties = { fontSize: 17, fontWeight: 700, color: INK, margin: "24px 0 8px" };
 const H2_FIRST: React.CSSProperties = { ...H2, margin: "0 0 8px" };

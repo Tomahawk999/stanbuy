@@ -11,7 +11,7 @@ import PageShell from "@/components/PageShell";
 
 const INK = "#0F1A1C";
 const MUTED = "#576F76";
-const ORANGE = "#FB4402";
+const ORANGE = "#0B0B0C";
 
 function timeAgo(ts: number, now: number): string {
   const minutes = Math.max(0, Math.round((now - ts) / 60000));
@@ -82,7 +82,7 @@ export default function ProfilePage() {
             <div>
               <div style={{ fontSize: 18, fontWeight: 800, color: INK }}>{(score / 20).toFixed(1)}</div>
               <div className="flex items-center justify-center" style={{ gap: 3, fontSize: 11, color: MUTED }}>
-                <span style={{ color: "#E8A200" }}>★</span> Rating
+                <span style={{ color: "#0B0B0C" }}>★</span> Rating
               </div>
             </div>
             <div>
