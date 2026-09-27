@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useMemo, useState } from "react";
+import { Suspense, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -58,6 +58,165 @@ function VerifiedBadge() {
         <path d="M5 12l5 5L20 7" />
       </svg>
     </span>
+  );
+}
+
+function ItemCard({
+  item,
+  saved,
+  isNew,
+  onToggleSave,
+  width,
+}: {
+  item: Item;
+  saved: boolean;
+  isNew: boolean;
+  onToggleSave: (id: string) => void;
+  width?: number;
+}) {
+  return (
+    <Link
+      href={`/item/${item.id}`}
+      className="block"
+      style={width ? { width, flex: "none" } : undefined}
+    >
+      <div className="relative overflow-hidden" style={{ aspectRatio: "1 / 1", borderRadius: 16, background: INK }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={item.image ?? CATEGORY_IMAGES[item.category]}
+          alt={item.title}
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        <button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            onToggleSave(item.id);
+          }}
+          aria-pressed={saved}
+          aria-label={saved ? "Remove from saved" : "Save"}
+          className="absolute flex cursor-pointer items-center justify-center border-none"
+          style={{ top: 8, right: 8, width: 30, height: 30, borderRadius: 999, background: "#ffffff" }}
+        >
+          <svg width="15" height="15" viewBox="0 0 24 24" fill={saved ? ORANGE : "none"} stroke={saved ? ORANGE : INK} strokeWidth="2">
+            <path d="M12 21s-7.5-4.7-10-9.3C.5 8 2 4.5 5.6 4c2.1-.3 3.9.8 6.4 3.2C14.5 4.8 16.3 3.7 18.4 4c3.6.5 5.1 4 3.6 7.7C19.5 16.3 12 21 12 21Z" />
+          </svg>
+        </button>
+      </div>
+
+      <div style={{ padding: "10px 4px 0" }}>
+        {(isNew || item.sellerScore >= 100) && (
+          <div style={{ fontSize: 11, fontWeight: 800, color: isNew ? ORANGE : INK, letterSpacing: "0.03em", marginBottom: 3 }}>
+            {isNew ? "NEW" : "NEIGHBOR FAVORITE"}
+          </div>
+        )}
+        <div className="flex flex-col sm:flex-row sm:items-start" style={{ gap: 2 }}>
+          <div
+            className="min-w-0 flex-1"
+            style={{
+              fontSize: 15,
+              fontWeight: 700,
+              color: INK,
+              lineHeight: 1.3,
+              display: "-webkit-box",
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+              minHeight: 39,
+            }}
+          >
+            {item.title}
+          </div>
+          <div className="flex flex-none items-center sm:ml-2" style={{ gap: 3, marginTop: 1 }}>
+            <span style={{ color: "#E8A200", fontSize: 13 }}>★</span>
+            <span style={{ fontWeight: 600, fontSize: 13, color: INK }}>{(item.sellerScore / 20).toFixed(1)}</span>
+            {item.sellerScore >= 95 && <VerifiedBadge />}
+          </div>
+        </div>
+        <div className="flex flex-wrap items-center truncate" style={{ gap: 4, fontSize: 12, color: MUTED, marginTop: 4 }}>
+          <span style={{ color: ORANGE, fontWeight: 800 }}>Free</span>
+          <span>· {categoryLabel(item.category)} · {item.distanceMin} min walk · Qty {item.quantity}</span>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+function ScrollArrow({ direction, onClick }: { direction: "left" | "right"; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={direction === "left" ? "Scroll left" : "Scroll right"}
+      className="absolute flex cursor-pointer items-center justify-center border-none"
+      style={{
+        top: "38%",
+        [direction === "left" ? "left" : "right"]: -16,
+        width: 34,
+        height: 34,
+        borderRadius: 999,
+        background: "#ffffff",
+        color: INK,
+        boxShadow: "0 2px 8px rgba(15,26,28,0.18)",
+        zIndex: 2,
+      }}
+    >
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+        {direction === "left" ? <path d="M15 6l-6 6 6 6" /> : <path d="M9 6l6 6-6 6" />}
+      </svg>
+    </button>
+  );
+}
+
+function ItemRow({
+  title,
+  items,
+  savedIds,
+  onToggleSave,
+  now,
+}: {
+  title: string;
+  items: Item[];
+  savedIds: string[];
+  onToggleSave: (id: string) => void;
+  now: number | null;
+}) {
+  const scrollerRef = useRef<HTMLDivElement>(null);
+
+  const scroll = (dir: "left" | "right") => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir === "left" ? -600 : 600, behavior: "smooth" });
+  };
+
+  if (items.length === 0) return null;
+
+  return (
+    <div className="relative" style={{ marginBottom: 28 }}>
+      <div className="flex items-center justify-between" style={{ padding: "0 4px 12px" }}>
+        <h2 style={{ fontSize: 18, fontWeight: 800, color: INK, margin: 0, letterSpacing: "-0.01em" }}>{title}</h2>
+      </div>
+      <div className="group relative">
+        <div ref={scrollerRef} className="flex overflow-x-auto scroll-smooth" style={{ gap: 16, padding: "0 4px 4px", scrollbarWidth: "none" }}>
+          {items.map((item) => (
+            <ItemCard
+              key={item.id}
+              item={item}
+              saved={savedIds.includes(item.id)}
+              isNew={now !== null && now - item.createdAt <= 15 * 60 * 1000}
+              onToggleSave={onToggleSave}
+              width={220}
+            />
+          ))}
+        </div>
+        {items.length > 3 && (
+          <>
+            <ScrollArrow direction="left" onClick={() => scroll("left")} />
+            <ScrollArrow direction="right" onClick={() => scroll("right")} />
+          </>
+        )}
+      </div>
+    </div>
   );
 }
 
@@ -133,6 +292,21 @@ function HomePageContent() {
   const recent = useMemo(() => [...available].sort((a, b) => b.createdAt - a.createdAt).slice(0, 4), [available]);
 
   const filtersActive = maxDistance !== null || minRating !== null || query.trim() !== "";
+  const showSections = layout === "grid" && !filtersActive && !urlCategory;
+
+  const sections = useMemo(() => {
+    if (!showSections) return [];
+    const byDistance = [...available].sort((a, b) => a.distanceMin - b.distanceMin);
+    const rows: { title: string; items: Item[] }[] = [{ title: `Nearby in ${NEIGHBORHOOD}`, items: byDistance.slice(0, 10) }];
+    if (recent.length > 0) {
+      rows.push({ title: "New today", items: [...available].sort((a, b) => b.createdAt - a.createdAt).slice(0, 10) });
+    }
+    CATEGORIES.filter((c) => c.id !== "all").forEach((cat) => {
+      const inCat = byDistance.filter((it) => it.category === cat.id);
+      if (inCat.length > 0) rows.push({ title: cat.label, items: inCat.slice(0, 10) });
+    });
+    return rows;
+  }, [showSections, available, recent.length]);
 
   const handleToggleSave = (itemId: string) => {
     if (!currentUser) {
@@ -306,81 +480,23 @@ function HomePageContent() {
                   </Link>
                 </div>
               )
+            ) : showSections ? (
+              <div style={{ padding: "16px 8px 0" }}>
+                {sections.map((s) => (
+                  <ItemRow key={s.title} title={s.title} items={s.items} savedIds={savedIds} onToggleSave={handleToggleSave} now={now} />
+                ))}
+              </div>
             ) : layout === "grid" ? (
               <div className="grid grid-cols-2 sm:grid-cols-3" style={{ gap: "20px 16px", padding: "16px 8px 0" }}>
-                {visible.map((item) => {
-                  const saved = savedIds.includes(item.id);
-                  const isNew = now !== null && now - item.createdAt <= 15 * 60 * 1000;
-                  return (
-                    <Link
-                      key={item.id}
-                      href={`/item/${item.id}`}
-                      className="rd-elevated block"
-                      onMouseEnter={() => setHoveredId(item.id)}
-                      onMouseLeave={() => setHoveredId(null)}
-                      style={{ borderRadius: 18, background: "#ffffff", border: "1px solid #EDEFF0", overflow: "hidden" }}
-                    >
-                      <div className="relative overflow-hidden" style={{ aspectRatio: "1 / 1", background: INK }}>
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={item.image ?? CATEGORY_IMAGES[item.category]}
-                          alt={item.title}
-                          className="absolute inset-0 h-full w-full object-cover"
-                        />
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handleToggleSave(item.id);
-                          }}
-                          aria-pressed={saved}
-                          aria-label={saved ? "Remove from saved" : "Save"}
-                          className="absolute flex cursor-pointer items-center justify-center border-none"
-                          style={{ top: 8, right: 8, width: 30, height: 30, borderRadius: 999, background: "#ffffff" }}
-                        >
-                          <svg width="15" height="15" viewBox="0 0 24 24" fill={saved ? ORANGE : "none"} stroke={saved ? ORANGE : INK} strokeWidth="2">
-                            <path d="M12 21s-7.5-4.7-10-9.3C.5 8 2 4.5 5.6 4c2.1-.3 3.9.8 6.4 3.2C14.5 4.8 16.3 3.7 18.4 4c3.6.5 5.1 4 3.6 7.7C19.5 16.3 12 21 12 21Z" />
-                          </svg>
-                        </button>
-                      </div>
-
-                      <div style={{ padding: "10px 12px 12px" }}>
-                        {(isNew || item.sellerScore >= 100) && (
-                          <div style={{ fontSize: 11, fontWeight: 800, color: isNew ? ORANGE : INK, letterSpacing: "0.03em", marginBottom: 3 }}>
-                            {isNew ? "NEW" : "NEIGHBOR FAVORITE"}
-                          </div>
-                        )}
-                        <div className="flex flex-col sm:flex-row sm:items-start" style={{ gap: 2 }}>
-                          <div
-                            className="min-w-0 flex-1"
-                            style={{
-                              fontSize: 15,
-                              fontWeight: 700,
-                              color: INK,
-                              lineHeight: 1.3,
-                              display: "-webkit-box",
-                              WebkitLineClamp: 2,
-                              WebkitBoxOrient: "vertical",
-                              overflow: "hidden",
-                              minHeight: 39,
-                            }}
-                          >
-                            {item.title}
-                          </div>
-                          <div className="flex flex-none items-center sm:ml-2" style={{ gap: 3, marginTop: 1 }}>
-                            <span style={{ color: "#E8A200", fontSize: 13 }}>★</span>
-                            <span style={{ fontWeight: 600, fontSize: 13, color: INK }}>{(item.sellerScore / 20).toFixed(1)}</span>
-                            {item.sellerScore >= 95 && <VerifiedBadge />}
-                          </div>
-                        </div>
-                        <div className="flex flex-wrap items-center truncate" style={{ gap: 4, fontSize: 12, color: MUTED, marginTop: 4 }}>
-                          <span style={{ color: ORANGE, fontWeight: 800 }}>Free</span>
-                          <span>· {categoryLabel(item.category)} · {item.distanceMin} min walk · Qty {item.quantity}</span>
-                        </div>
-                      </div>
-                    </Link>
-                  );
-                })}
+                {visible.map((item) => (
+                  <ItemCard
+                    key={item.id}
+                    item={item}
+                    saved={savedIds.includes(item.id)}
+                    isNew={now !== null && now - item.createdAt <= 15 * 60 * 1000}
+                    onToggleSave={handleToggleSave}
+                  />
+                ))}
               </div>
             ) : (
               <div style={{ padding: "8px 8px 0" }}>
