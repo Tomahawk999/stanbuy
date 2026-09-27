@@ -262,7 +262,7 @@ export default function SellPage() {
             placeholder="Title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="box-border w-full border-none bg-transparent outline-none"
+            className="rd-plain-field box-border w-full border-none bg-transparent outline-none"
             style={{ fontSize: 22, fontWeight: 700, color: INK, padding: "6px 0" }}
           />
         </div>
@@ -273,7 +273,7 @@ export default function SellPage() {
             placeholder="Tell neighbors more — why it's left over, condition, anything they should know"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="box-border w-full resize-none border-none bg-transparent outline-none"
+            className="rd-plain-field box-border w-full resize-none border-none bg-transparent outline-none"
             style={{ fontSize: 15, color: INK, lineHeight: 1.5, minHeight: 60 }}
           />
         </div>

@@ -328,22 +328,9 @@ function HomePageContent() {
                   </Link>
                 </div>
               ) : (
-                <div className="flex flex-col items-center text-center" style={{ padding: "32px 16px" }}>
+                <div className="flex items-center justify-center" style={{ padding: "40px 16px" }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/empty-listings.png" alt="" style={{ width: 160, height: "auto", marginBottom: 12 }} />
-                  <div style={{ fontSize: 18, fontWeight: 700, color: INK }}>
-                    No listings near {NEIGHBORHOOD} yet
-                  </div>
-                  <div style={{ fontSize: 14, color: MUTED, marginTop: 4 }}>
-                    Be the first neighbor to share something.
-                  </div>
-                  <Link
-                    href="/sell"
-                    className="rd-pill mt-4 inline-flex items-center"
-                    style={{ ...PILL, height: 40, fontSize: 14, padding: "0 18px", background: ORANGE, color: "#ffffff" }}
-                  >
-                    Post the first listing
-                  </Link>
+                  <img src="/empty-listings.png" alt={`No listings near ${NEIGHBORHOOD} yet`} style={{ width: 260, height: "auto" }} />
                 </div>
               )
             ) : (
