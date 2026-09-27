@@ -8,10 +8,17 @@ const MUTED = "#63666A";
 
 const COLUMNS: { heading: string; links: { href: string; label: string }[] }[] = [
   {
+    heading: "Get to know us",
+    links: [
+      { href: "/about", label: "About Stanbuy" },
+      { href: "/about", label: "How it works" },
+      { href: "/legal?tab=score", label: "Reliability Score" },
+    ],
+  },
+  {
     heading: "Support",
     links: [
       { href: "/legal", label: "Help Center" },
-      { href: "/legal?tab=score", label: "Reliability Score" },
       { href: "/legal?tab=score", label: "Cancellations & no-shows" },
       { href: "/legal", label: "Report a listing" },
       { href: "/legal", label: "Safety & food handling" },
@@ -31,12 +38,12 @@ const COLUMNS: { heading: string; links: { href: string; label: string }[] }[] =
     ],
   },
   {
-    heading: "Stanbuy",
+    heading: "Legal",
     links: [
-      { href: "/about", label: "About Stanbuy" },
       { href: "/legal?tab=terms", label: "Terms of use" },
       { href: "/legal?tab=privacy", label: "Privacy policy" },
       { href: "/legal?tab=cookies", label: "Cookies" },
+      { href: "/legal?tab=score", label: "Reliability Score policy" },
     ],
   },
 ];
@@ -47,7 +54,7 @@ export default function SiteFooter() {
   return (
     <footer style={{ background: "#F7F8F8", borderTop: "1px solid #E5E5E6", marginTop: 40 }}>
       <div className="mx-auto" style={{ maxWidth: 1120, padding: "40px 24px 28px" }}>
-        <div className="grid grid-cols-2 sm:grid-cols-4" style={{ gap: "28px 16px" }}>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5" style={{ gap: "28px 16px" }}>
           {COLUMNS.map((col) => (
             <div key={col.heading}>
               <div style={{ fontSize: 13, fontWeight: 700, color: INK, marginBottom: 14 }}>{col.heading}</div>

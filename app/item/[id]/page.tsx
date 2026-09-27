@@ -246,7 +246,7 @@ function ItemDetailView({ id }: { id: string }) {
             </div>
             <div className="flex items-center" style={{ gap: 12 }}>
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={INK} strokeWidth="1.6" className="flex-none"><rect x="3.5" y="3.5" width="17" height="17" rx="3" /><path d="M8 3.5v3M16 3.5v3M3.5 10h17" /></svg>
-              <span style={{ fontSize: 14, color: INK }}>{sellerListingCount} listings from {item.seller}</span>
+              <span style={{ fontSize: 14, color: INK }}>{sellerListingCount} {sellerListingCount === 1 ? "listing" : "listings"} from {item.seller}</span>
             </div>
           </div>
 
@@ -303,8 +303,8 @@ function ItemDetailView({ id }: { id: string }) {
           </div>
         </div>
 
-        <div className="hidden flex-none lg:block lg:w-[320px]">
-          <div className="rd-panel" style={{ position: "sticky", top: 72, background: "#ffffff", border: "1px solid #E5E5E6", borderRadius: 16, padding: 20 }}>
+        <div className="flex-none lg:w-[320px]">
+          <div className="rd-panel lg:sticky" style={{ top: 72, background: "#ffffff", border: "1px solid #E5E5E6", borderRadius: 16, padding: 20 }}>
             <div className="flex items-baseline" style={{ gap: 8 }}>
               <span style={{ fontSize: 26, fontWeight: 800, color: ORANGE }}>Free</span>
               <span style={{ fontSize: 14, color: MUTED, textDecoration: "line-through" }}>$0.99</span>

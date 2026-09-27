@@ -35,8 +35,8 @@ export default function HamburgerMenu({ onClose }: { onClose: () => void }) {
         style={{ background: "rgba(15,26,28,0.4)", zIndex: 9998 }}
       />
       <div
-        className="fixed top-0 right-0 bottom-0 flex flex-col bg-white overflow-y-auto"
-        style={{ width: 300, boxShadow: "-8px 0 30px rgba(0,0,0,0.14)", zIndex: 9999 }}
+        className="fixed top-0 left-0 bottom-0 flex flex-col bg-white overflow-y-auto"
+        style={{ width: 300, boxShadow: "8px 0 30px rgba(0,0,0,0.14)", zIndex: 9999 }}
       >
         <div className="flex flex-none items-center justify-between" style={{ padding: "14px 16px", borderBottom: "1px solid #E5E5E6" }}>
           <Link href="/profile" onClick={onClose} className="flex items-center" style={{ gap: 10 }}>
