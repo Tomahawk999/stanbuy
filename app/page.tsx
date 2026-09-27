@@ -315,12 +315,12 @@ function HomePageContent() {
                     <Link
                       key={item.id}
                       href={`/item/${item.id}`}
-                      className="block"
+                      className="rd-elevated block"
                       onMouseEnter={() => setHoveredId(item.id)}
                       onMouseLeave={() => setHoveredId(null)}
-                      style={{ borderRadius: 22, padding: 6 }}
+                      style={{ borderRadius: 18, background: "#ffffff", border: "1px solid #EDEFF0", overflow: "hidden" }}
                     >
-                      <div className="relative overflow-hidden" style={{ aspectRatio: "1 / 1", borderRadius: 20, background: INK }}>
+                      <div className="relative overflow-hidden" style={{ aspectRatio: "1 / 1", background: INK }}>
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={item.image ?? CATEGORY_IMAGES[item.category]}
@@ -344,7 +344,7 @@ function HomePageContent() {
                         </button>
                       </div>
 
-                      <div style={{ padding: "10px 4px 0" }}>
+                      <div style={{ padding: "10px 12px 12px" }}>
                         {(isNew || item.sellerScore >= 100) && (
                           <div style={{ fontSize: 11, fontWeight: 800, color: isNew ? ORANGE : INK, letterSpacing: "0.03em", marginBottom: 3 }}>
                             {isNew ? "NEW" : "NEIGHBOR FAVORITE"}
