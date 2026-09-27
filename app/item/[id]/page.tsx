@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import dynamic from "next/dynamic";
+import nextDynamic from "next/dynamic";
 import Link from "next/link";
 import { QRCodeSVG } from "qrcode.react";
 import { useStanStore } from "@/lib/store";
@@ -12,7 +12,7 @@ import { useNow } from "@/lib/useNow";
 import PageShell from "@/components/PageShell";
 import StarRating from "@/components/StarRating";
 
-const NeighborhoodMap = dynamic(() => import("@/components/NeighborhoodMap"), {
+const NeighborhoodMap = nextDynamic(() => import("@/components/NeighborhoodMap"), {
   ssr: false,
   loading: () => <div style={{ width: "100%", height: "100%", background: "#E5E5E6" }} />,
 });

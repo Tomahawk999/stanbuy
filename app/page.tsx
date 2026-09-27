@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useMemo, useState } from "react";
-import dynamic from "next/dynamic";
+import nextDynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useStanStore } from "@/lib/store";
@@ -11,7 +11,7 @@ import { useNow } from "@/lib/useNow";
 import SiteHeader from "@/components/SiteHeader";
 import PillSelect from "@/components/PillSelect";
 
-const NeighborhoodMap = dynamic(() => import("@/components/NeighborhoodMap"), {
+const NeighborhoodMap = nextDynamic(() => import("@/components/NeighborhoodMap"), {
   ssr: false,
   loading: () => <div style={{ width: "100%", height: "100%", background: "#E5E5E6" }} />,
 });

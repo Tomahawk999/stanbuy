@@ -14,6 +14,11 @@ const brandFont = Poppins({
   variable: "--font-brand",
 });
 
+// Force every route to render dynamically per-request instead of being
+// prerendered/CDN-cached — otherwise Vercel's edge cache can serve a
+// static page directly, bypassing proxy.ts's login check entirely.
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Stanbuy",
   description: "Free surplus food from neighbors near you.",
