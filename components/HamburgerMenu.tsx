@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 
-const INK = "#0F1A1C";
-const MUTED = "#576F76";
+const INK = "#0B0B0C";
+const MUTED = "#63666A";
 const ORANGE = "#0B0B0C";
 
 const SECTION_LABEL: React.CSSProperties = {
@@ -38,9 +38,9 @@ export default function HamburgerMenu({ onClose }: { onClose: () => void }) {
         className="fixed top-0 right-0 bottom-0 flex flex-col bg-white overflow-y-auto"
         style={{ width: 300, boxShadow: "-8px 0 30px rgba(0,0,0,0.14)", zIndex: 9999 }}
       >
-        <div className="flex flex-none items-center justify-between" style={{ padding: "14px 16px", borderBottom: "1px solid #E5EBEE" }}>
+        <div className="flex flex-none items-center justify-between" style={{ padding: "14px 16px", borderBottom: "1px solid #E5E5E6" }}>
           <Link href="/profile" onClick={onClose} className="flex items-center" style={{ gap: 10 }}>
-            <span className="flex items-center justify-center" style={{ width: 32, height: 32, borderRadius: 999, background: "#E5EBEE", color: INK }}>
+            <span className="flex items-center justify-center" style={{ width: 32, height: 32, borderRadius: 999, background: "#E5E5E6", color: INK }}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
                 <circle cx="12" cy="8" r="3.6" />
                 <path d="M5 20c1.4-4 4.2-6 7-6s5.6 2 7 6" />
@@ -61,7 +61,7 @@ export default function HamburgerMenu({ onClose }: { onClose: () => void }) {
           </button>
         </div>
 
-        <div className="flex flex-none flex-col" style={{ padding: "12px 16px", borderBottom: "1px solid #E5EBEE" }}>
+        <div className="flex flex-none flex-col" style={{ padding: "12px 16px", borderBottom: "1px solid #E5E5E6" }}>
           <Link
             href="/sell"
             onClick={onClose}

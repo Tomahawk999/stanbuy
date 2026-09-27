@@ -9,8 +9,8 @@ import { CATEGORIES, CATEGORY_IMAGES } from "@/lib/data";
 import { useNow } from "@/lib/useNow";
 import PageShell from "@/components/PageShell";
 
-const INK = "#0F1A1C";
-const MUTED = "#576F76";
+const INK = "#0B0B0C";
+const MUTED = "#63666A";
 const ORANGE = "#0B0B0C";
 
 function timeAgo(ts: number, now: number): string {
@@ -76,7 +76,7 @@ export default function ProfilePage() {
         <aside className="flex-none" style={{ width: "100%", maxWidth: 280 }}>
           <h1 style={{ fontSize: 26, fontWeight: 800, color: INK, margin: 0, letterSpacing: "-0.01em" }}>{currentUser.name}</h1>
 
-          <div style={{ height: 1, background: "#E5EBEE", margin: "20px 0" }} />
+          <div style={{ height: 1, background: "#E5E5E6", margin: "20px 0" }} />
 
           <div className="grid grid-cols-3" style={{ gap: 8, textAlign: "center" }}>
             <div>
@@ -95,7 +95,7 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          <div style={{ height: 1, background: "#E5EBEE", margin: "20px 0" }} />
+          <div style={{ height: 1, background: "#E5E5E6", margin: "20px 0" }} />
 
           <div style={{ fontSize: 15, fontWeight: 700, color: INK, marginBottom: 4 }}>{currentUser.name.split(" ")[0]}&apos;s confirmed info</div>
           <StatRow icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A7A3C" strokeWidth="2.2"><path d="M5 13l4 4L19 7" /></svg>}>
@@ -105,7 +105,7 @@ export default function ProfilePage() {
             Lives in {currentUser.neighborhood}
           </StatRow>
 
-          <div style={{ height: 1, background: "#E5EBEE", margin: "20px 0" }} />
+          <div style={{ height: 1, background: "#E5E5E6", margin: "20px 0" }} />
 
           <Link href="/saved" className="flex items-center justify-between" style={{ padding: "9px 0", fontSize: 14, fontWeight: 600, color: INK }}>
             Saved listings
@@ -119,14 +119,14 @@ export default function ProfilePage() {
             type="button"
             onClick={() => signOut({ callbackUrl: "/" })}
             className="mt-4 inline-flex w-full cursor-pointer items-center justify-center"
-            style={{ height: 42, borderRadius: 10, border: "1px solid #E5EBEE", background: "#ffffff", fontSize: 14, fontWeight: 700, color: INK }}
+            style={{ height: 42, borderRadius: 10, border: "1px solid #E5E5E6", background: "#ffffff", fontSize: 14, fontWeight: 700, color: INK }}
           >
             Log out
           </button>
         </aside>
 
         <div className="min-w-0 flex-1">
-          <div className="flex items-center" style={{ gap: 24, borderBottom: "1px solid #E5EBEE" }}>
+          <div className="flex items-center" style={{ gap: 24, borderBottom: "1px solid #E5E5E6" }}>
             {(["selling", "sold"] as const).map((t) => (
               <button
                 key={t}
@@ -171,7 +171,7 @@ export default function ProfilePage() {
                       </div>
                     </div>
                   </Link>
-                  <div style={{ height: 1, background: "#E5EBEE", margin: "0 4px" }} />
+                  <div style={{ height: 1, background: "#E5E5E6", margin: "0 4px" }} />
                 </div>
               ))}
             </div>
@@ -188,7 +188,7 @@ export default function ProfilePage() {
             ) : (
               <div style={{ padding: "0 4px" }}>
                 {activity.map((a, i) => (
-                  <div key={a.id} style={{ padding: "14px 0", borderTop: i === 0 ? "none" : "1px solid #E5EBEE" }}>
+                  <div key={a.id} style={{ padding: "14px 0", borderTop: i === 0 ? "none" : "1px solid #E5E5E6" }}>
                     <div style={{ fontSize: 14, color: INK }}>
                       <span style={{ fontWeight: 600 }}>{a.label}</span> · {a.title}
                     </div>

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const INK = "#0F1A1C";
+const INK = "#0B0B0C";
 const ORANGE = "#0B0B0C";
 
 export default function PillSelect<T extends string>({
@@ -34,7 +34,7 @@ export default function PillSelect<T extends string>({
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         className="rd-pill flex cursor-pointer items-center border-none"
-        style={{ height: 32, borderRadius: 999, padding: "0 12px", gap: 4, fontSize: 12, fontWeight: 600, color: INK, background: "#E5EBEE" }}
+        style={{ height: 32, borderRadius: 999, padding: "0 12px", gap: 4, fontSize: 12, fontWeight: 600, color: INK, background: "#E5E5E6" }}
       >
         {current.label}
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" style={{ transform: open ? "rotate(180deg)" : undefined }}>
@@ -44,7 +44,7 @@ export default function PillSelect<T extends string>({
       {open && (
         <div
           className="absolute flex flex-col"
-          style={{ top: 40, left: 0, zIndex: 30, minWidth: 190, background: "#ffffff", borderRadius: 12, padding: 6, boxShadow: "0 8px 24px rgba(15,26,28,0.16)", border: "1px solid #E5EBEE" }}
+          style={{ top: 40, left: 0, zIndex: 30, minWidth: 190, background: "#ffffff", borderRadius: 12, padding: 6, boxShadow: "0 8px 24px rgba(15,26,28,0.16)", border: "1px solid #E5E5E6" }}
         >
           {options.map((o) => (
             <button

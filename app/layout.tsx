@@ -33,7 +33,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`h-full ${brandFont.variable}`}>
-      <body className="min-h-full bg-white text-[#0F1A1C]">
+      <body className="min-h-full bg-white text-[#0B0B0C]">
         <AuthProvider>
           <StoreHydrator />
           {children}

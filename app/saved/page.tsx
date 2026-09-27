@@ -7,8 +7,8 @@ import { useStanStore } from "@/lib/store";
 import { CATEGORIES, CATEGORY_IMAGES } from "@/lib/data";
 import PageShell from "@/components/PageShell";
 
-const INK = "#0F1A1C";
-const MUTED = "#576F76";
+const INK = "#0B0B0C";
+const MUTED = "#63666A";
 const ORANGE = "#0B0B0C";
 
 export default function SavedPage() {
@@ -53,7 +53,7 @@ export default function SavedPage() {
           <Link
             href="/"
             className="rd-pill mt-4 inline-flex items-center"
-            style={{ height: 40, borderRadius: 12, padding: "0 18px", background: "#E5EBEE", fontSize: 14, fontWeight: 600, color: INK }}
+            style={{ height: 40, borderRadius: 12, padding: "0 18px", background: "#E5E5E6", fontSize: 14, fontWeight: 600, color: INK }}
           >
             Browse nearby
           </Link>
@@ -102,7 +102,7 @@ export default function SavedPage() {
                     </div>
                     <div style={{ marginTop: 8 }}>
                       {claimed ? (
-                        <span style={{ height: 24, borderRadius: 999, padding: "0 10px", fontSize: 11, fontWeight: 700, color: MUTED, background: "#E5EBEE", display: "inline-flex", alignItems: "center" }}>
+                        <span style={{ height: 24, borderRadius: 999, padding: "0 10px", fontSize: 11, fontWeight: 700, color: MUTED, background: "#E5E5E6", display: "inline-flex", alignItems: "center" }}>
                           No longer available
                         </span>
                       ) : (
@@ -113,7 +113,7 @@ export default function SavedPage() {
                     </div>
                   </div>
                 </Link>
-                <div style={{ height: 1, background: "#E5EBEE", margin: "0 8px" }} />
+                <div style={{ height: 1, background: "#E5E5E6", margin: "0 8px" }} />
               </div>
             );
           })}

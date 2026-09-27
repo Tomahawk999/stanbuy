@@ -14,11 +14,11 @@ import StarRating from "@/components/StarRating";
 
 const NeighborhoodMap = dynamic(() => import("@/components/NeighborhoodMap"), {
   ssr: false,
-  loading: () => <div style={{ width: "100%", height: "100%", background: "#E5EBEE" }} />,
+  loading: () => <div style={{ width: "100%", height: "100%", background: "#E5E5E6" }} />,
 });
 
-const INK = "#0F1A1C";
-const MUTED = "#576F76";
+const INK = "#0B0B0C";
+const MUTED = "#63666A";
 const ORANGE = "#0B0B0C";
 
 function timeAgo(createdAt: number, now: number | null): string | null {
@@ -32,7 +32,7 @@ function timeAgo(createdAt: number, now: number | null): string | null {
 
 function QA({ q, a, first }: { q: string; a: string; first?: boolean }) {
   return (
-    <details className="rd-nav-item" style={{ padding: "14px 16px", borderTop: first ? "none" : "1px solid #E5EBEE" }}>
+    <details className="rd-nav-item" style={{ padding: "14px 16px", borderTop: first ? "none" : "1px solid #E5E5E6" }}>
       <summary
         className="flex cursor-pointer items-center justify-between"
         style={{ listStyle: "none", fontSize: 14, fontWeight: 600, color: INK, gap: 12 }}
@@ -206,7 +206,7 @@ function ItemDetailView({ id }: { id: string }) {
 
           <div
             className="relative overflow-hidden"
-            style={{ height: 420, borderRadius: 16, background: "#0F1A1C" }}
+            style={{ height: 420, borderRadius: 16, background: "#0B0B0C" }}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -226,7 +226,7 @@ function ItemDetailView({ id }: { id: string }) {
 
           <p style={{ fontSize: 15, lineHeight: 1.6, color: INK, margin: "16px 0 0" }}>{item.description}</p>
 
-          <div style={{ height: 1, background: "#E5EBEE", margin: "24px 0" }} />
+          <div style={{ height: 1, background: "#E5E5E6", margin: "24px 0" }} />
 
           <h2 style={{ fontSize: 20, fontWeight: 800, color: INK, margin: "0 0 16px", letterSpacing: "-0.01em" }}>
             Good to know
@@ -250,7 +250,7 @@ function ItemDetailView({ id }: { id: string }) {
             </div>
           </div>
 
-          <div style={{ height: 1, background: "#E5EBEE", margin: "24px 0" }} />
+          <div style={{ height: 1, background: "#E5E5E6", margin: "24px 0" }} />
 
           <div>
             <div className="flex items-center justify-between" style={{ marginBottom: 16 }}>
@@ -279,13 +279,13 @@ function ItemDetailView({ id }: { id: string }) {
             </p>
           </div>
 
-          <div style={{ height: 1, background: "#E5EBEE", margin: "24px 0" }} />
+          <div style={{ height: 1, background: "#E5E5E6", margin: "24px 0" }} />
 
           <div>
             <h2 style={{ fontSize: 20, fontWeight: 800, color: INK, margin: "0 0 16px", letterSpacing: "-0.01em" }}>
               Questions about this listing
             </h2>
-            <div className="rd-panel flex flex-col" style={{ borderRadius: 16, background: "#ffffff", border: "1px solid #E5EBEE" }}>
+            <div className="rd-panel flex flex-col" style={{ borderRadius: 16, background: "#ffffff", border: "1px solid #E5E5E6" }}>
               <QA
                 first
                 q="How do reservations work?"
@@ -304,7 +304,7 @@ function ItemDetailView({ id }: { id: string }) {
         </div>
 
         <div className="hidden flex-none lg:block lg:w-[320px]">
-          <div className="rd-panel" style={{ position: "sticky", top: 72, background: "#ffffff", border: "1px solid #E5EBEE", borderRadius: 16, padding: 20 }}>
+          <div className="rd-panel" style={{ position: "sticky", top: 72, background: "#ffffff", border: "1px solid #E5E5E6", borderRadius: 16, padding: 20 }}>
             <div className="flex items-baseline" style={{ gap: 8 }}>
               <span style={{ fontSize: 26, fontWeight: 800, color: ORANGE }}>Free</span>
               <span style={{ fontSize: 14, color: MUTED, textDecoration: "line-through" }}>$0.99</span>
@@ -325,7 +325,7 @@ function ItemDetailView({ id }: { id: string }) {
                   disabled={isFrozen}
                   className="w-full cursor-pointer border-none"
                   style={{
-                    background: isFrozen ? "#E5EBEE" : ORANGE,
+                    background: isFrozen ? "#E5E5E6" : ORANGE,
                     color: isFrozen ? MUTED : "#ffffff",
                     borderRadius: 999,
                     padding: "16px 13px",
@@ -343,7 +343,7 @@ function ItemDetailView({ id }: { id: string }) {
                   onClick={handleToggleSave}
                   aria-pressed={saved}
                   className="rd-pill flex flex-1 cursor-pointer items-center justify-center"
-                  style={{ height: 40, borderRadius: 12, background: "#ffffff", color: INK, fontSize: 14, fontWeight: 600, gap: 6, border: "1px solid #E5EBEE" }}
+                  style={{ height: 40, borderRadius: 12, background: "#ffffff", color: INK, fontSize: 14, fontWeight: 600, gap: 6, border: "1px solid #E5E5E6" }}
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill={saved ? ORANGE : "none"} stroke={saved ? ORANGE : "currentColor"} strokeWidth="2">
                     <path d="M12 21s-7.5-4.7-10-9.3C.5 8 2 4.5 5.6 4c2.1-.3 3.9.8 6.4 3.2C14.5 4.8 16.3 3.7 18.4 4c3.6.5 5.1 4 3.6 7.7C19.5 16.3 12 21 12 21Z" />
@@ -354,7 +354,7 @@ function ItemDetailView({ id }: { id: string }) {
                   type="button"
                   onClick={handleShare}
                   className="rd-pill flex flex-1 cursor-pointer items-center justify-center"
-                  style={{ height: 40, borderRadius: 12, background: "#ffffff", color: INK, fontSize: 14, fontWeight: 600, gap: 6, border: "1px solid #E5EBEE" }}
+                  style={{ height: 40, borderRadius: 12, background: "#ffffff", color: INK, fontSize: 14, fontWeight: 600, gap: 6, border: "1px solid #E5E5E6" }}
                 >
                   {copied ? (
                     <>
@@ -375,7 +375,7 @@ function ItemDetailView({ id }: { id: string }) {
               {showReserved && reservation && (
                 <div style={{ background: "#ffffff", borderRadius: 12, padding: 18, marginTop: 4 }}>
                   <div className="mb-[10px] flex justify-center">
-                    <div style={{ background: "#ffffff", borderRadius: 8, padding: 8, border: "1px solid #E5EBEE" }}>
+                    <div style={{ background: "#ffffff", borderRadius: 8, padding: 8, border: "1px solid #E5E5E6" }}>
                       <QRCodeSVG value={reservation.code} size={104} fgColor={INK} bgColor="#ffffff" />
                     </div>
                   </div>
@@ -407,7 +407,7 @@ function ItemDetailView({ id }: { id: string }) {
               )}
             </div>
 
-            <div style={{ height: 1, background: "#E5EBEE", margin: "16px 0" }} />
+            <div style={{ height: 1, background: "#E5E5E6", margin: "16px 0" }} />
 
             <div className="flex flex-col" style={{ gap: 10, fontSize: 13 }}>
               <div className="flex items-center justify-between">
@@ -436,7 +436,7 @@ function ItemDetailView({ id }: { id: string }) {
       </div>
 
       {moreNearby.length > 0 && (
-        <div style={{ borderTop: "1px solid #E5EBEE", paddingTop: 28, paddingBottom: 8 }}>
+        <div style={{ borderTop: "1px solid #E5E5E6", paddingTop: 28, paddingBottom: 8 }}>
           <h2 style={{ fontSize: 20, fontWeight: 800, color: INK, marginBottom: 16, letterSpacing: "-0.01em" }}>
             More listings nearby
           </h2>

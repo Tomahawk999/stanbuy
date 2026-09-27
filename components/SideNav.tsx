@@ -6,8 +6,8 @@ import { usePathname } from "next/navigation";
 import { CATEGORIES, CATEGORY_IMAGES } from "@/lib/data";
 import type { Category } from "@/lib/types";
 
-const INK = "#0F1A1C";
-const MUTED = "#576F76";
+const INK = "#0B0B0C";
+const MUTED = "#63666A";
 
 const MAIN_LINKS = [
   {
@@ -85,7 +85,7 @@ export default function SideNav({
     <nav
       aria-label="Main"
       className="hidden flex-none overflow-y-auto lg:block"
-      style={{ width: 272, position: "sticky", top: 56, height: "calc(100dvh - 56px)", borderRight: "1px solid #E5EBEE", padding: "12px 16px" }}
+      style={{ width: 272, position: "sticky", top: 56, height: "calc(100dvh - 56px)", borderRight: "1px solid #E5E5E6", padding: "12px 16px" }}
     >
       <div className="flex flex-col" style={{ gap: 2 }}>
         {MAIN_LINKS.map((link) => {
@@ -102,7 +102,7 @@ export default function SideNav({
                 borderRadius: 8,
                 fontSize: 14,
                 color: INK,
-                background: active ? "#E5EBEE" : undefined,
+                background: active ? "#E5E5E6" : undefined,
               }}
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -114,7 +114,7 @@ export default function SideNav({
         })}
       </div>
 
-      <div style={{ height: 1, background: "#E5EBEE", margin: "12px 0" }} />
+      <div style={{ height: 1, background: "#E5E5E6", margin: "12px 0" }} />
 
       <SectionHeader label="Categories" open={categoriesOpen} onToggle={() => setCategoriesOpen((v) => !v)} />
       {categoriesOpen && (
@@ -134,7 +134,7 @@ export default function SideNav({
                   borderRadius: 8,
                   fontSize: 14,
                   color: INK,
-                  background: active ? "#E5EBEE" : undefined,
+                  background: active ? "#E5E5E6" : undefined,
                 }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -151,7 +151,7 @@ export default function SideNav({
         </div>
       )}
 
-      <div style={{ height: 1, background: "#E5EBEE", margin: "12px 0" }} />
+      <div style={{ height: 1, background: "#E5E5E6", margin: "12px 0" }} />
 
       <SectionHeader label="Resources" open={resourcesOpen} onToggle={() => setResourcesOpen((v) => !v)} />
       {resourcesOpen && (

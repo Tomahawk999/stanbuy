@@ -5,12 +5,12 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 
-const INK = "#0F1A1C";
-const MUTED = "#576F76";
+const INK = "#0B0B0C";
+const MUTED = "#63666A";
 const ORANGE = "#0B0B0C";
 
 const INPUT: React.CSSProperties = {
-  border: "1px solid #E5EBEE",
+  border: "1px solid #E5E5E6",
   borderRadius: 12,
   padding: "12px 14px",
   fontSize: 14,
@@ -92,25 +92,14 @@ function AuthPageContent({ googleEnabled }: { googleEnabled: boolean }) {
   };
 
   return (
-    <div className="mx-auto flex h-dvh w-full max-w-[560px] flex-col overflow-hidden border-x border-[#E5EBEE] bg-white" style={{ color: INK }}>
-      <div className="relative flex-none overflow-hidden" style={{ aspectRatio: "2000 / 1199", background: INK }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/auth-food-strip.webp"
-          alt=""
-          className="absolute inset-0 h-full w-full object-contain"
-        />
-        <Link href="/" aria-label="Stanbuy home" className="absolute" style={{ top: 14, left: 20, background: "#ffffff", padding: "5px 10px", borderRadius: 999 }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/stanbuy-logo.png" alt="Stanbuy" style={{ height: 22, display: "block" }} />
-        </Link>
-      </div>
-
-      <div className="flex flex-1 flex-col overflow-y-auto" style={{ padding: "24px 32px" }}>
+    <div className="mx-auto flex h-dvh w-full max-w-[560px] flex-col overflow-hidden border-x border-[#E5E5E6] bg-white" style={{ color: INK }}>
+      <div className="flex flex-1 flex-col justify-center overflow-y-auto" style={{ padding: "24px 32px" }}>
         <div className="flex flex-col items-center" style={{ marginBottom: 20 }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/stanbuy-logo.png" alt="Stanbuy" style={{ height: 40, display: "block", marginBottom: 16 }} />
-          <div className="flex" style={{ gap: 4, background: "#F2F4F5", borderRadius: 999, padding: 4 }}>
+          <Link href="/" aria-label="Stanbuy home">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/stanbuy-logo.png" alt="Stanbuy" style={{ height: 40, display: "block", marginBottom: 16 }} />
+          </Link>
+          <div className="flex" style={{ gap: 4, background: "#F2F2F3", borderRadius: 999, padding: 4 }}>
             <button
               type="button"
               onClick={() => { setMode("signin"); setError(null); }}
@@ -155,7 +144,7 @@ function AuthPageContent({ googleEnabled }: { googleEnabled: boolean }) {
               onClick={handleGoogle}
               disabled={googleBusy}
               className="rd-pill box-border flex w-full items-center justify-center gap-[10px] cursor-pointer"
-              style={{ border: "1px solid #E5EBEE", borderRadius: 12, padding: 13, fontSize: 14, fontWeight: 600, color: INK, background: "#ffffff", marginBottom: 12, opacity: googleBusy ? 0.7 : 1 }}
+              style={{ border: "1px solid #E5E5E6", borderRadius: 12, padding: 13, fontSize: 14, fontWeight: 600, color: INK, background: "#ffffff", marginBottom: 12, opacity: googleBusy ? 0.7 : 1 }}
             >
               <svg width="18" height="18" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M23.5 12.3c0-.9-.1-1.6-.2-2.3H12v4.4h6.5c-.3 1.5-1.1 2.7-2.4 3.6v3h3.9c2.3-2.1 3.5-5.2 3.5-8.7z" />
@@ -166,9 +155,9 @@ function AuthPageContent({ googleEnabled }: { googleEnabled: boolean }) {
               {googleBusy ? "Connecting…" : "Continue with Google"}
             </button>
             <div className="my-1 flex items-center gap-3" style={{ marginBottom: 12 }}>
-              <div className="h-px flex-1" style={{ background: "#E5EBEE" }} />
+              <div className="h-px flex-1" style={{ background: "#E5E5E6" }} />
               <span style={{ fontSize: 12, color: MUTED }}>or</span>
-              <div className="h-px flex-1" style={{ background: "#E5EBEE" }} />
+              <div className="h-px flex-1" style={{ background: "#E5E5E6" }} />
             </div>
           </>
         )}

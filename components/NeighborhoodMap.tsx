@@ -7,7 +7,7 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import { CENTER } from "@/lib/data";
 import { Item } from "@/lib/types";
 
-const INK = "#0F1A1C";
+const INK = "#0B0B0C";
 const ORANGE = "#0B0B0C";
 const STYLE_URL = "https://tiles.openfreemap.org/styles/liberty";
 
@@ -46,8 +46,8 @@ function markerElement(active: boolean, label: string): HTMLDivElement {
   el.style.padding = active ? "6px 12px" : "5px 10px";
   el.style.borderRadius = "999px";
   el.style.background = active ? ORANGE : "#ffffff";
-  el.style.border = `1.5px solid ${active ? ORANGE : "#E5EBEE"}`;
-  el.style.boxShadow = active ? "0 4px 12px rgba(251,68,2,0.35)" : "0 2px 6px rgba(15,26,28,0.18)";
+  el.style.border = `1.5px solid ${active ? ORANGE : "#E5E5E6"}`;
+  el.style.boxShadow = active ? "0 4px 12px rgba(11,11,12,0.35)" : "0 2px 6px rgba(15,26,28,0.18)";
   el.style.boxSizing = "border-box";
   el.style.fontSize = "12px";
   el.style.fontWeight = "700";
@@ -183,7 +183,7 @@ export default function NeighborhoodMap({
 
   return (
     <div className="relative h-full w-full">
-      <div ref={containerRef} className="h-full w-full" style={{ background: "#EFF1F0" }} />
+      <div ref={containerRef} className="h-full w-full" style={{ background: "#F0F0F1" }} />
 
       <div className="absolute flex flex-col" style={{ right: 12, bottom: 12, gap: 8, zIndex: 10 }}>
         <button
@@ -215,7 +215,7 @@ export default function NeighborhoodMap({
               <path d="M12 5v14M5 12h14" />
             </svg>
           </button>
-          <div style={{ height: 1, background: "#EDEDEA" }} />
+          <div style={{ height: 1, background: "#E5E5E6" }} />
           <button
             type="button"
             aria-label="Zoom out"

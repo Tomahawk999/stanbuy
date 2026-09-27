@@ -15,11 +15,11 @@ import PillSelect from "@/components/PillSelect";
 
 const NeighborhoodMap = dynamic(() => import("@/components/NeighborhoodMap"), {
   ssr: false,
-  loading: () => <div style={{ width: "100%", height: "100%", background: "#E5EBEE" }} />,
+  loading: () => <div style={{ width: "100%", height: "100%", background: "#E5E5E6" }} />,
 });
 
-const INK = "#0F1A1C";
-const MUTED = "#576F76";
+const INK = "#0B0B0C";
+const MUTED = "#63666A";
 const ORANGE = "#0B0B0C";
 
 function timeAgo(createdAt: number, now: number | null): string | null {
@@ -50,7 +50,7 @@ function RedditPost({
   return (
     <div
       className="rd-reddit-post flex"
-      style={{ border: "1px solid #EDEFF1", borderRadius: 12, background: "#ffffff", marginBottom: 14 }}
+      style={{ border: "1px solid #E5E5E6", borderRadius: 12, background: "#ffffff", marginBottom: 14 }}
     >
       <Link href={`/item/${item.id}`} className="min-w-0 flex-1" style={{ padding: "18px 20px" }}>
         <div className="flex flex-wrap items-center" style={{ gap: 4, fontSize: 12, color: MUTED }}>
@@ -226,7 +226,7 @@ function HomePageContent() {
                 <img
                   src={CATEGORY_IMAGES[urlCategory as Item["category"]]}
                   alt=""
-                  style={{ width: 56, height: 56, borderRadius: 999, objectFit: "cover", border: "3px solid #ffffff", boxShadow: "0 0 0 1px #E5EBEE" }}
+                  style={{ width: 56, height: 56, borderRadius: 999, objectFit: "cover", border: "3px solid #ffffff", boxShadow: "0 0 0 1px #E5E5E6" }}
                 />
                 <div className="min-w-0 flex-1">
                   <h1 style={{ fontSize: 24, fontWeight: 700, margin: 0 }}>{categoryLabel(urlCategory)}</h1>
@@ -240,7 +240,7 @@ function HomePageContent() {
               </div>
             )}
 
-            <div className="flex overflow-x-auto" style={{ gap: 22, padding: "6px 16px 0", borderBottom: "1px solid #E5EBEE" }}>
+            <div className="flex overflow-x-auto" style={{ gap: 22, padding: "6px 16px 0", borderBottom: "1px solid #E5E5E6" }}>
               {CATEGORIES.filter((c) => c.id !== "all").map((cat) => {
                 const active = urlCategory === cat.id;
                 return (
@@ -302,14 +302,14 @@ function HomePageContent() {
               </div>
             </div>
 
-            <div style={{ height: 1, background: "#E5EBEE" }} />
+            <div style={{ height: 1, background: "#E5E5E6" }} />
 
             {loading ? (
               <div style={{ padding: "16px 8px 0" }}>
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <div key={i} style={{ border: "1px solid #EDEFF1", borderRadius: 8, padding: 14, marginBottom: 10, display: "flex", gap: 12 }}>
-                    <div style={{ height: 14, borderRadius: 6, background: "#F0F3F4", flex: 1 }} />
-                    <div style={{ width: 96, height: 96, borderRadius: 8, background: "#F0F3F4" }} />
+                  <div key={i} style={{ border: "1px solid #E5E5E6", borderRadius: 8, padding: 14, marginBottom: 10, display: "flex", gap: 12 }}>
+                    <div style={{ height: 14, borderRadius: 6, background: "#F0F0F1", flex: 1 }} />
+                    <div style={{ width: 96, height: 96, borderRadius: 8, background: "#F0F0F1" }} />
                   </div>
                 ))}
               </div>

@@ -2,34 +2,17 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #1b1b1b;
-  --muted: #6b6f6f;
-  --border: #e4e4e4;
-  --border-strong: #c7cbcb;
-  --link: #2162a1;
-  --success: #0b7b3c;
-  --accent-fill: #ffd814;
-  --accent-fill-border: #fcd200;
-  --tint: #f0f2f2;
-  --lilac: #a9218e;
-  --lilac-tint: #fceef8;
-  --amber-tint: #fff7e8;
-  --amber-chip: #fce9c4;
-  --amber-text: #8a5a00;
-  --amber-text-2: #6b4a00;
-  --gray-tint: #f2f2f1;
-  --photo-bg: #ededed;
-  --photo-text: #9a9a9a;
+  --foreground: #0b0b0c;
   --font-sans: var(--font-brand), Arial, Helvetica, "Segoe UI", Verdana, sans-serif;
-  --stan-red: #0B0B0C;
-  --stan-red-dark: #2E2E2E;
-  --stan-black: #0B0B0C;
-  --rd-ink: #0f1a1c;
-  --rd-muted: #576f76;
-  --rd-pill: #e5ebee;
-  --rd-pill-hover: #d2dadd;
-  --rd-hover: #f6f8f9;
-  --rd-line: #e5ebee;
+  --stan-red: #0b0b0c;
+  --stan-red-dark: #2e2e2e;
+  --stan-black: #0b0b0c;
+  --rd-ink: #0b0b0c;
+  --rd-muted: #63666a;
+  --rd-pill: #e9e9ea;
+  --rd-pill-hover: #d8d8da;
+  --rd-hover: #f5f5f6;
+  --rd-line: #e5e5e6;
 }
 
 @theme inline {

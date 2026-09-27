@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { CATEGORIES } from "@/lib/data";
 
-const INK = "#0F1A1C";
-const MUTED = "#576F76";
+const INK = "#0B0B0C";
+const MUTED = "#63666A";
 
 const COLUMNS: { heading: string; links: { href: string; label: string }[] }[] = [
   {
@@ -45,7 +45,7 @@ export default function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer style={{ background: "#F7F8F8", borderTop: "1px solid #E5EBEE", marginTop: 40 }}>
+    <footer style={{ background: "#F7F8F8", borderTop: "1px solid #E5E5E6", marginTop: 40 }}>
       <div className="mx-auto" style={{ maxWidth: 1120, padding: "40px 24px 28px" }}>
         <div className="grid grid-cols-2 sm:grid-cols-4" style={{ gap: "28px 16px" }}>
           {COLUMNS.map((col) => (
@@ -62,7 +62,7 @@ export default function SiteFooter() {
           ))}
         </div>
 
-        <div style={{ height: 1, background: "#E5EBEE", margin: "28px 0 16px" }} />
+        <div style={{ height: 1, background: "#E5E5E6", margin: "28px 0 16px" }} />
 
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between" style={{ gap: 12 }}>
           <div className="flex flex-wrap items-center" style={{ gap: "6px 12px", fontSize: 12, color: MUTED }}>

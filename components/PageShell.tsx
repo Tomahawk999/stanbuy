@@ -18,7 +18,7 @@ export default function PageShell({
   onQueryChange?: (value: string) => void;
 }) {
   return (
-    <div className="min-h-dvh bg-white" style={{ color: "#0F1A1C" }}>
+    <div className="min-h-dvh bg-white" style={{ color: "#0B0B0C" }}>
       <SiteHeader query={query} onQueryChange={onQueryChange} />
       <div className="flex">
         <SideNav activeCategory={activeCategory ?? null} />

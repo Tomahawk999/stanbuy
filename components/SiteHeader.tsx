@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation";
 import HamburgerMenu from "./HamburgerMenu";
 import { useStanStore } from "@/lib/store";
 
-const INK = "#0F1A1C";
-const MUTED = "#576F76";
+const INK = "#0B0B0C";
+const MUTED = "#63666A";
 
 function LanguagePicker() {
   const [open, setOpen] = useState(false);
@@ -39,7 +39,7 @@ function LanguagePicker() {
       {open && (
         <div
           className="absolute flex flex-col"
-          style={{ top: "calc(100% + 8px)", right: 0, minWidth: 180, zIndex: 30, background: "#ffffff", borderRadius: 14, padding: 6, boxShadow: "0 8px 24px rgba(15,26,28,0.16)", border: "1px solid #E5EBEE" }}
+          style={{ top: "calc(100% + 8px)", right: 0, minWidth: 180, zIndex: 30, background: "#ffffff", borderRadius: 14, padding: 6, boxShadow: "0 8px 24px rgba(15,26,28,0.16)", border: "1px solid #E5E5E6" }}
         >
           <div style={{ padding: "8px 10px", fontSize: 11, fontWeight: 700, color: MUTED, letterSpacing: "0.06em", textTransform: "uppercase" }}>
             Language
@@ -75,7 +75,7 @@ export default function SiteHeader({
 
   return (
     <>
-      <header className="sticky top-0" style={{ background: "#ffffff", borderBottom: "1px solid #E5EBEE", zIndex: 1002 }}>
+      <header className="sticky top-0" style={{ background: "#ffffff", borderBottom: "1px solid #E5E5E6", zIndex: 1002 }}>
         <div className="flex items-center" style={{ height: 56, padding: "0 16px", gap: 12 }}>
           <div className="flex flex-none items-center" style={{ gap: 8 }}>
             <button
@@ -103,7 +103,7 @@ export default function SiteHeader({
               if (!controlled) router.push(value.trim() ? `/?q=${encodeURIComponent(value.trim())}` : "/");
             }}
             className="rd-search mx-auto flex min-w-0 flex-1 items-center"
-            style={{ maxWidth: 560, height: 40, borderRadius: 999, background: "#F2F4F5", padding: "0 16px", gap: 10, boxShadow: "inset 0 0 0 1px #E5EBEE" }}
+            style={{ maxWidth: 560, height: 40, borderRadius: 999, background: "#F2F2F3", padding: "0 16px", gap: 10, boxShadow: "inset 0 0 0 1px #E5E5E6" }}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={INK} strokeWidth="2" strokeLinecap="round" className="flex-none">
               <circle cx="11" cy="11" r="7" />
@@ -158,7 +158,7 @@ export default function SiteHeader({
               className="rd-ghost flex items-center justify-center"
               style={{ width: 40, height: 40, borderRadius: 999, color: MUTED }}
             >
-              <span className="flex items-center justify-center" style={{ width: 32, height: 32, borderRadius: 999, background: "#E5EBEE", color: INK }}>
+              <span className="flex items-center justify-center" style={{ width: 32, height: 32, borderRadius: 999, background: "#E5E5E6", color: INK }}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
                   <circle cx="12" cy="8" r="3.6" />
                   <path d="M5 20c1.4-4 4.2-6 7-6s5.6 2 7 6" />

@@ -25,7 +25,7 @@ export default function StarRating({
       <span className="relative inline-flex" style={{ width: size * 5, height: size }}>
         <span className="absolute inset-0 flex">
           {[0, 1, 2, 3, 4].map((i) => (
-            <Star key={i} color="#E5EBEE" size={size} />
+            <Star key={i} color="#E5E5E6" size={size} />
           ))}
         </span>
         <span className="absolute inset-0 flex overflow-hidden" style={{ width: `${pct}%` }}>
@@ -35,7 +35,7 @@ export default function StarRating({
         </span>
       </span>
       {showValue && (
-        <span style={{ fontSize: size, color: "#0F1A1C", fontWeight: 700 }}>{rating.toFixed(1)}</span>
+        <span style={{ fontSize: size, color: "#0B0B0C", fontWeight: 700 }}>{rating.toFixed(1)}</span>
       )}
     </span>
   );

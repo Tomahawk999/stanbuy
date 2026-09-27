@@ -15,8 +15,8 @@ const TABS: { id: TabId; label: string }[] = [
 
 const TAB_IDS: TabId[] = ["terms", "privacy", "score", "cookies"];
 
-const INK = "#0F1A1C";
-const MUTED = "#576F76";
+const INK = "#0B0B0C";
+const MUTED = "#63666A";
 const ORANGE = "#0B0B0C";
 
 const H2: React.CSSProperties = { fontSize: 17, fontWeight: 700, color: INK, margin: "24px 0 8px" };
@@ -75,7 +75,7 @@ function LegalPageContent() {
             ))}
           </div>
 
-          <div style={{ marginTop: 20, borderTop: "1px solid #E5EBEE", padding: "14px 8px 0" }}>
+          <div style={{ marginTop: 20, borderTop: "1px solid #E5E5E6", padding: "14px 8px 0" }}>
             <div style={{ fontSize: 12, fontWeight: 600, color: MUTED, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 8 }}>
               Need help?
             </div>

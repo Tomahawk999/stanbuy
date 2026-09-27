@@ -3,8 +3,8 @@
 import Link from "next/link";
 import PageShell from "@/components/PageShell";
 
-const INK = "#0F1A1C";
-const MUTED = "#576F76";
+const INK = "#0B0B0C";
+const MUTED = "#63666A";
 const ORANGE = "#0B0B0C";
 
 const FAQS = [
@@ -33,18 +33,10 @@ const FAQS = [
 export default function AboutPage() {
   return (
     <PageShell>
-      <div className="relative overflow-hidden" style={{ aspectRatio: "2000 / 1199", borderRadius: 16, marginBottom: 8 }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/auth-food-strip.webp" alt="" className="absolute inset-0 h-full w-full object-cover" />
-        <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(15,26,28,0) 55%, rgba(15,26,28,0.7) 100%)" }} />
-        <div className="absolute" style={{ left: 20, bottom: 20 }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: "#ffffff", letterSpacing: "0.08em", textTransform: "uppercase" }}>
-            About Stanbuy
-          </div>
-        </div>
-      </div>
-
       <div style={{ padding: "24px 8px 8px" }}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: MUTED, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 4 }}>
+          About Stanbuy
+        </div>
         <h2 style={{ fontSize: 16, fontWeight: 700, color: INK, margin: "0 0 10px" }}>Frequently asked questions</h2>
         <div className="flex flex-col" style={{ gap: 2 }}>
           {FAQS.map((item) => (

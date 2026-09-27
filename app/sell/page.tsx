@@ -8,8 +8,8 @@ import { Category } from "@/lib/types";
 import PageShell from "@/components/PageShell";
 import { CATEGORIES, CATEGORY_IMAGES } from "@/lib/data";
 
-const INK = "#0F1A1C";
-const MUTED = "#576F76";
+const INK = "#0B0B0C";
+const MUTED = "#63666A";
 const ORANGE = "#0B0B0C";
 
 function CategoryPicker({ value, onChange }: { value: Category; onChange: (v: Category) => void }) {
@@ -33,7 +33,7 @@ function CategoryPicker({ value, onChange }: { value: Category; onChange: (v: Ca
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         className="rd-ghost flex cursor-pointer items-center border-none"
-        style={{ gap: 8, padding: "6px 10px 6px 6px", borderRadius: 999, background: "#F6F8F9" }}
+        style={{ gap: 8, padding: "6px 10px 6px 6px", borderRadius: 999, background: "#F5F5F6" }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={CATEGORY_IMAGES[current.id]} alt="" style={{ width: 26, height: 26, borderRadius: 999, objectFit: "cover", flex: "none" }} />
@@ -45,7 +45,7 @@ function CategoryPicker({ value, onChange }: { value: Category; onChange: (v: Ca
       {open && (
         <div
           className="absolute flex flex-col"
-          style={{ top: "calc(100% + 8px)", left: 0, minWidth: 220, zIndex: 30, background: "#ffffff", borderRadius: 14, padding: 6, boxShadow: "0 8px 24px rgba(15,26,28,0.16)", border: "1px solid #E5EBEE" }}
+          style={{ top: "calc(100% + 8px)", left: 0, minWidth: 220, zIndex: 30, background: "#ffffff", borderRadius: 14, padding: 6, boxShadow: "0 8px 24px rgba(15,26,28,0.16)", border: "1px solid #E5E5E6" }}
         >
           {options.map((o) => (
             <button
@@ -74,7 +74,7 @@ function QuantityStepper({ value, onChange }: { value: number; onChange: (v: num
     width: 26,
     height: 26,
     borderRadius: 999,
-    border: "1px solid #E5EBEE",
+    border: "1px solid #E5E5E6",
     background: "#ffffff",
     color: INK,
     display: "flex",
@@ -86,7 +86,7 @@ function QuantityStepper({ value, onChange }: { value: number; onChange: (v: num
     flex: "none",
   };
   return (
-    <div className="flex items-center" style={{ gap: 10, padding: "6px 10px 6px 6px", borderRadius: 999, background: "#F6F8F9" }}>
+    <div className="flex items-center" style={{ gap: 10, padding: "6px 10px 6px 6px", borderRadius: 999, background: "#F5F5F6" }}>
       <button type="button" aria-label="Decrease quantity" style={BTN} onClick={() => onChange(Math.max(1, value - 1))}>
         −
       </button>
@@ -193,7 +193,7 @@ export default function SellPage() {
                 setQuantity(1);
               }}
               className="cursor-pointer border-none"
-              style={{ background: "#F6F8F9", color: INK, borderRadius: 999, padding: "13px 24px", fontSize: 15, fontWeight: 700 }}
+              style={{ background: "#F5F5F6", color: INK, borderRadius: 999, padding: "13px 24px", fontSize: 15, fontWeight: 700 }}
             >
               Post another
             </button>
@@ -233,7 +233,7 @@ export default function SellPage() {
           disabled={!canPublish}
           className="cursor-pointer border-none"
           style={{
-            background: canPublish ? ORANGE : "#E5EBEE",
+            background: canPublish ? ORANGE : "#E5E5E6",
             color: canPublish ? "#ffffff" : MUTED,
             borderRadius: 999,
             padding: "9px 22px",
@@ -253,7 +253,7 @@ export default function SellPage() {
         <div style={{ padding: "14px 16px" }}>
           <CategoryPicker value={category} onChange={setCategory} />
         </div>
-        <div style={{ height: 1, background: "#F0F3F4" }} />
+        <div style={{ height: 1, background: "#F0F0F1" }} />
 
         <div style={{ padding: "14px 16px 4px" }}>
           <input
@@ -303,7 +303,7 @@ export default function SellPage() {
             type="button"
             onClick={() => fileInputRef.current?.click()}
             className="flex w-full cursor-pointer items-center justify-center border-none"
-            style={{ margin: "0 16px 16px", width: "calc(100% - 32px)", height: 96, borderRadius: 14, border: "2px dashed #C7D3D8", background: "#F6F8F9", gap: 8, color: INK, fontSize: 14, fontWeight: 700 }}
+            style={{ margin: "0 16px 16px", width: "calc(100% - 32px)", height: 96, borderRadius: 14, border: "2px dashed #CBCBCD", background: "#F5F5F6", gap: 8, color: INK, fontSize: 14, fontWeight: 700 }}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
               <path d="M4 8h3l1.5-2h7L17 8h3v11H4V8Z" />
@@ -314,7 +314,7 @@ export default function SellPage() {
         )}
         {photoError && <div style={{ margin: "0 16px 14px", fontSize: 13, color: "#C4351E" }}>{photoError}</div>}
 
-        <div style={{ height: 1, background: "#F0F3F4" }} />
+        <div style={{ height: 1, background: "#F0F0F1" }} />
         <div className="flex flex-wrap items-center" style={{ gap: 10, padding: "14px 16px" }}>
           <QuantityStepper value={quantity} onChange={setQuantity} />
           <input
@@ -324,7 +324,7 @@ export default function SellPage() {
             value={neighborhood}
             onChange={(e) => setNeighborhood(e.target.value)}
             className="min-w-0 flex-1 border-none bg-transparent outline-none"
-            style={{ borderRadius: 999, padding: "6px 12px", background: "#F6F8F9", fontSize: 13, fontWeight: 600, color: INK }}
+            style={{ borderRadius: 999, padding: "6px 12px", background: "#F5F5F6", fontSize: 13, fontWeight: 600, color: INK }}
           />
         </div>
       </div>
