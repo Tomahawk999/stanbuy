@@ -44,6 +44,11 @@ body {
   font-family: var(--font-sans);
 }
 
+/* Airbnb's signature tight tracking on headings — most sites skip this. */
+h1, h2, h3 {
+  letter-spacing: -0.03em;
+}
+
 .rd-pill {
   background: var(--rd-pill);
   transition: background-color 0.12s ease;

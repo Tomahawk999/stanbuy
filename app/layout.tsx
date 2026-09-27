@@ -1,13 +1,14 @@
 import type { Metadata, Viewport } from "next";
-import { Nunito_Sans } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import AuthProvider from "@/components/AuthProvider";
 import StoreHydrator from "@/components/StoreHydrator";
 import "./globals.css";
 
 // Airbnb's real typeface ("Cereal") is proprietary and not publicly
-// licensed — Nunito Sans is the closest widely-used free equivalent
-// (same rounded, geometric, friendly character).
-const brandFont = Nunito_Sans({
+// licensed. Plus Jakarta Sans is the free geometric sans most often
+// cited as visually closest — clean circular forms without Nunito's
+// overly rounded, soft character.
+const brandFont = Plus_Jakarta_Sans({
   weight: ["400", "500", "600", "700", "800"],
   subsets: ["latin"],
   variable: "--font-brand",
