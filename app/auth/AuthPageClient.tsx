@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
@@ -39,6 +39,14 @@ function AuthPageContent({ googleEnabled }: { googleEnabled: boolean }) {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [googleBusy, setGoogleBusy] = useState(false);
+  const [userCount, setUserCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetch("/api/stats")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => data && setUserCount(data.userCount))
+      .catch(() => {});
+  }, []);
 
   const handleGoogle = async () => {
     setGoogleBusy(true);
@@ -92,10 +100,8 @@ function AuthPageContent({ googleEnabled }: { googleEnabled: boolean }) {
 
   return (
     <div className="flex h-dvh w-full" style={{ color: INK }}>
-      <div className="flex w-full flex-col overflow-y-auto lg:w-1/2" style={{ padding: "32px 40px" }}>
-        <Link href="/" aria-label="Stanbuy home" className="inline-flex items-center flex-none" style={{ gap: 8 }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/stanbuy-icon.png" alt="" style={{ height: 24, width: 24, display: "block" }} />
+      <div className="flex w-full flex-col overflow-y-auto" style={{ padding: "32px 40px" }}>
+        <Link href="/" aria-label="Stanbuy home" className="inline-flex flex-none">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/stanbuy-logo.png" alt="Stanbuy" style={{ height: 18, display: "block" }} />
         </Link>
@@ -205,12 +211,12 @@ function AuthPageContent({ googleEnabled }: { googleEnabled: boolean }) {
           </p>
         </div>
 
-        <div style={{ fontSize: 12, color: MUTED }}>© {new Date().getFullYear()} Stanbuy, Inc.</div>
-      </div>
-
-      <div className="hidden flex-1 items-center justify-center lg:flex" style={{ background: "#F5F5F6", borderLeft: "1px solid #E5E5E6" }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/stanbuy-logo.png" alt="" aria-hidden style={{ width: 220, opacity: 0.12 }} />
+        <div className="flex items-center" style={{ gap: 10, fontSize: 12, color: MUTED }}>
+          <span>© {new Date().getFullYear()} Stanbuy, Inc.</span>
+          {userCount !== null && userCount > 0 && (
+            <span>· {userCount.toLocaleString()} {userCount === 1 ? "neighbor" : "neighbors"} joined</span>
+          )}
+        </div>
       </div>
     </div>
   );
