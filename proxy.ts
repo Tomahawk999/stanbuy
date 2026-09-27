@@ -15,8 +15,10 @@ export default auth((req) => {
 });
 
 export const config = {
-  // Skip API routes, Next.js internals, and any request for a static
-  // file in /public (anything with a file extension) — listing public
-  // asset names one by one is fragile and easy to miss.
-  matcher: ["/((?!api|_next/static|_next/image|.*\\.[\\w]+$).*)"],
+  // Skip API routes, Next.js internals, and static files in /public
+  // (images, fonts, etc.) so new assets never need to be listed here
+  // by name to stay reachable.
+  matcher: [
+    "/((?!api|_next/static|_next/image|.*\\.(?:png|jpg|jpeg|webp|gif|svg|ico|css|js|woff|woff2|ttf|map)$).*)",
+  ],
 };
