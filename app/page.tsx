@@ -9,8 +9,6 @@ import { CATEGORIES, CATEGORY_IMAGES, NEIGHBORHOOD, CENTER } from "@/lib/data";
 import type { Item } from "@/lib/types";
 import { useNow } from "@/lib/useNow";
 import SiteHeader from "@/components/SiteHeader";
-import SideNav from "@/components/SideNav";
-import SiteFooter from "@/components/SiteFooter";
 import PillSelect from "@/components/PillSelect";
 
 const NeighborhoodMap = dynamic(() => import("@/components/NeighborhoodMap"), {
@@ -193,12 +191,10 @@ function HomePageContent() {
   };
 
   return (
-    <div className="min-h-dvh bg-white" style={{ color: INK }}>
+    <div className="h-dvh overflow-hidden bg-white" style={{ color: INK }}>
       <SiteHeader query={query} onQueryChange={setQuery} />
 
       <div className="flex">
-        <SideNav activeCategory={urlCategory} counts={categoryCounts} />
-
         <main className="relative min-w-0 flex-1" style={{ height: "calc(100dvh - 56px)" }}>
           <div className="absolute inset-0">
             <NeighborhoodMap items={visible} highlightedId={hoveredId} onHover={setHoveredId} />
@@ -378,7 +374,6 @@ function HomePageContent() {
           </div>
         </main>
       </div>
-      <SiteFooter />
     </div>
   );
 }
