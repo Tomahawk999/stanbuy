@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useMemo, useRef, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -46,176 +46,95 @@ function CategoryIcon({ item, size = 24 }: { item: Item; size?: number }) {
   );
 }
 
-function VerifiedBadge() {
-  return (
-    <span
-      aria-label="Trusted neighbor"
-      title="Trusted neighbor"
-      className="flex flex-none items-center justify-center"
-      style={{ width: 14, height: 14, borderRadius: 999, background: ORANGE }}
-    >
-      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M5 12l5 5L20 7" />
-      </svg>
-    </span>
-  );
-}
-
-function ItemCard({
+function RedditPost({
   item,
   saved,
-  isNew,
-  onToggleSave,
-  width,
-}: {
-  item: Item;
-  saved: boolean;
-  isNew: boolean;
-  onToggleSave: (id: string) => void;
-  width?: number;
-}) {
-  return (
-    <Link
-      href={`/item/${item.id}`}
-      className="block"
-      style={width ? { width, flex: "none" } : undefined}
-    >
-      <div className="relative overflow-hidden" style={{ aspectRatio: "1 / 1", borderRadius: 16, background: INK }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={item.image ?? CATEGORY_IMAGES[item.category]}
-          alt={item.title}
-          className="absolute inset-0 h-full w-full object-cover"
-        />
-        <button
-          type="button"
-          onClick={(e) => {
-            e.preventDefault();
-            onToggleSave(item.id);
-          }}
-          aria-pressed={saved}
-          aria-label={saved ? "Remove from saved" : "Save"}
-          className="absolute flex cursor-pointer items-center justify-center border-none"
-          style={{ top: 8, right: 8, width: 30, height: 30, borderRadius: 999, background: "#ffffff" }}
-        >
-          <svg width="15" height="15" viewBox="0 0 24 24" fill={saved ? ORANGE : "none"} stroke={saved ? ORANGE : INK} strokeWidth="2">
-            <path d="M12 21s-7.5-4.7-10-9.3C.5 8 2 4.5 5.6 4c2.1-.3 3.9.8 6.4 3.2C14.5 4.8 16.3 3.7 18.4 4c3.6.5 5.1 4 3.6 7.7C19.5 16.3 12 21 12 21Z" />
-          </svg>
-        </button>
-      </div>
-
-      <div style={{ padding: "10px 4px 0" }}>
-        {(isNew || item.sellerScore >= 100) && (
-          <div style={{ fontSize: 11, fontWeight: 800, color: isNew ? ORANGE : INK, letterSpacing: "0.03em", marginBottom: 3 }}>
-            {isNew ? "NEW" : "NEIGHBOR FAVORITE"}
-          </div>
-        )}
-        <div className="flex flex-col sm:flex-row sm:items-start" style={{ gap: 2 }}>
-          <div
-            className="min-w-0 flex-1"
-            style={{
-              fontSize: 15,
-              fontWeight: 700,
-              color: INK,
-              lineHeight: 1.3,
-              display: "-webkit-box",
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: "vertical",
-              overflow: "hidden",
-              minHeight: 39,
-            }}
-          >
-            {item.title}
-          </div>
-          <div className="flex flex-none items-center sm:ml-2" style={{ gap: 3, marginTop: 1 }}>
-            <span style={{ color: "#E8A200", fontSize: 13 }}>★</span>
-            <span style={{ fontWeight: 600, fontSize: 13, color: INK }}>{(item.sellerScore / 20).toFixed(1)}</span>
-            {item.sellerScore >= 95 && <VerifiedBadge />}
-          </div>
-        </div>
-        <div className="flex flex-wrap items-center truncate" style={{ gap: 4, fontSize: 12, color: MUTED, marginTop: 4 }}>
-          <span style={{ color: ORANGE, fontWeight: 800 }}>Free</span>
-          <span>· {categoryLabel(item.category)} · {item.distanceMin} min walk · Qty {item.quantity}</span>
-        </div>
-      </div>
-    </Link>
-  );
-}
-
-function ScrollArrow({ direction, onClick }: { direction: "left" | "right"; onClick: () => void }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-label={direction === "left" ? "Scroll left" : "Scroll right"}
-      className="absolute flex cursor-pointer items-center justify-center border-none"
-      style={{
-        top: "38%",
-        [direction === "left" ? "left" : "right"]: -16,
-        width: 34,
-        height: 34,
-        borderRadius: 999,
-        background: "#ffffff",
-        color: INK,
-        boxShadow: "0 2px 8px rgba(15,26,28,0.18)",
-        zIndex: 2,
-      }}
-    >
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-        {direction === "left" ? <path d="M15 6l-6 6 6 6" /> : <path d="M9 6l6 6-6 6" />}
-      </svg>
-    </button>
-  );
-}
-
-function ItemRow({
-  title,
-  items,
-  savedIds,
   onToggleSave,
   now,
 }: {
-  title: string;
-  items: Item[];
-  savedIds: string[];
+  item: Item;
+  saved: boolean;
   onToggleSave: (id: string) => void;
   now: number | null;
 }) {
-  const scrollerRef = useRef<HTMLDivElement>(null);
-
-  const scroll = (dir: "left" | "right") => {
-    const el = scrollerRef.current;
-    if (!el) return;
-    el.scrollBy({ left: dir === "left" ? -600 : 600, behavior: "smooth" });
-  };
-
-  if (items.length === 0) return null;
-
+  const age = now !== null ? timeAgo(item.createdAt, now) : null;
   return (
-    <div className="relative" style={{ marginBottom: 28 }}>
-      <div className="flex items-center justify-between" style={{ padding: "0 4px 12px" }}>
-        <h2 style={{ fontSize: 18, fontWeight: 800, color: INK, margin: 0, letterSpacing: "-0.01em" }}>{title}</h2>
-      </div>
-      <div className="group relative">
-        <div ref={scrollerRef} className="flex overflow-x-auto scroll-smooth" style={{ gap: 16, padding: "0 4px 4px", scrollbarWidth: "none" }}>
-          {items.map((item) => (
-            <ItemCard
-              key={item.id}
-              item={item}
-              saved={savedIds.includes(item.id)}
-              isNew={now !== null && now - item.createdAt <= 15 * 60 * 1000}
-              onToggleSave={onToggleSave}
-              width={220}
-            />
-          ))}
+    <div
+      className="rd-reddit-post flex"
+      style={{ border: "1px solid #EDEFF1", borderRadius: 8, background: "#ffffff", marginBottom: 10 }}
+    >
+      {/* vote column */}
+      <button
+        type="button"
+        onClick={() => onToggleSave(item.id)}
+        aria-pressed={saved}
+        aria-label={saved ? "Remove from saved" : "Save (upvote)"}
+        className="flex flex-none cursor-pointer flex-col items-center border-none bg-transparent"
+        style={{ width: 40, padding: "12px 0", gap: 4, borderRadius: "8px 0 0 8px" }}
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill={saved ? ORANGE : "none"} stroke={saved ? ORANGE : "#878A8C"} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 4l8 8h-5v8H9v-8H4z" />
+        </svg>
+        <span style={{ fontSize: 12, fontWeight: 700, color: saved ? ORANGE : INK }}>{Math.round(item.sellerScore / 4)}</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#878A8C" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 20l8-8h-5V4H9v8H4z" />
+        </svg>
+      </button>
+
+      <Link href={`/item/${item.id}`} className="min-w-0 flex-1" style={{ padding: "10px 12px 10px 4px" }}>
+        <div className="flex flex-wrap items-center" style={{ gap: 4, fontSize: 12, color: MUTED }}>
+          <span style={{ fontWeight: 700, color: INK }}>{categoryLabel(item.category)}</span>
+          <span>· {item.neighborhood}</span>
+          {age && <span>· {age}</span>}
+          <span>· Posted by {item.seller}</span>
         </div>
-        {items.length > 3 && (
-          <>
-            <ScrollArrow direction="left" onClick={() => scroll("left")} />
-            <ScrollArrow direction="right" onClick={() => scroll("right")} />
-          </>
-        )}
-      </div>
+
+        <div className="flex items-start" style={{ gap: 12, marginTop: 4 }}>
+          <div className="min-w-0 flex-1">
+            <div style={{ fontSize: 17, fontWeight: 700, color: INK, lineHeight: 1.3 }}>{item.title}</div>
+            <div
+              style={{
+                fontSize: 13,
+                color: MUTED,
+                marginTop: 4,
+                display: "-webkit-box",
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+              }}
+            >
+              {item.description}
+            </div>
+          </div>
+          <div className="relative flex-none overflow-hidden" style={{ width: 96, height: 96, borderRadius: 8 }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={item.image ?? CATEGORY_IMAGES[item.category]} alt="" className="h-full w-full object-cover" />
+          </div>
+        </div>
+
+        <div className="flex flex-wrap items-center" style={{ gap: 16, marginTop: 10, fontSize: 12, fontWeight: 700, color: "#575859" }}>
+          <span className="flex items-center" style={{ gap: 4, color: ORANGE }}>
+            Free · {item.distanceMin} min walk · Qty {item.quantity}
+          </span>
+          <span className="flex items-center rd-ghost" style={{ gap: 4, padding: "6px 8px", borderRadius: 4 }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v14" /></svg>
+            Share
+          </span>
+          <span
+            className="flex cursor-pointer items-center rd-ghost"
+            style={{ gap: 4, padding: "6px 8px", borderRadius: 4, color: saved ? ORANGE : "#575859" }}
+            onClick={(e) => {
+              e.preventDefault();
+              onToggleSave(item.id);
+            }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill={saved ? ORANGE : "none"} stroke={saved ? ORANGE : "currentColor"} strokeWidth="1.8">
+              <path d="M6 4h12a1 1 0 0 1 1 1v15l-7-4-7 4V5a1 1 0 0 1 1-1Z" />
+            </svg>
+            {saved ? "Saved" : "Save"}
+          </span>
+        </div>
+      </Link>
     </div>
   );
 }
@@ -257,7 +176,6 @@ function HomePageContent() {
   const [maxDistance, setMaxDistance] = useState<number | null>(null);
   const [minRating, setMinRating] = useState<number | null>(null);
   const [sortBy, setSortBy] = useState<"distance" | "newest">("distance");
-  const [layout, setLayout] = useState<"grid" | "list">("grid");
 
   // Sync local query with the URL's ?q= when it changes externally (e.g. a
   // Link navigation), without clobbering it on every keystroke.
@@ -292,21 +210,6 @@ function HomePageContent() {
   const recent = useMemo(() => [...available].sort((a, b) => b.createdAt - a.createdAt).slice(0, 4), [available]);
 
   const filtersActive = maxDistance !== null || minRating !== null || query.trim() !== "";
-  const showSections = layout === "grid" && !filtersActive && !urlCategory;
-
-  const sections = useMemo(() => {
-    if (!showSections) return [];
-    const byDistance = [...available].sort((a, b) => a.distanceMin - b.distanceMin);
-    const rows: { title: string; items: Item[] }[] = [{ title: `Nearby in ${NEIGHBORHOOD}`, items: byDistance.slice(0, 10) }];
-    if (recent.length > 0) {
-      rows.push({ title: "New today", items: [...available].sort((a, b) => b.createdAt - a.createdAt).slice(0, 10) });
-    }
-    CATEGORIES.filter((c) => c.id !== "all").forEach((cat) => {
-      const inCat = byDistance.filter((it) => it.category === cat.id);
-      if (inCat.length > 0) rows.push({ title: cat.label, items: inCat.slice(0, 10) });
-    });
-    return rows;
-  }, [showSections, available, recent.length]);
 
   const handleToggleSave = (itemId: string) => {
     if (!currentUser) {
@@ -402,32 +305,6 @@ function HomePageContent() {
                   { value: "3.5", label: "3.5★ & up" },
                 ]}
               />
-              <div className="flex items-center" style={{ gap: 2 }}>
-                {(["grid", "list"] as const).map((mode) => (
-                  <button
-                    key={mode}
-                    type="button"
-                    onClick={() => setLayout(mode)}
-                    aria-label={mode === "grid" ? "Grid view" : "List view"}
-                    aria-pressed={layout === mode}
-                    className="rd-ghost flex cursor-pointer items-center justify-center border-none"
-                    style={{ width: 32, height: 32, borderRadius: 999, color: layout === mode ? INK : MUTED, background: layout === mode ? "#E5EBEE" : undefined }}
-                  >
-                    {mode === "grid" ? (
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                        <rect x="2" y="2" width="8" height="8" />
-                        <rect x="14" y="2" width="8" height="8" />
-                        <rect x="2" y="14" width="8" height="8" />
-                        <rect x="14" y="14" width="8" height="8" />
-                      </svg>
-                    ) : (
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                        <path d="M4 6h16M4 12h16M4 18h16" />
-                      </svg>
-                    )}
-                  </button>
-                ))}
-              </div>
               <div className="ml-auto" style={{ fontSize: 12, color: MUTED, paddingRight: 8 }}>
                 {visible.length} {visible.length === 1 ? "listing" : "listings"} · {NEIGHBORHOOD}
               </div>
@@ -436,12 +313,11 @@ function HomePageContent() {
             <div style={{ height: 1, background: "#E5EBEE" }} />
 
             {loading ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3" style={{ gap: "20px 16px", padding: "16px 8px 0" }}>
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} style={{ padding: 6 }}>
-                    <div style={{ aspectRatio: "1 / 1", borderRadius: 20, background: "#F0F3F4" }} />
-                    <div style={{ height: 14, borderRadius: 6, background: "#F0F3F4", marginTop: 12, width: "85%" }} />
-                    <div style={{ height: 12, borderRadius: 6, background: "#F0F3F4", marginTop: 8, width: "55%" }} />
+              <div style={{ padding: "16px 8px 0" }}>
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <div key={i} style={{ border: "1px solid #EDEFF1", borderRadius: 8, padding: 14, marginBottom: 10, display: "flex", gap: 12 }}>
+                    <div style={{ height: 14, borderRadius: 6, background: "#F0F3F4", flex: 1 }} />
+                    <div style={{ width: 96, height: 96, borderRadius: 8, background: "#F0F3F4" }} />
                   </div>
                 ))}
               </div>
@@ -480,88 +356,11 @@ function HomePageContent() {
                   </Link>
                 </div>
               )
-            ) : showSections ? (
-              <div style={{ padding: "16px 8px 0" }}>
-                {sections.map((s) => (
-                  <ItemRow key={s.title} title={s.title} items={s.items} savedIds={savedIds} onToggleSave={handleToggleSave} now={now} />
-                ))}
-              </div>
-            ) : layout === "grid" ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3" style={{ gap: "20px 16px", padding: "16px 8px 0" }}>
-                {visible.map((item) => (
-                  <ItemCard
-                    key={item.id}
-                    item={item}
-                    saved={savedIds.includes(item.id)}
-                    isNew={now !== null && now - item.createdAt <= 15 * 60 * 1000}
-                    onToggleSave={handleToggleSave}
-                  />
-                ))}
-              </div>
             ) : (
-              <div style={{ padding: "8px 8px 0" }}>
-                {visible.map((item) => {
-                  const saved = savedIds.includes(item.id);
-                  return (
-                    <div key={item.id}>
-                      <Link
-                        href={`/item/${item.id}`}
-                        className="rd-post flex items-center"
-                        onMouseEnter={() => setHoveredId(item.id)}
-                        onMouseLeave={() => setHoveredId(null)}
-                        style={{ borderRadius: 16, padding: "10px 8px", gap: 14 }}
-                      >
-                        <div className="relative flex-none overflow-hidden" style={{ width: 92, height: 92, borderRadius: 14 }}>
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={item.image ?? CATEGORY_IMAGES[item.category]}
-                            alt=""
-                            className="h-full w-full object-cover"
-                          />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <div
-                            style={{
-                              fontSize: 15,
-                              fontWeight: 700,
-                              color: INK,
-                              lineHeight: 1.3,
-                              display: "-webkit-box",
-                              WebkitLineClamp: 1,
-                              WebkitBoxOrient: "vertical",
-                              overflow: "hidden",
-                            }}
-                          >
-                            {item.title}
-                          </div>
-                          <div className="flex items-center" style={{ gap: 4, marginTop: 4, fontSize: 12, color: MUTED }}>
-                            <span style={{ color: "#E8A200" }}>★</span>
-                            <span style={{ fontWeight: 600, color: INK }}>{(item.sellerScore / 20).toFixed(1)}</span>
-                            {item.sellerScore >= 95 && <VerifiedBadge />}
-                            <span>· {item.distanceMin} min walk · {categoryLabel(item.category)}</span>
-                          </div>
-                          <div style={{ fontSize: 13, fontWeight: 800, color: ORANGE, marginTop: 4 }}>Free</div>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handleToggleSave(item.id);
-                          }}
-                          aria-pressed={saved}
-                          aria-label={saved ? "Remove from saved" : "Save"}
-                          className="flex flex-none cursor-pointer items-center justify-center border-none"
-                          style={{ width: 34, height: 34, borderRadius: 999, background: "#F6F8F9" }}
-                        >
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill={saved ? ORANGE : "none"} stroke={saved ? ORANGE : INK} strokeWidth="2">
-                            <path d="M12 21s-7.5-4.7-10-9.3C.5 8 2 4.5 5.6 4c2.1-.3 3.9.8 6.4 3.2C14.5 4.8 16.3 3.7 18.4 4c3.6.5 5.1 4 3.6 7.7C19.5 16.3 12 21 12 21Z" />
-                          </svg>
-                        </button>
-                      </Link>
-                      <div style={{ height: 1, background: "#E5EBEE", margin: "0 8px" }} />
-                    </div>
-                  );
-                })}
+              <div style={{ padding: "16px 4px 0" }}>
+                {visible.map((item) => (
+                  <RedditPost key={item.id} item={item} saved={savedIds.includes(item.id)} onToggleSave={handleToggleSave} now={now} />
+                ))}
               </div>
             )}
           </div>
