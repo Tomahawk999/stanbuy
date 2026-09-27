@@ -1,0 +1,80 @@
+// Prisma schema for Stanbuy — real, shared, multi-user data (replaces localStorage).
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id               String   @id @default(cuid())
+  email            String   @unique
+  passwordHash     String?
+  name             String
+  neighborhood     String
+  lat              Float
+  lng              Float
+  reliabilityScore Int      @default(98)
+  freezeUntil      DateTime?
+  createdAt        DateTime @default(now())
+
+  items        Item[]
+  reservations Reservation[]
+  savedItems   SavedItem[]
+}
+
+model Item {
+  id           String   @id @default(cuid())
+  title        String
+  description  String
+  quantity     Int
+  image        String?
+  category     String
+  neighborhood String
+  lat          Float
+  lng          Float
+  status       String   @default("available")
+  createdAt    DateTime @default(now())
+
+  sellerId String
+  seller   User   @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+
+  reservations Reservation[]
+  savedBy      SavedItem[]
+
+  @@index([sellerId])
+  @@index([status])
+}
+
+model Reservation {
+  id        String   @id @default(cuid())
+  code      String
+  status    String   @default("active")
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  itemId String
+  item   Item   @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  buyerId String
+  buyer   User   @relation(fields: [buyerId], references: [id], onDelete: Cascade)
+
+  @@index([itemId])
+  @@index([buyerId])
+}
+
+model SavedItem {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  itemId String
+  item   Item   @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, itemId])
+}
