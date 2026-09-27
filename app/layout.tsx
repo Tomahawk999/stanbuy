@@ -1,10 +1,13 @@
 import type { Metadata, Viewport } from "next";
-import { Reddit_Sans } from "next/font/google";
+import { Nunito_Sans } from "next/font/google";
 import AuthProvider from "@/components/AuthProvider";
 import StoreHydrator from "@/components/StoreHydrator";
 import "./globals.css";
 
-const redditSans = Reddit_Sans({
+// Airbnb's real typeface ("Cereal") is proprietary and not publicly
+// licensed — Nunito Sans is the closest widely-used free equivalent
+// (same rounded, geometric, friendly character).
+const brandFont = Nunito_Sans({
   weight: ["400", "500", "600", "700", "800"],
   subsets: ["latin"],
   variable: "--font-brand",
@@ -26,7 +29,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`h-full ${redditSans.variable}`}>
+    <html lang="en" className={`h-full ${brandFont.variable}`}>
       <body className="min-h-full bg-white text-[#0F1A1C]">
         <AuthProvider>
           <StoreHydrator />
