@@ -61,7 +61,7 @@ function RedditPost({
   return (
     <div
       className="rd-reddit-post flex"
-      style={{ border: "1px solid #EDEFF1", borderRadius: 8, background: "#ffffff", marginBottom: 10 }}
+      style={{ border: "1px solid #EDEFF1", borderRadius: 12, background: "#ffffff", marginBottom: 14 }}
     >
       {/* vote column */}
       <button
@@ -70,18 +70,18 @@ function RedditPost({
         aria-pressed={saved}
         aria-label={saved ? "Remove from saved" : "Save (upvote)"}
         className="flex flex-none cursor-pointer flex-col items-center border-none bg-transparent"
-        style={{ width: 40, padding: "12px 0", gap: 4, borderRadius: "8px 0 0 8px" }}
+        style={{ width: 48, padding: "18px 0", gap: 6, borderRadius: "12px 0 0 12px" }}
       >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill={saved ? ORANGE : "none"} stroke={saved ? ORANGE : "#878A8C"} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill={saved ? ORANGE : "none"} stroke={saved ? ORANGE : "#878A8C"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M12 4l8 8h-5v8H9v-8H4z" />
         </svg>
         <span style={{ fontSize: 12, fontWeight: 700, color: saved ? ORANGE : INK }}>{Math.round(item.sellerScore / 4)}</span>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#878A8C" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#878A8C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M12 20l8-8h-5V4H9v8H4z" />
         </svg>
       </button>
 
-      <Link href={`/item/${item.id}`} className="min-w-0 flex-1" style={{ padding: "10px 12px 10px 4px" }}>
+      <Link href={`/item/${item.id}`} className="min-w-0 flex-1" style={{ padding: "18px 20px 18px 6px" }}>
         <div className="flex flex-wrap items-center" style={{ gap: 4, fontSize: 12, color: MUTED }}>
           <span style={{ fontWeight: 700, color: INK }}>{categoryLabel(item.category)}</span>
           <span>· {item.neighborhood}</span>
@@ -89,14 +89,14 @@ function RedditPost({
           <span>· Posted by {item.seller}</span>
         </div>
 
-        <div className="flex items-start" style={{ gap: 12, marginTop: 4 }}>
+        <div className="flex items-start" style={{ gap: 16, marginTop: 6 }}>
           <div className="min-w-0 flex-1">
-            <div style={{ fontSize: 17, fontWeight: 700, color: INK, lineHeight: 1.3 }}>{item.title}</div>
+            <div style={{ fontSize: 18, fontWeight: 800, color: INK, lineHeight: 1.3, letterSpacing: "-0.01em" }}>{item.title}</div>
             <div
               style={{
                 fontSize: 13,
                 color: MUTED,
-                marginTop: 4,
+                marginTop: 6,
                 display: "-webkit-box",
                 WebkitLineClamp: 2,
                 WebkitBoxOrient: "vertical",
@@ -106,23 +106,23 @@ function RedditPost({
               {item.description}
             </div>
           </div>
-          <div className="relative flex-none overflow-hidden" style={{ width: 96, height: 96, borderRadius: 8 }}>
+          <div className="relative flex-none overflow-hidden" style={{ width: 108, height: 108, borderRadius: 10 }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={item.image ?? CATEGORY_IMAGES[item.category]} alt="" className="h-full w-full object-cover" />
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center" style={{ gap: 16, marginTop: 10, fontSize: 12, fontWeight: 700, color: "#575859" }}>
+        <div className="flex flex-wrap items-center" style={{ gap: 20, marginTop: 14, fontSize: 12, fontWeight: 700, color: "#575859" }}>
           <span className="flex items-center" style={{ gap: 4, color: ORANGE }}>
             Free · {item.distanceMin} min walk · Qty {item.quantity}
           </span>
-          <span className="flex items-center rd-ghost" style={{ gap: 4, padding: "6px 8px", borderRadius: 4 }}>
+          <span className="flex items-center rd-ghost" style={{ gap: 6, padding: "8px 10px", borderRadius: 999 }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v14" /></svg>
             Share
           </span>
           <span
             className="flex cursor-pointer items-center rd-ghost"
-            style={{ gap: 4, padding: "6px 8px", borderRadius: 4, color: saved ? ORANGE : "#575859" }}
+            style={{ gap: 6, padding: "8px 10px", borderRadius: 999, color: saved ? ORANGE : "#575859" }}
             onClick={(e) => {
               e.preventDefault();
               onToggleSave(item.id);
@@ -140,12 +140,12 @@ function RedditPost({
 }
 
 const PILL: React.CSSProperties = {
-  height: 32,
+  height: 36,
   borderRadius: 999,
-  padding: "0 12px",
+  padding: "0 14px",
   gap: 6,
-  fontSize: 12,
-  fontWeight: 600,
+  fontSize: 13,
+  fontWeight: 700,
   color: INK,
   border: "none",
 };

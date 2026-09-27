@@ -327,10 +327,10 @@ function ItemDetailView({ id }: { id: string }) {
                   style={{
                     background: isFrozen ? "#E5EBEE" : ORANGE,
                     color: isFrozen ? MUTED : "#ffffff",
-                    borderRadius: 12,
-                    padding: 13,
-                    fontSize: 14,
-                    fontWeight: 700,
+                    borderRadius: 999,
+                    padding: "16px 13px",
+                    fontSize: 15,
+                    fontWeight: 800,
                   }}
                 >
                   {isFrozen ? "Reserving is paused — score too low" : "Reserve"}
