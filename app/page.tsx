@@ -35,17 +35,6 @@ function categoryLabel(id: string): string {
   return CATEGORIES.find((c) => c.id === id)?.label ?? "Other";
 }
 
-function CategoryIcon({ item, size = 24 }: { item: Item; size?: number }) {
-  return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src={CATEGORY_IMAGES[item.category]}
-      alt=""
-      style={{ width: size, height: size, borderRadius: 999, objectFit: "cover", flex: "none" }}
-    />
-  );
-}
-
 function RedditPost({
   item,
   saved,
@@ -193,8 +182,6 @@ function HomePageContent() {
     return counts;
   }, [available]);
 
-  const recent = useMemo(() => [...available].sort((a, b) => b.createdAt - a.createdAt).slice(0, 4), [available]);
-
   const filtersActive = maxDistance !== null || minRating !== null || query.trim() !== "";
 
   const handleToggleSave = (itemId: string) => {
@@ -212,8 +199,8 @@ function HomePageContent() {
       <div className="flex">
         <SideNav activeCategory={urlCategory} counts={categoryCounts} />
 
-        <main className="flex min-w-0 flex-1 justify-center" style={{ gap: 24, padding: "0 16px" }}>
-          <div className="min-w-0 flex-1" style={{ maxWidth: 756, paddingTop: 12, paddingBottom: 40 }}>
+        <main className="flex min-w-0 flex-1" style={{ height: "calc(100dvh - 56px)" }}>
+          <div className="min-w-0 flex-none overflow-y-auto" style={{ width: 420, borderRight: "1px solid #E5EBEE", paddingTop: 12, paddingBottom: 40 }}>
             {urlCategory && (
               <div className="flex items-center" style={{ gap: 14, padding: "12px 16px 16px" }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -351,78 +338,21 @@ function HomePageContent() {
             )}
           </div>
 
-          <aside className="hidden flex-none xl:block" style={{ width: 316, paddingTop: 16 }}>
-            <div style={{ position: "sticky", top: 72 }}>
-              <div className="rd-panel" style={{ background: "#F6F8F9", borderRadius: 16, padding: 16 }}>
-                <div className="flex items-center justify-between" style={{ marginBottom: 10 }}>
-                  <span style={{ fontSize: 12, letterSpacing: "0.08em", color: MUTED, textTransform: "uppercase" }}>Nearby</span>
-                  <a
-                    href={`https://www.google.com/maps/dir/?api=1&destination=${CENTER[0]},${CENTER[1]}&travelmode=walking`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex items-center"
-                    style={{ gap: 5, fontSize: 12, fontWeight: 700, color: ORANGE }}
-                  >
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="m3 11 18-8-8 18-2-8-8-2Z" />
-                    </svg>
-                    Get directions
-                  </a>
-                </div>
-                <div className="relative overflow-hidden" style={{ height: 240, borderRadius: 12 }}>
-                  <NeighborhoodMap items={visible} highlightedId={hoveredId} onHover={setHoveredId} countLabel={`${visible.length} nearby`} />
-                </div>
-              </div>
-
-              {recent.length > 0 && (
-              <div className="rd-panel" style={{ background: "#F6F8F9", borderRadius: 16, padding: 16, marginTop: 16 }}>
-                <div style={{ fontSize: 12, letterSpacing: "0.08em", color: MUTED, textTransform: "uppercase", marginBottom: 6 }}>
-                  Recently posted
-                </div>
-                {recent.map((item, i) => (
-                  <Link
-                    key={item.id}
-                    href={`/item/${item.id}`}
-                    className="flex items-start"
-                    style={{ gap: 12, padding: "10px 0", borderTop: i === 0 ? "none" : "1px solid #E5EBEE" }}
-                  >
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center" style={{ gap: 6, fontSize: 12, color: MUTED }}>
-                        <CategoryIcon item={item} size={20} />
-                        <span style={{ fontWeight: 600, color: INK }}>{categoryLabel(item.category)}</span>
-                        {now !== null && <span>• {timeAgo(item.createdAt, now)}</span>}
-                      </div>
-                      <div
-                        style={{
-                          fontSize: 14,
-                          fontWeight: 600,
-                          color: MUTED,
-                          marginTop: 4,
-                          display: "-webkit-box",
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: "vertical",
-                          overflow: "hidden",
-                        }}
-                      >
-                        {item.title}
-                      </div>
-                      <div style={{ fontSize: 12, color: MUTED, marginTop: 4 }}>
-                        Free · Qty {item.quantity} · {item.distanceMin} min walk
-                      </div>
-                    </div>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={item.image ?? CATEGORY_IMAGES[item.category]}
-                      alt=""
-                      style={{ width: 72, height: 72, borderRadius: 8, objectFit: "cover", flex: "none" }}
-                    />
-                  </Link>
-                ))}
-              </div>
-              )}
-
-            </div>
-          </aside>
+          <div className="relative hidden flex-1 sm:block">
+            <NeighborhoodMap items={visible} highlightedId={hoveredId} onHover={setHoveredId} countLabel={`${visible.length} nearby`} />
+            <a
+              href={`https://www.google.com/maps/dir/?api=1&destination=${CENTER[0]},${CENTER[1]}&travelmode=walking`}
+              target="_blank"
+              rel="noreferrer"
+              className="absolute flex items-center"
+              style={{ top: 12, left: 12, zIndex: 10, height: 34, borderRadius: 999, padding: "0 14px", background: "#ffffff", boxShadow: "0 2px 8px rgba(15,26,28,0.18)", gap: 6, fontSize: 13, fontWeight: 700, color: ORANGE }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="m3 11 18-8-8 18-2-8-8-2Z" />
+              </svg>
+              Get directions
+            </a>
+          </div>
         </main>
       </div>
       <SiteFooter />

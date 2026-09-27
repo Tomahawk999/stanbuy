@@ -37,16 +37,39 @@ if (typeof window !== "undefined") {
   setWorkerUrl("https://unpkg.com/maplibre-gl@6.11.2/dist/maplibre-gl-worker.mjs");
 }
 
-function markerElement(active: boolean): HTMLDivElement {
+function markerElement(active: boolean, label: string): HTMLDivElement {
   const el = document.createElement("div");
   el.style.cursor = "pointer";
-  el.style.width = active ? "22px" : "14px";
-  el.style.height = active ? "22px" : "14px";
+  el.style.display = "flex";
+  el.style.alignItems = "center";
+  el.style.gap = "5px";
+  el.style.padding = active ? "6px 12px" : "5px 10px";
   el.style.borderRadius = "999px";
   el.style.background = active ? ORANGE : "#ffffff";
-  el.style.border = `${active ? 3 : 2}px solid ${active ? "#ffffff" : INK}`;
-  el.style.boxShadow = active ? `0 0 0 7px rgba(251,68,2,0.18), 0 2px 6px rgba(15,26,28,0.3)` : "0 1px 3px rgba(15,26,28,0.35)";
+  el.style.border = `1.5px solid ${active ? ORANGE : "#E5EBEE"}`;
+  el.style.boxShadow = active ? "0 4px 12px rgba(251,68,2,0.35)" : "0 2px 6px rgba(15,26,28,0.18)";
   el.style.boxSizing = "border-box";
+  el.style.fontSize = "12px";
+  el.style.fontWeight = "700";
+  el.style.color = active ? "#ffffff" : INK;
+  el.style.whiteSpace = "nowrap";
+  el.style.fontFamily = "var(--font-brand), sans-serif";
+
+  const dot = document.createElement("span");
+  dot.style.width = "6px";
+  dot.style.height = "6px";
+  dot.style.borderRadius = "999px";
+  dot.style.background = active ? "#ffffff" : ORANGE;
+  dot.style.flex = "none";
+  el.appendChild(dot);
+
+  const text = document.createElement("span");
+  text.textContent = label;
+  text.style.overflow = "hidden";
+  text.style.textOverflow = "ellipsis";
+  text.style.maxWidth = "160px";
+  el.appendChild(text);
+
   return el;
 }
 
@@ -131,7 +154,8 @@ export default function NeighborhoodMap({
       if (existing) {
         existing.remove();
       }
-      const el = markerElement(active);
+      const shortTitle = item.title.length > 22 ? `${item.title.slice(0, 21)}…` : item.title;
+      const el = markerElement(active, `${shortTitle} · ${item.distanceMin} min`);
       el.addEventListener("click", () => router.push(`/item/${item.id}`));
       el.addEventListener("mouseenter", () => onHover?.(item.id));
       el.addEventListener("mouseleave", () => onHover?.(null));
