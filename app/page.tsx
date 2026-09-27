@@ -328,7 +328,9 @@ function HomePageContent() {
                   </Link>
                 </div>
               ) : (
-                <div className="text-center" style={{ padding: "56px 16px" }}>
+                <div className="flex flex-col items-center text-center" style={{ padding: "32px 16px" }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/empty-listings.png" alt="" style={{ width: 160, height: "auto", marginBottom: 12 }} />
                   <div style={{ fontSize: 18, fontWeight: 700, color: INK }}>
                     No listings near {NEIGHBORHOOD} yet
                   </div>

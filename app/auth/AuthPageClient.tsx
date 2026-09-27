@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 
 const INK = "#0B0B0C";
@@ -27,7 +27,6 @@ export default function AuthPageClient({ googleEnabled }: { googleEnabled: boole
 }
 
 function AuthPageContent({ googleEnabled }: { googleEnabled: boolean }) {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const next = searchParams.get("next") || "/";
   const [mode, setMode] = useState<"signin" | "signup">("signin");
@@ -61,11 +60,14 @@ function AuthPageContent({ googleEnabled }: { googleEnabled: boolean }) {
       const result = await signIn("credentials", { email, password, redirect: false });
       if (result?.error) {
         setError("Incorrect email or password.");
+        setBusy(false);
         return;
       }
-      router.push(next);
-      router.refresh();
-    } finally {
+      // Full navigation (not router.push) so the freshly-set session
+      // cookie is guaranteed to be present on the very next request —
+      // proxy.ts runs on that request and needs to see it immediately.
+      window.location.href = next;
+    } catch {
       setBusy(false);
     }
   };
@@ -83,17 +85,20 @@ function AuthPageContent({ googleEnabled }: { googleEnabled: boolean }) {
       const data = await res.json();
       if (!res.ok) {
         setError(data.error ?? "Could not create your account.");
+        setBusy(false);
         return;
       }
       const result = await signIn("credentials", { email, password, redirect: false });
       if (result?.error) {
         setError("Account created — sign in below.");
         setMode("signin");
+        setBusy(false);
         return;
       }
-      router.push(next);
-      router.refresh();
-    } finally {
+      // Full navigation (not router.push) so the freshly-set session
+      // cookie is guaranteed to be present on the very next request.
+      window.location.href = next;
+    } catch {
       setBusy(false);
     }
   };
