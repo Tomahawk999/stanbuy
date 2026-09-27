@@ -67,7 +67,7 @@ function LegalPageContent() {
                   fontSize: 14,
                   fontWeight: tab === t.id ? 700 : 500,
                   color: tab === t.id ? ORANGE : INK,
-                  background: tab === t.id ? "#FFF1EA" : "transparent",
+                  background: tab === t.id ? "#F0F0F1" : "transparent",
                 }}
               >
                 {t.label}

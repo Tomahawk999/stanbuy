@@ -193,14 +193,14 @@ export default function SellPage() {
                 setQuantity(1);
               }}
               className="cursor-pointer border-none"
-              style={{ background: "#F5F5F6", color: INK, borderRadius: 999, padding: "13px 24px", fontSize: 15, fontWeight: 700 }}
+              style={{ background: "#F5F5F6", color: INK, borderRadius: 8, padding: "13px 24px", fontSize: 15, fontWeight: 700 }}
             >
               Post another
             </button>
             <Link
               href={publishedId ? `/item/${publishedId}` : "/"}
               className="inline-block"
-              style={{ background: ORANGE, color: "#ffffff", border: "none", borderRadius: 999, padding: "13px 28px", fontSize: 15, fontWeight: 700 }}
+              style={{ background: ORANGE, color: "#ffffff", border: "none", borderRadius: 8, padding: "13px 28px", fontSize: 15, fontWeight: 700 }}
             >
               See it live
             </Link>
@@ -235,7 +235,7 @@ export default function SellPage() {
           style={{
             background: canPublish ? ORANGE : "#E5E5E6",
             color: canPublish ? "#ffffff" : MUTED,
-            borderRadius: 999,
+            borderRadius: 8,
             padding: "9px 22px",
             fontSize: 14,
             fontWeight: 700,

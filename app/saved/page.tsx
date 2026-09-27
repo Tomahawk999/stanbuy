@@ -106,7 +106,7 @@ export default function SavedPage() {
                           No longer available
                         </span>
                       ) : (
-                        <span className="inline-flex items-center" style={{ height: 24, borderRadius: 999, padding: "0 10px", fontSize: 11, fontWeight: 700, color: ORANGE, background: "#FFF1EA" }}>
+                        <span className="inline-flex items-center" style={{ height: 24, borderRadius: 999, padding: "0 10px", fontSize: 11, fontWeight: 700, color: ORANGE, background: "#F0F0F1" }}>
                           Free
                         </span>
                       )}

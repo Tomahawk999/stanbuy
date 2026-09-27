@@ -46,7 +46,7 @@ function LanguagePicker() {
           </div>
           <div
             className="flex items-center justify-between"
-            style={{ height: 38, borderRadius: 8, padding: "0 10px", fontSize: 14, fontWeight: 600, color: "#0B0B0C", background: "#FFF1EA" }}
+            style={{ height: 38, borderRadius: 8, padding: "0 10px", fontSize: 14, fontWeight: 600, color: "#0B0B0C", background: "#F0F0F1" }}
           >
             English (US)
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0B0B0C" strokeWidth="2.4" strokeLinecap="round">

@@ -91,13 +91,13 @@ function RedditPost({
           <span className="flex items-center" style={{ gap: 4, color: ORANGE }}>
             Free · {item.distanceMin} min walk · Qty {item.quantity}
           </span>
-          <span className="flex items-center rd-ghost" style={{ gap: 6, padding: "8px 10px", borderRadius: 999 }}>
+          <span className="flex items-center rd-ghost" style={{ gap: 6, padding: "8px 10px", borderRadius: 8 }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v14" /></svg>
             Share
           </span>
           <span
             className="flex cursor-pointer items-center rd-ghost"
-            style={{ gap: 6, padding: "8px 10px", borderRadius: 999, color: saved ? ORANGE : "#575859" }}
+            style={{ gap: 6, padding: "8px 10px", borderRadius: 8, color: saved ? ORANGE : "#575859" }}
             onClick={(e) => {
               e.preventDefault();
               onToggleSave(item.id);
@@ -116,7 +116,7 @@ function RedditPost({
 
 const PILL: React.CSSProperties = {
   height: 36,
-  borderRadius: 999,
+  borderRadius: 8,
   padding: "0 14px",
   gap: 6,
   fontSize: 13,

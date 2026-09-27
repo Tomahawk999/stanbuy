@@ -327,7 +327,7 @@ function ItemDetailView({ id }: { id: string }) {
                   style={{
                     background: isFrozen ? "#E5E5E6" : ORANGE,
                     color: isFrozen ? MUTED : "#ffffff",
-                    borderRadius: 999,
+                    borderRadius: 8,
                     padding: "16px 13px",
                     fontSize: 15,
                     fontWeight: 800,
