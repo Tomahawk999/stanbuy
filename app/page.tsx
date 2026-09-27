@@ -86,6 +86,7 @@ function HomePageContent() {
   const savedIds = useStanStore((s) => s.savedIds);
   const toggleSave = useStanStore((s) => s.toggleSave);
   const currentUser = useStanStore((s) => s.currentUser);
+  const loading = useStanStore((s) => s.loading);
   const router = useRouter();
   const searchParams = useSearchParams();
   const urlCategory = searchParams.get("category");
@@ -260,11 +261,21 @@ function HomePageContent() {
 
             <div style={{ height: 1, background: "#E5EBEE" }} />
 
-            {visible.length === 0 ? (
-              <div className="text-center" style={{ padding: "56px 16px" }}>
-                <div style={{ fontSize: 18, fontWeight: 700 }}>Nothing here yet</div>
-                <div style={{ fontSize: 14, color: MUTED, marginTop: 4 }}>Try a different search, category or filter.</div>
-                {(filtersActive || urlCategory) && (
+            {loading ? (
+              <div className="grid grid-cols-2 sm:grid-cols-3" style={{ gap: "20px 16px", padding: "16px 8px 0" }}>
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} style={{ padding: 6 }}>
+                    <div style={{ aspectRatio: "1 / 1", borderRadius: 20, background: "#F0F3F4" }} />
+                    <div style={{ height: 14, borderRadius: 6, background: "#F0F3F4", marginTop: 12, width: "85%" }} />
+                    <div style={{ height: 12, borderRadius: 6, background: "#F0F3F4", marginTop: 8, width: "55%" }} />
+                  </div>
+                ))}
+              </div>
+            ) : visible.length === 0 ? (
+              filtersActive || urlCategory ? (
+                <div className="text-center" style={{ padding: "56px 16px" }}>
+                  <div style={{ fontSize: 18, fontWeight: 700 }}>Nothing matches</div>
+                  <div style={{ fontSize: 14, color: MUTED, marginTop: 4 }}>Try a different search, category or filter.</div>
                   <Link
                     href="/"
                     onClick={() => {
@@ -277,8 +288,33 @@ function HomePageContent() {
                   >
                     Clear filters
                   </Link>
-                )}
-              </div>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center text-center" style={{ padding: "64px 16px" }}>
+                  <div
+                    className="flex items-center justify-center"
+                    style={{ width: 72, height: 72, borderRadius: 999, background: "#FFF1EA", marginBottom: 18 }}
+                  >
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="1.6">
+                      <path d="M4 8h3l1.5-2h7L17 8h3v11H4V8Z" />
+                      <circle cx="12" cy="13.5" r="3.3" />
+                    </svg>
+                  </div>
+                  <div style={{ fontSize: 20, fontWeight: 800, color: INK, letterSpacing: "-0.01em" }}>
+                    No listings near {NEIGHBORHOOD} yet
+                  </div>
+                  <div style={{ fontSize: 14, color: MUTED, marginTop: 6, maxWidth: 360, lineHeight: 1.5 }}>
+                    Be the first neighbor to share something — extra food takes seconds to post and never goes to waste.
+                  </div>
+                  <Link
+                    href="/sell"
+                    className="mt-5 inline-flex items-center"
+                    style={{ height: 44, borderRadius: 999, padding: "0 24px", background: ORANGE, color: "#ffffff", fontSize: 14, fontWeight: 700 }}
+                  >
+                    Post the first listing
+                  </Link>
+                </div>
+              )
             ) : layout === "grid" ? (
               <div className="grid grid-cols-2 sm:grid-cols-3" style={{ gap: "20px 16px", padding: "16px 8px 0" }}>
                 {visible.map((item) => {
@@ -446,6 +482,7 @@ function HomePageContent() {
                 </div>
               </div>
 
+              {recent.length > 0 && (
               <div className="rd-panel" style={{ background: "#F6F8F9", borderRadius: 16, padding: 16, marginTop: 16 }}>
                 <div style={{ fontSize: 12, letterSpacing: "0.08em", color: MUTED, textTransform: "uppercase", marginBottom: 6 }}>
                   Recently posted
@@ -490,6 +527,7 @@ function HomePageContent() {
                   </Link>
                 ))}
               </div>
+              )}
 
             </div>
           </aside>

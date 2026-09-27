@@ -167,7 +167,11 @@ function ItemDetailView({ id }: { id: string }) {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      window.prompt("Copy this link:", url);
+      try {
+        window.prompt("Copy this link:", url);
+      } catch {
+        // prompt() unavailable in this context — nothing more we can do
+      }
     }
   };
 

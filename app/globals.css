@@ -104,13 +104,18 @@ button {
   font-family: inherit;
 }
 
-/* Replace the browser's default (often yellow) focus ring with our brand color. */
+/* Replace the browser's default (often yellow) focus ring with a subtle brand-colored one. */
 :focus {
   outline: none;
 }
 :focus-visible {
-  outline: 2px solid var(--stan-red);
-  outline-offset: 2px;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(251, 68, 2, 0.22);
+}
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  box-shadow: 0 0 0 3px rgba(251, 68, 2, 0.14);
 }
 
 /* Neutralize Chrome's yellow autofill background on inputs. */
