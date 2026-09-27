@@ -63,30 +63,16 @@ function RedditPost({
       className="rd-reddit-post flex"
       style={{ border: "1px solid #EDEFF1", borderRadius: 12, background: "#ffffff", marginBottom: 14 }}
     >
-      {/* vote column */}
-      <button
-        type="button"
-        onClick={() => onToggleSave(item.id)}
-        aria-pressed={saved}
-        aria-label={saved ? "Remove from saved" : "Save (upvote)"}
-        className="flex flex-none cursor-pointer flex-col items-center border-none bg-transparent"
-        style={{ width: 48, padding: "18px 0", gap: 6, borderRadius: "12px 0 0 12px" }}
-      >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill={saved ? ORANGE : "none"} stroke={saved ? ORANGE : "#878A8C"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M12 4l8 8h-5v8H9v-8H4z" />
-        </svg>
-        <span style={{ fontSize: 12, fontWeight: 700, color: saved ? ORANGE : INK }}>{Math.round(item.sellerScore / 4)}</span>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#878A8C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M12 20l8-8h-5V4H9v8H4z" />
-        </svg>
-      </button>
-
-      <Link href={`/item/${item.id}`} className="min-w-0 flex-1" style={{ padding: "18px 20px 18px 6px" }}>
+      <Link href={`/item/${item.id}`} className="min-w-0 flex-1" style={{ padding: "18px 20px" }}>
         <div className="flex flex-wrap items-center" style={{ gap: 4, fontSize: 12, color: MUTED }}>
           <span style={{ fontWeight: 700, color: INK }}>{categoryLabel(item.category)}</span>
           <span>· {item.neighborhood}</span>
           {age && <span>· {age}</span>}
           <span>· Posted by {item.seller}</span>
+          <span className="flex items-center" style={{ gap: 2 }}>
+            <span style={{ color: "#E8A200" }}>★</span>
+            <span style={{ fontWeight: 600, color: INK }}>{(item.sellerScore / 20).toFixed(1)}</span>
+          </span>
         </div>
 
         <div className="flex items-start" style={{ gap: 16, marginTop: 6 }}>

@@ -1,16 +1,14 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Poppins } from "next/font/google";
 import AuthProvider from "@/components/AuthProvider";
 import StoreHydrator from "@/components/StoreHydrator";
 import "./globals.css";
 
-// Uber Move, Airbnb Cereal and Cabify's typeface are all proprietary,
-// closed-license fonts — not available for use outside those
-// companies at any price. Inter is the industry-standard free
-// substitute for exactly this category of confident, geometric
-// product-UI type (used as-is or as a base by Stripe, Linear, and
-// many others reaching for the same feel).
-const brandFont = Inter({
+// Airbnb's real typeface (Cereal) is proprietary and unavailable at
+// any price. Poppins is the free font the design community actually
+// reaches for as a Cereal substitute — true geometric circles in its
+// o/e/a, the specific trait that gives Airbnb's UI its look.
+const brandFont = Poppins({
   weight: ["400", "500", "600", "700", "800"],
   subsets: ["latin"],
   variable: "--font-brand",
