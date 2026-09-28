@@ -18,7 +18,7 @@ const NeighborhoodMap = nextDynamic(() => import("@/components/NeighborhoodMap")
 
 const INK = "#0B0B0C";
 const MUTED = "#63666A";
-const ORANGE = "#0B0B0C";
+const YELLOW = "#FFC244";
 
 function timeAgo(createdAt: number, now: number | null): string | null {
   if (now === null) return null;
@@ -33,82 +33,91 @@ function categoryLabel(id: string): string {
   return CATEGORIES.find((c) => c.id === id)?.label ?? "Other";
 }
 
-function RedditPost({
+function GlovoItemCard({
   item,
   saved,
   onToggleSave,
   now,
+  onHover,
 }: {
   item: Item;
   saved: boolean;
   onToggleSave: (id: string) => void;
   now: number | null;
+  onHover: (id: string | null) => void;
 }) {
   const age = now !== null ? timeAgo(item.createdAt, now) : null;
   return (
-    <div
-      className="rd-reddit-post flex"
-      style={{ border: "1px solid #E5E5E6", borderRadius: 12, background: "#ffffff", marginBottom: 14 }}
+    <Link
+      href={`/item/${item.id}`}
+      className="stan-glovo-card flex flex-col"
+      onMouseEnter={() => onHover(item.id)}
+      onMouseLeave={() => onHover(null)}
     >
-      <Link href={`/item/${item.id}`} className="min-w-0 flex-1" style={{ padding: "18px 20px" }}>
-        <div className="flex flex-wrap items-center" style={{ gap: 4, fontSize: 12, color: MUTED }}>
-          <span style={{ fontWeight: 700, color: INK }}>{categoryLabel(item.category)}</span>
-          <span>· {item.neighborhood}</span>
-          {age && <span>· {age}</span>}
-          <span>· Posted by {item.seller}</span>
-          <span className="flex items-center" style={{ gap: 2 }}>
-            <span style={{ color: "#0B0B0C" }}>★</span>
-            <span style={{ fontWeight: 600, color: INK }}>{(item.sellerScore / 20).toFixed(1)}</span>
-          </span>
-        </div>
+      <div className="relative" style={{ aspectRatio: "4 / 3" }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={item.image ?? CATEGORY_IMAGES[item.category]} alt="" className="absolute inset-0 h-full w-full object-cover" />
+        <span
+          className="stan-yellow-badge absolute flex items-center"
+          style={{ left: 10, top: 10, height: 24, borderRadius: 999, padding: "0 10px", fontSize: 11 }}
+        >
+          Free
+        </span>
+        <button
+          type="button"
+          aria-pressed={saved}
+          onClick={(e) => {
+            e.preventDefault();
+            onToggleSave(item.id);
+          }}
+          className="absolute flex cursor-pointer items-center justify-center border-none"
+          style={{ right: 8, top: 8, width: 32, height: 32, borderRadius: 999, background: "rgba(255,255,255,0.92)" }}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill={saved ? INK : "none"} stroke={INK} strokeWidth="1.8">
+            <path d="M12 21s-7.5-4.7-10-9.3C.5 8 2 4.5 5.6 4c2.1-.3 3.9.8 6.4 3.2C14.5 4.8 16.3 3.7 18.4 4c3.6.5 5.1 4 3.6 7.7C19.5 16.3 12 21 12 21Z" />
+          </svg>
+        </button>
+        <span
+          className="absolute flex items-center"
+          style={{ left: 10, bottom: 10, height: 22, borderRadius: 999, padding: "0 9px", background: "rgba(11,11,12,0.75)", color: "#fff", fontSize: 11, fontWeight: 700, gap: 4 }}
+        >
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 3" /></svg>
+          {item.distanceMin} min
+        </span>
+      </div>
 
-        <div className="flex items-start" style={{ gap: 16, marginTop: 6 }}>
-          <div className="min-w-0 flex-1">
-            <div style={{ fontSize: 18, fontWeight: 800, color: INK, lineHeight: 1.3, letterSpacing: "-0.01em" }}>{item.title}</div>
-            <div
-              style={{
-                fontSize: 13,
-                color: MUTED,
-                marginTop: 6,
-                display: "-webkit-box",
-                WebkitLineClamp: 2,
-                WebkitBoxOrient: "vertical",
-                overflow: "hidden",
-              }}
-            >
-              {item.description}
-            </div>
-          </div>
-          <div className="relative flex-none overflow-hidden" style={{ width: 108, height: 108, borderRadius: 10 }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={item.image ?? CATEGORY_IMAGES[item.category]} alt="" className="h-full w-full object-cover" />
-          </div>
-        </div>
-
-        <div className="flex flex-wrap items-center" style={{ gap: 20, marginTop: 14, fontSize: 12, fontWeight: 700, color: "#575859" }}>
-          <span className="flex items-center" style={{ gap: 4, color: ORANGE }}>
-            Free · {item.distanceMin} min walk · Qty {item.quantity}
-          </span>
-          <span className="flex items-center rd-ghost" style={{ gap: 6, padding: "8px 10px", borderRadius: 8 }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v14" /></svg>
-            Share
-          </span>
+      <div style={{ padding: "12px 14px 14px" }}>
+        <div className="flex items-start justify-between" style={{ gap: 8 }}>
           <span
-            className="flex cursor-pointer items-center rd-ghost"
-            style={{ gap: 6, padding: "8px 10px", borderRadius: 8, color: saved ? ORANGE : "#575859" }}
-            onClick={(e) => {
-              e.preventDefault();
-              onToggleSave(item.id);
+            style={{
+              fontSize: 15,
+              fontWeight: 800,
+              color: INK,
+              lineHeight: 1.3,
+              letterSpacing: "-0.01em",
+              display: "-webkit-box",
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
             }}
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill={saved ? ORANGE : "none"} stroke={saved ? ORANGE : "currentColor"} strokeWidth="1.8">
-              <path d="M6 4h12a1 1 0 0 1 1 1v15l-7-4-7 4V5a1 1 0 0 1 1-1Z" />
-            </svg>
-            {saved ? "Saved" : "Save"}
+            {item.title}
           </span>
         </div>
-      </Link>
-    </div>
+        <div className="flex flex-wrap items-center" style={{ gap: 5, marginTop: 6, fontSize: 12, color: MUTED }}>
+          <span className="flex items-center" style={{ gap: 3 }}>
+            <span style={{ color: YELLOW }}>★</span>
+            <span style={{ fontWeight: 700, color: INK }}>{(item.sellerScore / 20).toFixed(1)}</span>
+          </span>
+          <span>· {categoryLabel(item.category)}</span>
+          <span>· Qty {item.quantity}</span>
+        </div>
+        <div style={{ marginTop: 6, fontSize: 12, color: MUTED }}>
+          {item.seller} · {item.neighborhood}
+          {age && ` · ${age}`}
+        </div>
+      </div>
+    </Link>
   );
 }
 
@@ -149,6 +158,7 @@ function HomePageContent() {
   const [maxDistance, setMaxDistance] = useState<number | null>(null);
   const [minRating, setMinRating] = useState<number | null>(null);
   const [sortBy, setSortBy] = useState<"distance" | "newest">("distance");
+  const [view, setView] = useState<"list" | "map">("list");
 
   // Sync local query with the URL's ?q= when it changes externally (e.g. a
   // Link navigation), without clobbering it on every keystroke.
@@ -191,157 +201,113 @@ function HomePageContent() {
   };
 
   return (
-    <div className="h-dvh overflow-hidden bg-white" style={{ color: INK }}>
+    <div className="min-h-dvh bg-white" style={{ color: INK }}>
       <SiteHeader query={query} onQueryChange={setQuery} />
 
-      <div className="flex">
-        <main className="relative min-w-0 flex-1" style={{ height: "calc(100dvh - 56px)" }}>
-          <div className="absolute inset-0">
-            <NeighborhoodMap items={visible} highlightedId={hoveredId} onHover={setHoveredId} />
+      <div style={{ padding: "16px 16px 0", maxWidth: 1280, margin: "0 auto" }}>
+        {urlCategory && (
+          <div className="flex items-center" style={{ gap: 14, marginBottom: 16 }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={CATEGORY_IMAGES[urlCategory as Item["category"]]}
+              alt=""
+              style={{ width: 52, height: 52, borderRadius: 999, objectFit: "cover", border: "3px solid #ffffff", boxShadow: "0 0 0 1px #E5E5E6" }}
+            />
+            <div className="min-w-0 flex-1">
+              <h1 style={{ fontSize: 22, fontWeight: 800, margin: 0, letterSpacing: "-0.01em" }}>{categoryLabel(urlCategory)}</h1>
+              <div style={{ fontSize: 13, color: MUTED }}>
+                {categoryCounts[urlCategory] ?? 0} available near {NEIGHBORHOOD}
+              </div>
+            </div>
+            <Link href="/" className="stan-chip flex items-center" style={{ ...PILL, height: 36, fontSize: 13 }}>
+              All categories
+            </Link>
           </div>
+        )}
 
-          <div
-            className="absolute overflow-y-auto rd-panel"
-            style={{
-              top: 16,
-              bottom: 16,
-              left: 16,
-              width: 400,
-              maxWidth: "calc(100% - 32px)",
-              background: "#ffffff",
-              borderRadius: 16,
-              boxShadow: "0 12px 36px rgba(0,0,0,0.16)",
-              zIndex: 10,
-              paddingTop: 12,
-              paddingBottom: 24,
-            }}
-          >
-            {urlCategory && (
-              <div className="flex items-center" style={{ gap: 14, padding: "12px 16px 16px" }}>
+        <div className="flex overflow-x-auto" style={{ gap: 10, paddingBottom: 4 }}>
+          {CATEGORIES.filter((c) => c.id !== "all").map((cat) => {
+            const active = urlCategory === cat.id;
+            return (
+              <Link
+                key={cat.id}
+                href={active ? "/" : `/?category=${cat.id}`}
+                className="stan-chip flex flex-none items-center"
+                data-active={active}
+                style={{ gap: 8, height: 40, padding: "0 14px 0 8px", fontSize: 13, fontWeight: 700 }}
+              >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={CATEGORY_IMAGES[urlCategory as Item["category"]]}
+                  src={CATEGORY_IMAGES[cat.id as Item["category"]]}
                   alt=""
-                  style={{ width: 56, height: 56, borderRadius: 999, objectFit: "cover", border: "3px solid #ffffff", boxShadow: "0 0 0 1px #E5E5E6" }}
+                  style={{ width: 26, height: 26, borderRadius: 999, objectFit: "cover", flex: "none" }}
                 />
-                <div className="min-w-0 flex-1">
-                  <h1 style={{ fontSize: 24, fontWeight: 700, margin: 0 }}>{categoryLabel(urlCategory)}</h1>
-                  <div style={{ fontSize: 13, color: MUTED }}>
-                    {categoryCounts[urlCategory] ?? 0} available near {NEIGHBORHOOD}
-                  </div>
-                </div>
-                <Link href="/" className="rd-pill flex items-center" style={{ ...PILL, height: 36, fontSize: 14 }}>
-                  All categories
-                </Link>
-              </div>
-            )}
+                {cat.label}
+              </Link>
+            );
+          })}
+        </div>
 
-            <div className="flex overflow-x-auto" style={{ gap: 22, padding: "6px 16px 0", borderBottom: "1px solid #E5E5E6" }}>
-              {CATEGORIES.filter((c) => c.id !== "all").map((cat) => {
-                const active = urlCategory === cat.id;
-                return (
-                  <Link
-                    key={cat.id}
-                    href={active ? "/" : `/?category=${cat.id}`}
-                    className="flex flex-none flex-col items-center"
-                    style={{
-                      gap: 6,
-                      padding: "2px 0 10px",
-                      borderBottom: active ? `2px solid ${ORANGE}` : "2px solid transparent",
-                    }}
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={CATEGORY_IMAGES[cat.id as Item["category"]]}
-                      alt=""
-                      style={{ width: 26, height: 26, borderRadius: 999, objectFit: "cover", flex: "none", opacity: active ? 1 : 0.75 }}
-                    />
-                    <span style={{ fontSize: 11, fontWeight: active ? 700 : 500, color: active ? ORANGE : MUTED, whiteSpace: "nowrap" }}>
-                      {cat.label}
-                    </span>
-                  </Link>
-                );
-              })}
+        <div className="flex flex-wrap items-center" style={{ gap: 10, padding: "14px 0" }}>
+          <PillSelect
+            value={sortBy}
+            onChange={(v) => setSortBy(v)}
+            options={[
+              { value: "distance", label: "Nearest" },
+              { value: "newest", label: "Newest" },
+            ]}
+          />
+          <PillSelect
+            value={maxDistance === null ? "" : String(maxDistance)}
+            onChange={(v) => setMaxDistance(v ? Number(v) : null)}
+            options={[
+              { value: "", label: "Any distance" },
+              { value: "3", label: "Under 3 min walk" },
+              { value: "5", label: "Under 5 min walk" },
+              { value: "10", label: "Under 10 min walk" },
+            ]}
+          />
+          <PillSelect
+            value={minRating === null ? "" : String(minRating)}
+            onChange={(v) => setMinRating(v ? Number(v) : null)}
+            options={[
+              { value: "", label: "Any rating" },
+              { value: "4.5", label: "4.5★ & up" },
+              { value: "4", label: "4★ & up" },
+              { value: "3.5", label: "3.5★ & up" },
+            ]}
+          />
+          <div className="ml-auto flex items-center" style={{ gap: 10 }}>
+            <span style={{ fontSize: 12, color: MUTED }}>
+              {visible.length} {visible.length === 1 ? "listing" : "listings"} · {NEIGHBORHOOD}
+            </span>
+            <div className="flex" style={{ gap: 4, background: "#F5F5F6", borderRadius: 999, padding: 3 }}>
+              <button
+                type="button"
+                onClick={() => setView("list")}
+                className="stan-chip cursor-pointer"
+                data-active={view === "list"}
+                style={{ height: 32, padding: "0 14px", fontSize: 12, fontWeight: 700, border: "none" }}
+              >
+                List
+              </button>
+              <button
+                type="button"
+                onClick={() => setView("map")}
+                className="stan-chip cursor-pointer"
+                data-active={view === "map"}
+                style={{ height: 32, padding: "0 14px", fontSize: 12, fontWeight: 700, border: "none" }}
+              >
+                Map
+              </button>
             </div>
-
-            <div className="flex flex-wrap items-center" style={{ gap: 10, padding: "14px 8px 10px" }}>
-              <PillSelect
-                value={sortBy}
-                onChange={(v) => setSortBy(v)}
-                options={[
-                  { value: "distance", label: "Nearest" },
-                  { value: "newest", label: "Newest" },
-                ]}
-              />
-              <PillSelect
-                value={maxDistance === null ? "" : String(maxDistance)}
-                onChange={(v) => setMaxDistance(v ? Number(v) : null)}
-                options={[
-                  { value: "", label: "Any distance" },
-                  { value: "3", label: "Under 3 min walk" },
-                  { value: "5", label: "Under 5 min walk" },
-                  { value: "10", label: "Under 10 min walk" },
-                ]}
-              />
-              <PillSelect
-                value={minRating === null ? "" : String(minRating)}
-                onChange={(v) => setMinRating(v ? Number(v) : null)}
-                options={[
-                  { value: "", label: "Any rating" },
-                  { value: "4.5", label: "4.5★ & up" },
-                  { value: "4", label: "4★ & up" },
-                  { value: "3.5", label: "3.5★ & up" },
-                ]}
-              />
-              <div className="ml-auto" style={{ fontSize: 12, color: MUTED, paddingRight: 8 }}>
-                {visible.length} {visible.length === 1 ? "listing" : "listings"} · {NEIGHBORHOOD}
-              </div>
-            </div>
-
-            <div style={{ height: 1, background: "#E5E5E6" }} />
-
-            {loading ? (
-              <div style={{ padding: "16px 8px 0" }}>
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <div key={i} style={{ border: "1px solid #E5E5E6", borderRadius: 8, padding: 14, marginBottom: 10, display: "flex", gap: 12 }}>
-                    <div style={{ height: 14, borderRadius: 6, background: "#F0F0F1", flex: 1 }} />
-                    <div style={{ width: 96, height: 96, borderRadius: 8, background: "#F0F0F1" }} />
-                  </div>
-                ))}
-              </div>
-            ) : visible.length === 0 ? (
-              filtersActive || urlCategory ? (
-                <div className="text-center" style={{ padding: "56px 16px" }}>
-                  <div style={{ fontSize: 18, fontWeight: 700 }}>Nothing matches</div>
-                  <div style={{ fontSize: 14, color: MUTED, marginTop: 4 }}>Try a different search, category or filter.</div>
-                  <Link
-                    href="/"
-                    onClick={() => {
-                      setQuery("");
-                      setMaxDistance(null);
-                      setMinRating(null);
-                    }}
-                    className="rd-pill mt-4 inline-flex items-center"
-                    style={{ ...PILL, height: 40, fontSize: 14, padding: "0 18px" }}
-                  >
-                    Clear filters
-                  </Link>
-                </div>
-              ) : (
-                <div className="flex items-center justify-center" style={{ padding: "40px 16px" }}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/empty-listings.png" alt={`No listings near ${NEIGHBORHOOD} yet`} style={{ width: 260, height: "auto" }} />
-                </div>
-              )
-            ) : (
-              <div style={{ padding: "16px 4px 0" }}>
-                {visible.map((item) => (
-                  <RedditPost key={item.id} item={item} saved={savedIds.includes(item.id)} onToggleSave={handleToggleSave} now={now} />
-                ))}
-              </div>
-            )}
           </div>
+        </div>
+      </div>
 
+      {view === "map" ? (
+        <div className="relative" style={{ height: "calc(100dvh - 200px)", margin: "0 16px 16px", borderRadius: 20, overflow: "hidden" }}>
+          <NeighborhoodMap items={visible} highlightedId={hoveredId} onHover={setHoveredId} />
           <div
             className="absolute rd-panel"
             style={{ top: 16, right: 16, zIndex: 10, background: "#ffffff", borderRadius: 16, padding: "14px 18px", boxShadow: "0 12px 36px rgba(0,0,0,0.16)" }}
@@ -361,8 +327,61 @@ function HomePageContent() {
               Get directions
             </a>
           </div>
-        </main>
-      </div>
+        </div>
+      ) : (
+        <div style={{ padding: "4px 16px 40px", maxWidth: 1280, margin: "0 auto" }}>
+          {loading ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4" style={{ gap: 16 }}>
+              {Array.from({ length: 8 }).map((_, i) => (
+                <div key={i} style={{ borderRadius: 20, overflow: "hidden", border: "1px solid #E5E5E6" }}>
+                  <div style={{ aspectRatio: "4 / 3", background: "#F0F0F1" }} />
+                  <div style={{ padding: 14 }}>
+                    <div style={{ height: 14, borderRadius: 6, background: "#F0F0F1", marginBottom: 8 }} />
+                    <div style={{ height: 12, width: "60%", borderRadius: 6, background: "#F0F0F1" }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : visible.length === 0 ? (
+            filtersActive || urlCategory ? (
+              <div className="text-center" style={{ padding: "56px 16px" }}>
+                <div style={{ fontSize: 18, fontWeight: 700 }}>Nothing matches</div>
+                <div style={{ fontSize: 14, color: MUTED, marginTop: 4 }}>Try a different search, category or filter.</div>
+                <Link
+                  href="/"
+                  onClick={() => {
+                    setQuery("");
+                    setMaxDistance(null);
+                    setMinRating(null);
+                  }}
+                  className="stan-chip mt-4 inline-flex items-center"
+                  style={{ ...PILL, height: 40, fontSize: 14, padding: "0 18px" }}
+                >
+                  Clear filters
+                </Link>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center" style={{ padding: "40px 16px" }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/empty-listings.png" alt={`No listings near ${NEIGHBORHOOD} yet`} style={{ width: 260, height: "auto" }} />
+              </div>
+            )
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4" style={{ gap: 16 }}>
+              {visible.map((item) => (
+                <GlovoItemCard
+                  key={item.id}
+                  item={item}
+                  saved={savedIds.includes(item.id)}
+                  onToggleSave={handleToggleSave}
+                  now={now}
+                  onHover={setHoveredId}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

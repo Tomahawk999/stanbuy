@@ -20,6 +20,7 @@ const NeighborhoodMap = nextDynamic(() => import("@/components/NeighborhoodMap")
 const INK = "#0B0B0C";
 const MUTED = "#63666A";
 const ORANGE = "#0B0B0C";
+const YELLOW = "#FFC244";
 
 function timeAgo(createdAt: number, now: number | null): string | null {
   if (now === null) return null;
@@ -187,7 +188,7 @@ function ItemDetailView({ id }: { id: string }) {
           </h1>
           <div className="flex flex-wrap items-center" style={{ gap: 6, fontSize: 13, color: INK, marginBottom: 10 }}>
             <span className="flex items-center" style={{ gap: 4 }}>
-              <span style={{ color: "#0B0B0C" }}>★</span>
+              <span style={{ color: YELLOW }}>★</span>
               <span style={{ fontWeight: 600 }}>{(item.sellerScore / 20).toFixed(1)}</span>
             </span>
             <span style={{ color: MUTED }}>·</span>
@@ -304,9 +305,9 @@ function ItemDetailView({ id }: { id: string }) {
         </div>
 
         <div className="flex-none lg:w-[320px]">
-          <div className="rd-panel lg:sticky" style={{ top: 72, background: "#ffffff", border: "1px solid #E5E5E6", borderRadius: 16, padding: 20 }}>
-            <div className="flex items-baseline" style={{ gap: 8 }}>
-              <span style={{ fontSize: 26, fontWeight: 800, color: ORANGE }}>Free</span>
+          <div className="rd-panel lg:sticky" style={{ top: 72, background: "#ffffff", border: "1px solid #E5E5E6", borderRadius: 20, padding: 20 }}>
+            <div className="flex items-center" style={{ gap: 8 }}>
+              <span className="stan-yellow-badge inline-flex items-center" style={{ fontSize: 15, borderRadius: 999, padding: "5px 12px" }}>Free</span>
               <span style={{ fontSize: 14, color: MUTED, textDecoration: "line-through" }}>$0.99</span>
             </div>
             <div style={{ fontSize: 12, color: MUTED, marginTop: 4, lineHeight: 1.5 }}>
@@ -327,7 +328,7 @@ function ItemDetailView({ id }: { id: string }) {
                   style={{
                     background: isFrozen ? "#E5E5E6" : ORANGE,
                     color: isFrozen ? MUTED : "#ffffff",
-                    borderRadius: 8,
+                    borderRadius: 14,
                     padding: "16px 13px",
                     fontSize: 15,
                     fontWeight: 800,
@@ -451,8 +452,8 @@ function ItemDetailView({ id }: { id: string }) {
                     className="absolute inset-0 h-full w-full object-cover"
                   />
                   <span
-                    className="absolute flex items-center"
-                    style={{ left: 8, bottom: 8, height: 22, borderRadius: 999, padding: "0 9px", background: "#ffffff", fontSize: 10, fontWeight: 800, color: ORANGE }}
+                    className="stan-yellow-badge absolute flex items-center"
+                    style={{ left: 8, bottom: 8, height: 22, borderRadius: 999, padding: "0 9px", fontSize: 10 }}
                   >
                     Free
                   </span>
@@ -473,7 +474,7 @@ function ItemDetailView({ id }: { id: string }) {
                     {other.title}
                   </div>
                   <div className="flex items-center" style={{ gap: 4, marginTop: 4, fontSize: 12, color: MUTED }}>
-                    <span style={{ color: "#0B0B0C" }}>★</span>
+                    <span style={{ color: YELLOW }}>★</span>
                     <span style={{ fontWeight: 600, color: INK }}>{(other.sellerScore / 20).toFixed(1)}</span>
                     <span>· {other.distanceMin} min walk</span>
                   </div>
