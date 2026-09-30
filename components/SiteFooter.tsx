@@ -10,8 +10,8 @@ const COLUMNS: { heading: string; links: { href: string; label: string }[] }[] =
   {
     heading: "Get to know us",
     links: [
-      { href: "/about", label: "About Stanbuy" },
-      { href: "/about", label: "How it works" },
+      { href: "/", label: "About Stanbuy" },
+      { href: "/", label: "How it works" },
       { href: "/legal?tab=score", label: "Reliability Score" },
     ],
   },
@@ -26,13 +26,13 @@ const COLUMNS: { heading: string; links: { href: string; label: string }[] }[] =
   },
   {
     heading: "Browse by category",
-    links: CATEGORIES.filter((c) => c.id !== "all").map((c) => ({ href: `/?category=${c.id}`, label: c.label })),
+    links: CATEGORIES.filter((c) => c.id !== "all").map((c) => ({ href: `/browse?category=${c.id}`, label: c.label })),
   },
   {
     heading: "Community",
     links: [
       { href: "/sell", label: "Sell something" },
-      { href: "/", label: "Browse nearby" },
+      { href: "/browse", label: "Browse nearby" },
       { href: "/saved", label: "Saved listings" },
       { href: "/profile", label: "Your listings" },
     ],

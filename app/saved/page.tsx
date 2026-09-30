@@ -51,7 +51,7 @@ export default function SavedPage() {
             Tap the heart on a listing to keep track of it here.
           </div>
           <Link
-            href="/"
+            href="/browse"
             className="rd-pill mt-4 inline-flex items-center"
             style={{ height: 40, borderRadius: 12, padding: "0 18px", background: "#E5E5E6", fontSize: 14, fontWeight: 600, color: INK }}
           >

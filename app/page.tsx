@@ -1,368 +1,260 @@
-"use client";
-
-import { Suspense, useMemo, useState } from "react";
-import nextDynamic from "next/dynamic";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useStanStore } from "@/lib/store";
-import { CATEGORIES, CATEGORY_IMAGES, NEIGHBORHOOD, CENTER } from "@/lib/data";
-import type { Item } from "@/lib/types";
-import { useNow } from "@/lib/useNow";
-import SiteHeader from "@/components/SiteHeader";
-import PillSelect from "@/components/PillSelect";
 
-const NeighborhoodMap = nextDynamic(() => import("@/components/NeighborhoodMap"), {
-  ssr: false,
-  loading: () => <div style={{ width: "100%", height: "100%", background: "#E5E5E6" }} />,
-});
+// Stanbuy's public homepage — matches the structure of the xfund.com
+// reference the user provided: a full-bleed photo hero, a two-column
+// "About us" block, and a "Partner with us"-style CTA block with a
+// full-width photo band. No photography is available yet, so image
+// areas are plain neutral placeholders (ImageSlot) — swap the src in
+// once real photos of neighbors/pickups exist. No food photography,
+// no decorative graphics standing in for it.
 
-const INK = "#0B0B0C";
+const CRIMSON = "#8C1515"; // Stanford's published Cardinal Red (identity.stanford.edu/color)
+const INK = "#0A0A0A";
 const MUTED = "#63666A";
-const ORANGE = "#0B0B0C";
+const RULE = "#E5E5E6";
+const SERIF = "var(--font-editorial-serif)";
+const SANS = "var(--font-editorial-sans)";
 
-function timeAgo(createdAt: number, now: number | null): string | null {
-  if (now === null) return null;
-  const minutes = Math.max(0, Math.round((now - createdAt) / 60000));
-  if (minutes < 60) return `${minutes} min ago`;
-  const hours = Math.round(minutes / 60);
-  if (hours < 24) return `${hours}h ago`;
-  return `${Math.round(hours / 24)}d ago`;
-}
+const FAQS = [
+  {
+    q: "Is Stanbuy only for certain neighborhoods?",
+    a: "No — Stanbuy is launching hyperlocal and expanding fast, but anyone nearby can take part. Households, co-ops and neighbors around you can all join in.",
+  },
+  {
+    q: "Why is the app free right now?",
+    a: "We're piloting Stanbuy before opening it up more broadly. During the pilot, reserving and collecting food is $0.00. Once the pilot ends, each pickup will cost $0.99 to cover handoff and platform logistics — the food itself stays free.",
+  },
+  {
+    q: "What happens if I don't collect my reservation?",
+    a: "The listing releases back to the neighborhood automatically after 1 hour, and your Reliability Score drops 15%. Show up and it stays high; miss enough and reserving pauses for a week.",
+  },
+  {
+    q: "Is my exact address shared with everyone?",
+    a: "No. Listings show your neighborhood on the map, not your exact address. The precise pickup point is only shared with the specific buyer once they reserve.",
+  },
+];
 
-function categoryLabel(id: string): string {
-  return CATEGORIES.find((c) => c.id === id)?.label ?? "Other";
-}
-
-function RedditPost({
-  item,
-  saved,
-  onToggleSave,
-  now,
-}: {
-  item: Item;
-  saved: boolean;
-  onToggleSave: (id: string) => void;
-  now: number | null;
-}) {
-  const age = now !== null ? timeAgo(item.createdAt, now) : null;
+// Plain placeholder for a photo we don't have yet. Swap the commented
+// <img> in for a real photo (team, neighbors, a pickup in progress —
+// never food close-ups) once one exists.
+function ImageSlot({ label, className }: { label: string; className?: string }) {
   return (
     <div
-      className="rd-reddit-post flex"
-      style={{ border: "1px solid #E5E5E6", borderRadius: 12, background: "#ffffff", marginBottom: 14 }}
+      className={`flex items-center justify-center ${className ?? ""}`}
+      style={{ background: "#EDEDED", border: `1px solid ${RULE}`, width: "100%", height: "100%" }}
     >
-      <Link href={`/item/${item.id}`} className="min-w-0 flex-1" style={{ padding: "18px 20px" }}>
-        <div className="flex flex-wrap items-center" style={{ gap: 4, fontSize: 12, color: MUTED }}>
-          <span style={{ fontWeight: 700, color: INK }}>{categoryLabel(item.category)}</span>
-          <span>· {item.neighborhood}</span>
-          {age && <span>· {age}</span>}
-          <span>· Posted by {item.seller}</span>
-          <span className="flex items-center" style={{ gap: 2 }}>
-            <span style={{ color: "#0B0B0C" }}>★</span>
-            <span style={{ fontWeight: 600, color: INK }}>{(item.sellerScore / 20).toFixed(1)}</span>
-          </span>
-        </div>
+      <span style={{ fontFamily: SANS, fontSize: 12, fontWeight: 600, letterSpacing: "0.08em", color: "#A3A3A3", textTransform: "uppercase" }}>
+        {label}
+      </span>
+    </div>
+  );
+}
 
-        <div className="flex items-start" style={{ gap: 16, marginTop: 6 }}>
-          <div className="min-w-0 flex-1">
-            <div style={{ fontSize: 18, fontWeight: 800, color: INK, lineHeight: 1.3, letterSpacing: "-0.01em" }}>{item.title}</div>
-            <div
-              style={{
-                fontSize: 13,
-                color: MUTED,
-                marginTop: 6,
-                display: "-webkit-box",
-                WebkitLineClamp: 2,
-                WebkitBoxOrient: "vertical",
-                overflow: "hidden",
-              }}
-            >
-              {item.description}
-            </div>
-          </div>
-          <div className="relative flex-none overflow-hidden" style={{ width: 108, height: 108, borderRadius: 10 }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={item.image ?? CATEGORY_IMAGES[item.category]} alt="" className="h-full w-full object-cover" />
-          </div>
-        </div>
+const NAV_LINK: React.CSSProperties = { fontFamily: SANS, fontWeight: 600, fontSize: 15 };
 
-        <div className="flex flex-wrap items-center" style={{ gap: 20, marginTop: 14, fontSize: 12, fontWeight: 700, color: "#575859" }}>
-          <span className="flex items-center" style={{ gap: 4, color: ORANGE }}>
-            Free · {item.distanceMin} min walk · Qty {item.quantity}
-          </span>
-          <span className="flex items-center rd-ghost" style={{ gap: 6, padding: "8px 10px", borderRadius: 8 }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v14" /></svg>
-            Share
-          </span>
-          <span
-            className="flex cursor-pointer items-center rd-ghost"
-            style={{ gap: 6, padding: "8px 10px", borderRadius: 8, color: saved ? ORANGE : "#575859" }}
-            onClick={(e) => {
-              e.preventDefault();
-              onToggleSave(item.id);
-            }}
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill={saved ? ORANGE : "none"} stroke={saved ? ORANGE : "currentColor"} strokeWidth="1.8">
-              <path d="M6 4h12a1 1 0 0 1 1 1v15l-7-4-7 4V5a1 1 0 0 1 1-1Z" />
-            </svg>
-            {saved ? "Saved" : "Save"}
-          </span>
-        </div>
+function HeroNav() {
+  return (
+    <nav className="relative z-10 flex flex-wrap items-center justify-between" style={{ padding: "24px 32px", gap: 16 }}>
+      <div className="flex items-center" style={{ gap: 28 }}>
+        <Link href="/" style={{ ...NAV_LINK, color: "#ffffff" }}>Stanbuy</Link>
+        <Link href="/" style={{ ...NAV_LINK, color: "rgba(255,255,255,0.85)" }}>About</Link>
+        <Link href="/browse" style={{ ...NAV_LINK, color: "rgba(255,255,255,0.85)" }}>Browse</Link>
+        <Link href="/sell" style={{ ...NAV_LINK, color: "rgba(255,255,255,0.85)" }}>Sell</Link>
+      </div>
+      <div className="flex items-center" style={{ gap: 10 }}>
+        <Link
+          href="/auth"
+          className="flex items-center justify-center"
+          style={{ ...NAV_LINK, height: 42, padding: "0 22px", borderRadius: 6, background: "#ffffff", color: INK }}
+        >
+          Sign In
+        </Link>
+        <Link
+          href="/browse"
+          aria-label="Find free food near you"
+          className="flex items-center justify-center"
+          style={{ height: 42, width: 42, borderRadius: 6, background: CRIMSON }}
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M7 17 17 7M8 7h9v9" />
+          </svg>
+        </Link>
+      </div>
+    </nav>
+  );
+}
+
+function CTAButtons({ invert = false }: { invert?: boolean }) {
+  return (
+    <div className="flex flex-col sm:flex-row" style={{ gap: 14 }}>
+      <Link
+        href="/sell"
+        className="flex items-center justify-center"
+        style={{
+          height: 54, padding: "0 28px", fontFamily: SANS, fontSize: 15, fontWeight: 700, borderRadius: 6,
+          color: invert ? INK : "#ffffff",
+          background: invert ? "#ffffff" : INK,
+        }}
+      >
+        Get rid of your leftovers →
+      </Link>
+      <Link
+        href="/browse"
+        className="flex items-center justify-center"
+        style={{
+          height: 54, padding: "0 28px", fontFamily: SANS, fontSize: 15, fontWeight: 700, borderRadius: 6,
+          color: invert ? "#ffffff" : INK,
+          background: "transparent",
+          border: `1px solid ${invert ? "rgba(255,255,255,0.6)" : INK}`,
+        }}
+      >
+        Find free food near you →
       </Link>
     </div>
   );
 }
 
-const PILL: React.CSSProperties = {
-  height: 36,
-  borderRadius: 8,
-  padding: "0 14px",
-  gap: 6,
-  fontSize: 13,
-  fontWeight: 700,
-  color: INK,
-  border: "none",
-};
-
-
 export default function HomePage() {
   return (
-    <Suspense fallback={null}>
-      <HomePageContent />
-    </Suspense>
-  );
-}
+    <div id="top" style={{ background: "#ffffff", color: INK, fontFamily: SANS }}>
+      {/* Hero — full-bleed photo (placeholder until we have one) */}
+      <section className="relative overflow-hidden" style={{ background: "#16140F", minHeight: "88vh" }}>
+        <div className="absolute inset-0" style={{ background: "linear-gradient(0deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.15) 45%, rgba(0,0,0,0.35) 100%)" }} />
 
-function HomePageContent() {
-  const items = useStanStore((s) => s.items);
-  const savedIds = useStanStore((s) => s.savedIds);
-  const toggleSave = useStanStore((s) => s.toggleSave);
-  const currentUser = useStanStore((s) => s.currentUser);
-  const loading = useStanStore((s) => s.loading);
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const urlCategory = searchParams.get("category");
-  const urlQuery = searchParams.get("q");
-  const [query, setQuery] = useState(urlQuery ?? "");
-  const [prevUrlQuery, setPrevUrlQuery] = useState(urlQuery);
-  const now = useNow();
-  const [hoveredId, setHoveredId] = useState<string | null>(null);
-  const [maxDistance, setMaxDistance] = useState<number | null>(null);
-  const [minRating, setMinRating] = useState<number | null>(null);
-  const [sortBy, setSortBy] = useState<"distance" | "newest">("distance");
-
-  // Sync local query with the URL's ?q= when it changes externally (e.g. a
-  // Link navigation), without clobbering it on every keystroke.
-  if (urlQuery !== prevUrlQuery) {
-    setPrevUrlQuery(urlQuery);
-    if (urlQuery !== null) setQuery(urlQuery);
-  }
-
-  const available = useMemo(() => items.filter((it) => it.status === "available"), [items]);
-
-  const visible = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    return available
-      .filter(
-        (it) =>
-          (!q || it.title.toLowerCase().includes(q) || it.description.toLowerCase().includes(q)) &&
-          (!urlCategory || it.category === urlCategory) &&
-          (maxDistance === null || it.distanceMin <= maxDistance) &&
-          (minRating === null || it.sellerScore / 20 >= minRating),
-      )
-      .sort((a, b) => (sortBy === "newest" ? b.createdAt - a.createdAt : a.distanceMin - b.distanceMin));
-  }, [available, query, urlCategory, maxDistance, minRating, sortBy]);
-
-  const categoryCounts = useMemo(() => {
-    const counts: Record<string, number> = {};
-    available.forEach((it) => {
-      counts[it.category] = (counts[it.category] ?? 0) + 1;
-    });
-    return counts;
-  }, [available]);
-
-  const filtersActive = maxDistance !== null || minRating !== null || query.trim() !== "";
-
-  const handleToggleSave = (itemId: string) => {
-    if (!currentUser) {
-      router.push(`/auth?next=/`);
-      return;
-    }
-    toggleSave(itemId);
-  };
-
-  return (
-    <div className="h-dvh overflow-hidden bg-white" style={{ color: INK }}>
-      <SiteHeader query={query} onQueryChange={setQuery} />
-
-      <div className="flex">
-        <main className="relative min-w-0 flex-1" style={{ height: "calc(100dvh - 56px)" }}>
-          <div className="absolute inset-0">
-            <NeighborhoodMap items={visible} highlightedId={hoveredId} onHover={setHoveredId} />
-          </div>
-
-          <div
-            className="absolute overflow-y-auto rd-panel"
-            style={{
-              top: 16,
-              bottom: 16,
-              left: 16,
-              width: 400,
-              maxWidth: "calc(100% - 32px)",
-              background: "#ffffff",
-              borderRadius: 16,
-              boxShadow: "0 12px 36px rgba(0,0,0,0.16)",
-              zIndex: 10,
-              paddingTop: 12,
-              paddingBottom: 24,
-            }}
-          >
-            {urlCategory && (
-              <div className="flex items-center" style={{ gap: 14, padding: "12px 16px 16px" }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={CATEGORY_IMAGES[urlCategory as Item["category"]]}
-                  alt=""
-                  style={{ width: 56, height: 56, borderRadius: 999, objectFit: "cover", border: "3px solid #ffffff", boxShadow: "0 0 0 1px #E5E5E6" }}
-                />
-                <div className="min-w-0 flex-1">
-                  <h1 style={{ fontSize: 24, fontWeight: 700, margin: 0 }}>{categoryLabel(urlCategory)}</h1>
-                  <div style={{ fontSize: 13, color: MUTED }}>
-                    {categoryCounts[urlCategory] ?? 0} available near {NEIGHBORHOOD}
-                  </div>
-                </div>
-                <Link href="/" className="rd-pill flex items-center" style={{ ...PILL, height: 36, fontSize: 14 }}>
-                  All categories
-                </Link>
-              </div>
-            )}
-
-            <div className="flex overflow-x-auto" style={{ gap: 22, padding: "6px 16px 0", borderBottom: "1px solid #E5E5E6" }}>
-              {CATEGORIES.filter((c) => c.id !== "all").map((cat) => {
-                const active = urlCategory === cat.id;
-                return (
-                  <Link
-                    key={cat.id}
-                    href={active ? "/" : `/?category=${cat.id}`}
-                    className="flex flex-none flex-col items-center"
-                    style={{
-                      gap: 6,
-                      padding: "2px 0 10px",
-                      borderBottom: active ? `2px solid ${ORANGE}` : "2px solid transparent",
-                    }}
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={CATEGORY_IMAGES[cat.id as Item["category"]]}
-                      alt=""
-                      style={{ width: 26, height: 26, borderRadius: 999, objectFit: "cover", flex: "none", opacity: active ? 1 : 0.75 }}
-                    />
-                    <span style={{ fontSize: 11, fontWeight: active ? 700 : 500, color: active ? ORANGE : MUTED, whiteSpace: "nowrap" }}>
-                      {cat.label}
-                    </span>
-                  </Link>
-                );
-              })}
-            </div>
-
-            <div className="flex flex-wrap items-center" style={{ gap: 10, padding: "14px 8px 10px" }}>
-              <PillSelect
-                value={sortBy}
-                onChange={(v) => setSortBy(v)}
-                options={[
-                  { value: "distance", label: "Nearest" },
-                  { value: "newest", label: "Newest" },
-                ]}
-              />
-              <PillSelect
-                value={maxDistance === null ? "" : String(maxDistance)}
-                onChange={(v) => setMaxDistance(v ? Number(v) : null)}
-                options={[
-                  { value: "", label: "Any distance" },
-                  { value: "3", label: "Under 3 min walk" },
-                  { value: "5", label: "Under 5 min walk" },
-                  { value: "10", label: "Under 10 min walk" },
-                ]}
-              />
-              <PillSelect
-                value={minRating === null ? "" : String(minRating)}
-                onChange={(v) => setMinRating(v ? Number(v) : null)}
-                options={[
-                  { value: "", label: "Any rating" },
-                  { value: "4.5", label: "4.5★ & up" },
-                  { value: "4", label: "4★ & up" },
-                  { value: "3.5", label: "3.5★ & up" },
-                ]}
-              />
-              <div className="ml-auto" style={{ fontSize: 12, color: MUTED, paddingRight: 8 }}>
-                {visible.length} {visible.length === 1 ? "listing" : "listings"} · {NEIGHBORHOOD}
-              </div>
-            </div>
-
-            <div style={{ height: 1, background: "#E5E5E6" }} />
-
-            {loading ? (
-              <div style={{ padding: "16px 8px 0" }}>
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <div key={i} style={{ border: "1px solid #E5E5E6", borderRadius: 8, padding: 14, marginBottom: 10, display: "flex", gap: 12 }}>
-                    <div style={{ height: 14, borderRadius: 6, background: "#F0F0F1", flex: 1 }} />
-                    <div style={{ width: 96, height: 96, borderRadius: 8, background: "#F0F0F1" }} />
-                  </div>
-                ))}
-              </div>
-            ) : visible.length === 0 ? (
-              filtersActive || urlCategory ? (
-                <div className="text-center" style={{ padding: "56px 16px" }}>
-                  <div style={{ fontSize: 18, fontWeight: 700 }}>Nothing matches</div>
-                  <div style={{ fontSize: 14, color: MUTED, marginTop: 4 }}>Try a different search, category or filter.</div>
-                  <Link
-                    href="/"
-                    onClick={() => {
-                      setQuery("");
-                      setMaxDistance(null);
-                      setMinRating(null);
-                    }}
-                    className="rd-pill mt-4 inline-flex items-center"
-                    style={{ ...PILL, height: 40, fontSize: 14, padding: "0 18px" }}
-                  >
-                    Clear filters
-                  </Link>
-                </div>
-              ) : (
-                <div className="flex items-center justify-center" style={{ padding: "40px 16px" }}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/empty-listings.png" alt={`No listings near ${NEIGHBORHOOD} yet`} style={{ width: 260, height: "auto" }} />
-                </div>
-              )
-            ) : (
-              <div style={{ padding: "16px 4px 0" }}>
-                {visible.map((item) => (
-                  <RedditPost key={item.id} item={item} saved={savedIds.includes(item.id)} onToggleSave={handleToggleSave} now={now} />
-                ))}
-              </div>
-            )}
-          </div>
-
-          <div
-            className="absolute rd-panel"
-            style={{ top: 16, right: 16, zIndex: 10, background: "#ffffff", borderRadius: 16, padding: "14px 18px", boxShadow: "0 12px 36px rgba(0,0,0,0.16)" }}
-          >
-            <div style={{ fontSize: 12, color: MUTED, fontWeight: 600 }}>Listings nearby</div>
-            <div style={{ fontSize: 22, fontWeight: 800, color: INK, letterSpacing: "-0.02em" }}>{visible.length}</div>
-            <a
-              href={`https://www.google.com/maps/dir/?api=1&destination=${CENTER[0]},${CENTER[1]}&travelmode=walking`}
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center"
-              style={{ gap: 5, marginTop: 6, fontSize: 12, fontWeight: 700, color: INK }}
+        <div className="relative flex h-full flex-col" style={{ minHeight: "88vh" }}>
+          <HeroNav />
+          <div className="relative z-10 flex flex-1 flex-col justify-end" style={{ padding: "0 32px 9vh", maxWidth: 1180, margin: "0 auto", width: "100%" }}>
+            <h1
+              style={{
+                fontFamily: SERIF, fontWeight: 600, color: "#ffffff",
+                fontSize: "clamp(36px, 5.6vw, 68px)", lineHeight: 1.08, letterSpacing: "-0.01em",
+                maxWidth: 780, margin: "0 0 26px",
+              }}
             >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={INK} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="m3 11 18-8-8 18-2-8-8-2Z" />
-              </svg>
-              Get directions
-            </a>
+              The neighborhood marketplace for food that would otherwise go to waste.
+            </h1>
+            <p style={{ fontFamily: SANS, fontSize: 18, color: "rgba(255,255,255,0.78)", lineHeight: 1.6, maxWidth: 540, margin: "0 0 36px" }}>
+              Stanbuy connects neighbors who have extra food with neighbors who could use it — free, in under an
+              hour, right around the corner.
+            </p>
+            <CTAButtons invert />
           </div>
-        </main>
+        </div>
+      </section>
+
+      {/* About us */}
+      <section className="mx-auto" style={{ maxWidth: 1180, padding: "110px 32px" }}>
+        <div className="grid grid-cols-1 lg:grid-cols-2 items-center" style={{ gap: 64 }}>
+          <div>
+            <div className="flex items-center" style={{ gap: 8, marginBottom: 20 }}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill={CRIMSON}><path d="M4 2h18l-7 9 7 9H4V2Z" /></svg>
+              <span style={{ fontFamily: SANS, fontSize: 12, fontWeight: 700, letterSpacing: "0.12em", color: CRIMSON, textTransform: "uppercase" }}>
+                About us
+              </span>
+            </div>
+            <h2 style={{ fontFamily: SERIF, fontWeight: 600, fontSize: "clamp(28px, 3.2vw, 42px)", lineHeight: 1.2, color: INK, margin: "0 0 24px" }}>
+              Built to close the gap between having too much and needing enough.
+            </h2>
+            <p style={{ fontSize: 17, color: MUTED, lineHeight: 1.7, margin: "0 0 16px", maxWidth: 460 }}>
+              Food doesn&apos;t go to waste because neighbors don&apos;t care — it goes to waste because there
+              was never a fast, low-friction way to hand it to someone who would actually use it. So we cut the
+              app down to two buttons: post what you have, or browse what&apos;s free nearby.
+            </p>
+            <p style={{ fontSize: 17, color: MUTED, lineHeight: 1.7, margin: "0 0 32px", maxWidth: 460 }}>
+              Post it, a neighbor reserves it within the hour, you hand it off in person. Every neighbor carries
+              a Reliability Score, so the system stays honest without anyone policing it.
+            </p>
+            <Link
+              href="/legal"
+              className="inline-flex items-center justify-center"
+              style={{ height: 52, padding: "0 26px", borderRadius: 6, background: INK, color: "#ffffff", fontFamily: SANS, fontSize: 15, fontWeight: 700, gap: 10 }}
+            >
+              Learn more
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.4"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+            </Link>
+          </div>
+          <div style={{ aspectRatio: "4 / 5" }} className="hidden lg:block">
+            <ImageSlot label="Photo: neighbors, team" />
+          </div>
+        </div>
+      </section>
+
+      {/* How it works — kept plain, no color/graphic treatment */}
+      <section style={{ borderTop: `1px solid ${RULE}`, background: "#FAFAFA" }}>
+        <div className="mx-auto" style={{ maxWidth: 780, padding: "90px 32px" }}>
+          <h2 style={{ fontFamily: SERIF, fontWeight: 600, fontSize: "clamp(24px, 2.8vw, 32px)", color: INK, margin: "0 0 32px" }}>
+            How it works
+          </h2>
+          <ol style={{ margin: 0, padding: 0, listStyle: "none" }}>
+            {[
+              ["Post what you have", "Snap a photo of the food you won't finish and share it with your street in under a minute."],
+              ["A neighbor reserves it", "Anyone nearby can reserve a listing. It's held for them for one hour, no one else can claim it."],
+              ["Meet, hand off, done", "The buyer walks over, shows their pickup code, and takes it home. No fees, no delivery."],
+            ].map(([t, d], i) => (
+              <li key={t} style={{ display: "flex", gap: 20, padding: "18px 0", borderTop: i > 0 ? `1px solid ${RULE}` : "none" }}>
+                <span style={{ fontFamily: SANS, fontSize: 14, fontWeight: 700, color: MUTED, flex: "none", width: 20, paddingTop: 2 }}>{i + 1}</span>
+                <div>
+                  <div style={{ fontFamily: SANS, fontSize: 16, fontWeight: 700, color: INK, marginBottom: 4 }}>{t}</div>
+                  <div style={{ fontSize: 15, color: MUTED, lineHeight: 1.6 }}>{d}</div>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* Partner-with-us style CTA, with a full-width photo band beneath */}
+      <section className="mx-auto" style={{ maxWidth: 1180, padding: "110px 32px 0" }}>
+        <h2 style={{ fontFamily: SERIF, fontWeight: 600, fontSize: "clamp(30px, 3.8vw, 48px)", color: INK, margin: "0 0 24px" }}>
+          <span style={{ color: CRIMSON }}>Two buttons.</span> That&apos;s the app.
+        </h2>
+        <p style={{ fontSize: 17, color: MUTED, lineHeight: 1.7, maxWidth: 560, margin: "0 0 40px" }}>
+          Whatever brought you here, Stanbuy only asks you to do one of two things.
+        </p>
+        <CTAButtons />
+      </section>
+      <div className="mx-auto" style={{ maxWidth: 1180, padding: "56px 32px 0", aspectRatio: "16 / 6" }}>
+        <ImageSlot label="Photo: a pickup, in person" />
       </div>
+
+      {/* FAQ */}
+      <section className="mx-auto" style={{ maxWidth: 720, padding: "110px 32px 8px" }}>
+        <h2 style={{ fontFamily: SERIF, fontWeight: 600, fontSize: "clamp(24px, 2.8vw, 32px)", color: INK, margin: "0 0 8px" }}>
+          Common questions
+        </h2>
+        <div style={{ height: 1, background: RULE, margin: "24px 0" }} />
+        {FAQS.map((item) => (
+          <details key={item.q} style={{ borderBottom: `1px solid ${RULE}`, padding: "16px 0" }}>
+            <summary className="flex cursor-pointer items-center justify-between" style={{ listStyle: "none", fontSize: 16, fontWeight: 700, color: INK }}>
+              {item.q}
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={MUTED} strokeWidth="2" className="flex-none">
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+            </summary>
+            <p style={{ margin: "10px 0 0", fontSize: 15, color: MUTED, lineHeight: 1.7 }}>{item.a}</p>
+          </details>
+        ))}
+        <div style={{ marginTop: 22, fontSize: 14, color: MUTED, paddingBottom: 8 }}>
+          More questions?{" "}
+          <Link href="/legal" style={{ color: CRIMSON, fontWeight: 600 }}>
+            Read our Terms &amp; policies
+          </Link>
+          .
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer style={{ borderTop: `1px solid ${RULE}`, marginTop: 64 }}>
+        <div className="mx-auto flex flex-wrap items-center justify-between" style={{ maxWidth: 1180, padding: "28px 32px", gap: 12, fontSize: 13.5, color: MUTED }}>
+          <span>© {new Date().getFullYear()} Stanbuy, Inc.</span>
+          <div className="flex flex-wrap items-center" style={{ gap: 22 }}>
+            <Link href="/browse" style={{ color: MUTED }}>Browse listings</Link>
+            <Link href="/sell" style={{ color: MUTED }}>Post surplus food</Link>
+            <Link href="/legal?tab=privacy" style={{ color: MUTED }}>Privacy</Link>
+            <Link href="/legal?tab=terms" style={{ color: MUTED }}>Terms</Link>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

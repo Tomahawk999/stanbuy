@@ -5,9 +5,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import HamburgerMenu from "./HamburgerMenu";
 import { useStanStore } from "@/lib/store";
+import { NEIGHBORHOOD } from "@/lib/data";
 
 const INK = "#0B0B0C";
 const MUTED = "#63666A";
+const YELLOW = "#FFC244";
 
 function LanguagePicker() {
   const [open, setOpen] = useState(false);
@@ -90,10 +92,23 @@ export default function SiteHeader({
                 <path d="M4 7h16M4 12h16M4 17h16" />
               </svg>
             </button>
-            <Link href="/" aria-label="Stanbuy home" className="flex items-center">
+            <Link href="/browse" aria-label="Stanbuy home" className="flex items-center">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/stanbuy-logo.png" alt="Stanbuy" style={{ height: 26, display: "block" }} />
             </Link>
+            <div
+              className="hidden items-center md:flex"
+              style={{ gap: 6, height: 36, borderRadius: 999, padding: "0 12px 0 10px", background: "#F5F5F6", fontSize: 13, fontWeight: 700, color: INK }}
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill={YELLOW} stroke={INK} strokeWidth="1.6" className="flex-none">
+                <path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z" />
+                <circle cx="12" cy="9" r="2.3" fill="#0B0B0C" stroke="none" />
+              </svg>
+              {NEIGHBORHOOD}
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={MUTED} strokeWidth="2.4" strokeLinecap="round">
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+            </div>
           </div>
 
           <form
@@ -134,7 +149,7 @@ export default function SiteHeader({
               {savedCount > 0 && (
                 <span
                   className="absolute flex items-center justify-center"
-                  style={{ top: 4, right: 2, minWidth: 16, height: 16, borderRadius: 999, background: "#0B0B0C", color: "#ffffff", fontSize: 10, fontWeight: 700, padding: "0 4px" }}
+                  style={{ top: 4, right: 2, minWidth: 16, height: 16, borderRadius: 999, background: YELLOW, color: "#0B0B0C", fontSize: 10, fontWeight: 800, padding: "0 4px" }}
                 >
                   {savedCount}
                 </span>
@@ -142,12 +157,11 @@ export default function SiteHeader({
             </Link>
             <Link
               href="/sell"
-              className="rd-ghost flex items-center"
-              style={{ height: 40, borderRadius: 999, padding: "0 12px", gap: 6, color: INK, fontSize: 14, fontWeight: 600 }}
+              className="stan-yellow-cta flex cursor-pointer items-center"
+              style={{ height: 40, borderRadius: 999, padding: "0 16px", gap: 6, background: YELLOW, color: INK, fontSize: 14, fontWeight: 800 }}
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
-                <rect x="3.5" y="3.5" width="17" height="17" rx="3" />
-                <path d="M12 8v8M8 12h8" />
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+                <path d="M12 5v14M5 12h14" />
               </svg>
               <span className="hidden sm:inline">Sell</span>
             </Link>

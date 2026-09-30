@@ -28,7 +28,7 @@ export default function AuthPageClient({ googleEnabled }: { googleEnabled: boole
 
 function AuthPageContent({ googleEnabled }: { googleEnabled: boolean }) {
   const searchParams = useSearchParams();
-  const next = searchParams.get("next") || "/";
+  const next = searchParams.get("next") || "/browse";
   const [mode, setMode] = useState<"signin" | "signup">("signin");
 
   const [name, setName] = useState("");
