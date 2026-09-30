@@ -101,7 +101,7 @@ function ItemDetailView({ id }: { id: string }) {
       <PageShell>
         <div className="flex flex-col items-center justify-center gap-3 px-8 text-center" style={{ padding: "80px 0" }}>
           <div style={{ fontSize: 14, fontWeight: 600 }}>Listing not found</div>
-          <Link href="/" style={{ color: ORANGE, fontWeight: 600, fontSize: 14 }}>
+          <Link href="/browse" style={{ color: ORANGE, fontWeight: 600, fontSize: 14 }}>
             Back to home
           </Link>
         </div>
@@ -192,7 +192,7 @@ function ItemDetailView({ id }: { id: string }) {
               <span style={{ fontWeight: 600 }}>{(item.sellerScore / 20).toFixed(1)}</span>
             </span>
             <span style={{ color: MUTED }}>·</span>
-            <Link href={`/?category=${item.category}`} style={{ fontWeight: 600, color: INK, textDecoration: "underline" }}>
+            <Link href={`/browse?category=${item.category}`} style={{ fontWeight: 600, color: INK, textDecoration: "underline" }}>
               {categoryLabel}
             </Link>
             <span style={{ color: MUTED }}>·</span>

@@ -11,7 +11,7 @@ const MUTED = "#63666A";
 
 const MAIN_LINKS = [
   {
-    href: "/",
+    href: "/browse",
     label: "Home",
     icon: <path d="M3 11.5 12 4l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1v-8.5Z" />,
   },
@@ -38,7 +38,7 @@ const MAIN_LINKS = [
 ];
 
 const RESOURCE_LINKS = [
-  { href: "/about", label: "About Stanbuy" },
+  { href: "/", label: "About Stanbuy" },
   { href: "/legal", label: "Help Center" },
   { href: "/legal?tab=score", label: "Reliability Score" },
   { href: "/legal?tab=terms", label: "Terms & policies" },
@@ -89,7 +89,7 @@ export default function SideNav({
     >
       <div className="flex flex-col" style={{ gap: 2 }}>
         {MAIN_LINKS.map((link) => {
-          const active = link.href === "/" ? pathname === "/" && !activeCategory : pathname === link.href;
+          const active = link.href === "/browse" ? pathname === "/browse" && !activeCategory : pathname === link.href;
           return (
             <Link
               key={link.href}
@@ -125,7 +125,7 @@ export default function SideNav({
             return (
               <Link
                 key={cat.id}
-                href={active ? "/" : `/?category=${cat.id}`}
+                href={active ? "/browse" : `/browse?category=${cat.id}`}
                 className="rd-nav-item flex items-center"
                 style={{
                   height: 40,

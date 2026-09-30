@@ -92,7 +92,7 @@ export default function SiteHeader({
                 <path d="M4 7h16M4 12h16M4 17h16" />
               </svg>
             </button>
-            <Link href="/" aria-label="Stanbuy home" className="flex items-center">
+            <Link href="/browse" aria-label="Stanbuy home" className="flex items-center">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/stanbuy-logo.png" alt="Stanbuy" style={{ height: 26, display: "block" }} />
             </Link>

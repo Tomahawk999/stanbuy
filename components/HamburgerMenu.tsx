@@ -74,7 +74,7 @@ export default function HamburgerMenu({ onClose }: { onClose: () => void }) {
 
         <div style={SECTION_LABEL}>Browse</div>
         <NavRow
-          href="/"
+          href="/browse"
           onClose={onClose}
           label="Home"
           icon={
@@ -119,7 +119,7 @@ export default function HamburgerMenu({ onClose }: { onClose: () => void }) {
           }
         />
         <NavRow
-          href="/about"
+          href="/"
           onClose={onClose}
           label="About Stanbuy"
           icon={

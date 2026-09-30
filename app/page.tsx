@@ -1,387 +1,262 @@
-"use client";
-
-import { Suspense, useMemo, useState } from "react";
-import nextDynamic from "next/dynamic";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useStanStore } from "@/lib/store";
-import { CATEGORIES, CATEGORY_IMAGES, NEIGHBORHOOD, CENTER } from "@/lib/data";
-import type { Item } from "@/lib/types";
-import { useNow } from "@/lib/useNow";
-import SiteHeader from "@/components/SiteHeader";
-import PillSelect from "@/components/PillSelect";
 
-const NeighborhoodMap = nextDynamic(() => import("@/components/NeighborhoodMap"), {
-  ssr: false,
-  loading: () => <div style={{ width: "100%", height: "100%", background: "#E5E5E6" }} />,
-});
+// Stanbuy's public homepage — modeled closely on a Stanford news-site
+// article layout (red utility bar, logo + search + nav header, feature
+// eyebrow, bold sans headline, byline row, full-width photo, plain-text
+// article body, fixed "Back to top" button). The org name in the source
+// is swapped for Stanbuy's own so the page reads as Stanbuy's, not as
+// an actual Stanford property.
 
-const INK = "#0B0B0C";
-const MUTED = "#63666A";
-const YELLOW = "#FFC244";
+const CRIMSON = "#8C1515"; // Stanford's published Cardinal Red (identity.stanford.edu/color)
+const INK = "#1D1D1D";
+const BODY_TEXT = "#262626";
+const MUTED = "#5F5F5F";
+const RULE = "#E2E2E2";
+const LINK_BLUE = "#1B57B3";
+const SANS = "var(--font-editorial-sans)";
 
-function timeAgo(createdAt: number, now: number | null): string | null {
-  if (now === null) return null;
-  const minutes = Math.max(0, Math.round((now - createdAt) / 60000));
-  if (minutes < 60) return `${minutes} min ago`;
-  const hours = Math.round(minutes / 60);
-  if (hours < 24) return `${hours}h ago`;
-  return `${Math.round(hours / 24)}d ago`;
-}
+const FAQS = [
+  {
+    q: "Is Stanbuy only for certain neighborhoods?",
+    a: "No — Stanbuy is launching hyperlocal and expanding fast, but anyone nearby can take part. Households, co-ops and neighbors around you can all join in.",
+  },
+  {
+    q: "Why is the app free right now?",
+    a: "We're piloting Stanbuy before opening it up more broadly. During the pilot, reserving and collecting food is $0.00. Once the pilot ends, each pickup will cost $0.99 to cover handoff and platform logistics — the food itself stays free.",
+  },
+  {
+    q: "What happens if I don't collect my reservation?",
+    a: "The listing releases back to the neighborhood automatically after 1 hour, and your Reliability Score drops 15%. See the Reliability Score page for details.",
+  },
+  {
+    q: "Can businesses use Stanbuy?",
+    a: "Individual neighbors always share for free. Local shops and businesses that want to post surplus regularly can do so through a separate, paid Stanbuy for Business subscription.",
+  },
+  {
+    q: "Is my exact address shared with everyone?",
+    a: "No. Listings show your neighborhood on the map, not your exact address. The precise pickup point is only shared with the specific buyer once they reserve.",
+  },
+];
 
-function categoryLabel(id: string): string {
-  return CATEGORIES.find((c) => c.id === id)?.label ?? "Other";
-}
+const PUBLISHED = new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
 
-function GlovoItemCard({
-  item,
-  saved,
-  onToggleSave,
-  now,
-  onHover,
-}: {
-  item: Item;
-  saved: boolean;
-  onToggleSave: (id: string) => void;
-  now: number | null;
-  onHover: (id: string | null) => void;
-}) {
-  const age = now !== null ? timeAgo(item.createdAt, now) : null;
+const NAV_LINK: React.CSSProperties = { color: CRIMSON, fontWeight: 700, fontSize: 15 };
+const CONTAINER = 900;
+
+function ShareIcon({ path }: { path: string }) {
   return (
-    <Link
-      href={`/item/${item.id}`}
-      className="stan-glovo-card flex flex-col"
-      onMouseEnter={() => onHover(item.id)}
-      onMouseLeave={() => onHover(null)}
-    >
-      <div className="relative" style={{ aspectRatio: "4 / 3" }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={item.image ?? CATEGORY_IMAGES[item.category]} alt="" className="absolute inset-0 h-full w-full object-cover" />
-        <span
-          className="stan-yellow-badge absolute flex items-center"
-          style={{ left: 10, top: 10, height: 24, borderRadius: 999, padding: "0 10px", fontSize: 11 }}
-        >
-          Free
-        </span>
-        <button
-          type="button"
-          aria-pressed={saved}
-          onClick={(e) => {
-            e.preventDefault();
-            onToggleSave(item.id);
-          }}
-          className="absolute flex cursor-pointer items-center justify-center border-none"
-          style={{ right: 8, top: 8, width: 32, height: 32, borderRadius: 999, background: "rgba(255,255,255,0.92)" }}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill={saved ? INK : "none"} stroke={INK} strokeWidth="1.8">
-            <path d="M12 21s-7.5-4.7-10-9.3C.5 8 2 4.5 5.6 4c2.1-.3 3.9.8 6.4 3.2C14.5 4.8 16.3 3.7 18.4 4c3.6.5 5.1 4 3.6 7.7C19.5 16.3 12 21 12 21Z" />
-          </svg>
-        </button>
-        <span
-          className="absolute flex items-center"
-          style={{ left: 10, bottom: 10, height: 22, borderRadius: 999, padding: "0 9px", background: "rgba(11,11,12,0.75)", color: "#fff", fontSize: 11, fontWeight: 700, gap: 4 }}
-        >
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 3" /></svg>
-          {item.distanceMin} min
-        </span>
-      </div>
-
-      <div style={{ padding: "12px 14px 14px" }}>
-        <div className="flex items-start justify-between" style={{ gap: 8 }}>
-          <span
-            style={{
-              fontSize: 15,
-              fontWeight: 800,
-              color: INK,
-              lineHeight: 1.3,
-              letterSpacing: "-0.01em",
-              display: "-webkit-box",
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: "vertical",
-              overflow: "hidden",
-            }}
-          >
-            {item.title}
-          </span>
-        </div>
-        <div className="flex flex-wrap items-center" style={{ gap: 5, marginTop: 6, fontSize: 12, color: MUTED }}>
-          <span className="flex items-center" style={{ gap: 3 }}>
-            <span style={{ color: YELLOW }}>★</span>
-            <span style={{ fontWeight: 700, color: INK }}>{(item.sellerScore / 20).toFixed(1)}</span>
-          </span>
-          <span>· {categoryLabel(item.category)}</span>
-          <span>· Qty {item.quantity}</span>
-        </div>
-        <div style={{ marginTop: 6, fontSize: 12, color: MUTED }}>
-          {item.seller} · {item.neighborhood}
-          {age && ` · ${age}`}
-        </div>
-      </div>
-    </Link>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill={INK}>
+      <path d={path} />
+    </svg>
   );
 }
-
-const PILL: React.CSSProperties = {
-  height: 36,
-  borderRadius: 8,
-  padding: "0 14px",
-  gap: 6,
-  fontSize: 13,
-  fontWeight: 700,
-  color: INK,
-  border: "none",
-};
-
 
 export default function HomePage() {
   return (
-    <Suspense fallback={null}>
-      <HomePageContent />
-    </Suspense>
-  );
-}
-
-function HomePageContent() {
-  const items = useStanStore((s) => s.items);
-  const savedIds = useStanStore((s) => s.savedIds);
-  const toggleSave = useStanStore((s) => s.toggleSave);
-  const currentUser = useStanStore((s) => s.currentUser);
-  const loading = useStanStore((s) => s.loading);
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const urlCategory = searchParams.get("category");
-  const urlQuery = searchParams.get("q");
-  const [query, setQuery] = useState(urlQuery ?? "");
-  const [prevUrlQuery, setPrevUrlQuery] = useState(urlQuery);
-  const now = useNow();
-  const [hoveredId, setHoveredId] = useState<string | null>(null);
-  const [maxDistance, setMaxDistance] = useState<number | null>(null);
-  const [minRating, setMinRating] = useState<number | null>(null);
-  const [sortBy, setSortBy] = useState<"distance" | "newest">("distance");
-  const [view, setView] = useState<"list" | "map">("list");
-
-  // Sync local query with the URL's ?q= when it changes externally (e.g. a
-  // Link navigation), without clobbering it on every keystroke.
-  if (urlQuery !== prevUrlQuery) {
-    setPrevUrlQuery(urlQuery);
-    if (urlQuery !== null) setQuery(urlQuery);
-  }
-
-  const available = useMemo(() => items.filter((it) => it.status === "available"), [items]);
-
-  const visible = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    return available
-      .filter(
-        (it) =>
-          (!q || it.title.toLowerCase().includes(q) || it.description.toLowerCase().includes(q)) &&
-          (!urlCategory || it.category === urlCategory) &&
-          (maxDistance === null || it.distanceMin <= maxDistance) &&
-          (minRating === null || it.sellerScore / 20 >= minRating),
-      )
-      .sort((a, b) => (sortBy === "newest" ? b.createdAt - a.createdAt : a.distanceMin - b.distanceMin));
-  }, [available, query, urlCategory, maxDistance, minRating, sortBy]);
-
-  const categoryCounts = useMemo(() => {
-    const counts: Record<string, number> = {};
-    available.forEach((it) => {
-      counts[it.category] = (counts[it.category] ?? 0) + 1;
-    });
-    return counts;
-  }, [available]);
-
-  const filtersActive = maxDistance !== null || minRating !== null || query.trim() !== "";
-
-  const handleToggleSave = (itemId: string) => {
-    if (!currentUser) {
-      router.push(`/auth?next=/`);
-      return;
-    }
-    toggleSave(itemId);
-  };
-
-  return (
-    <div className="min-h-dvh bg-white" style={{ color: INK }}>
-      <SiteHeader query={query} onQueryChange={setQuery} />
-
-      <div style={{ padding: "16px 16px 0", maxWidth: 1280, margin: "0 auto" }}>
-        {urlCategory && (
-          <div className="flex items-center" style={{ gap: 14, marginBottom: 16 }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={CATEGORY_IMAGES[urlCategory as Item["category"]]}
-              alt=""
-              style={{ width: 52, height: 52, borderRadius: 999, objectFit: "cover", border: "3px solid #ffffff", boxShadow: "0 0 0 1px #E5E5E6" }}
-            />
-            <div className="min-w-0 flex-1">
-              <h1 style={{ fontSize: 22, fontWeight: 800, margin: 0, letterSpacing: "-0.01em" }}>{categoryLabel(urlCategory)}</h1>
-              <div style={{ fontSize: 13, color: MUTED }}>
-                {categoryCounts[urlCategory] ?? 0} available near {NEIGHBORHOOD}
-              </div>
-            </div>
-            <Link href="/" className="stan-chip flex items-center" style={{ ...PILL, height: 36, fontSize: 13 }}>
-              All categories
-            </Link>
-          </div>
-        )}
-
-        <div className="flex overflow-x-auto" style={{ gap: 10, paddingBottom: 4 }}>
-          {CATEGORIES.filter((c) => c.id !== "all").map((cat) => {
-            const active = urlCategory === cat.id;
-            return (
-              <Link
-                key={cat.id}
-                href={active ? "/" : `/?category=${cat.id}`}
-                className="stan-chip flex flex-none items-center"
-                data-active={active}
-                style={{ gap: 8, height: 40, padding: "0 14px 0 8px", fontSize: 13, fontWeight: 700 }}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={CATEGORY_IMAGES[cat.id as Item["category"]]}
-                  alt=""
-                  style={{ width: 26, height: 26, borderRadius: 999, objectFit: "cover", flex: "none" }}
-                />
-                {cat.label}
-              </Link>
-            );
-          })}
+    <div style={{ background: "#ffffff", color: BODY_TEXT, fontFamily: SANS }}>
+      {/* Utility bar */}
+      <div style={{ background: CRIMSON }}>
+        <div className="mx-auto" style={{ maxWidth: 1180, padding: "9px 24px" }}>
+          <span style={{ color: "#ffffff", fontWeight: 700, fontSize: 13 }}>Stanbuy</span>
         </div>
+      </div>
 
-        <div className="flex flex-wrap items-center" style={{ gap: 10, padding: "14px 0" }}>
-          <PillSelect
-            value={sortBy}
-            onChange={(v) => setSortBy(v)}
-            options={[
-              { value: "distance", label: "Nearest" },
-              { value: "newest", label: "Newest" },
-            ]}
-          />
-          <PillSelect
-            value={maxDistance === null ? "" : String(maxDistance)}
-            onChange={(v) => setMaxDistance(v ? Number(v) : null)}
-            options={[
-              { value: "", label: "Any distance" },
-              { value: "3", label: "Under 3 min walk" },
-              { value: "5", label: "Under 5 min walk" },
-              { value: "10", label: "Under 10 min walk" },
-            ]}
-          />
-          <PillSelect
-            value={minRating === null ? "" : String(minRating)}
-            onChange={(v) => setMinRating(v ? Number(v) : null)}
-            options={[
-              { value: "", label: "Any rating" },
-              { value: "4.5", label: "4.5★ & up" },
-              { value: "4", label: "4★ & up" },
-              { value: "3.5", label: "3.5★ & up" },
-            ]}
-          />
-          <div className="ml-auto flex items-center" style={{ gap: 10 }}>
-            <span style={{ fontSize: 12, color: MUTED }}>
-              {visible.length} {visible.length === 1 ? "listing" : "listings"} · {NEIGHBORHOOD}
-            </span>
-            <div className="flex" style={{ gap: 4, background: "#F5F5F6", borderRadius: 999, padding: 3 }}>
-              <button
-                type="button"
-                onClick={() => setView("list")}
-                className="stan-chip cursor-pointer"
-                data-active={view === "list"}
-                style={{ height: 32, padding: "0 14px", fontSize: 12, fontWeight: 700, border: "none" }}
-              >
-                List
-              </button>
-              <button
-                type="button"
-                onClick={() => setView("map")}
-                className="stan-chip cursor-pointer"
-                data-active={view === "map"}
-                style={{ height: 32, padding: "0 14px", fontSize: 12, fontWeight: 700, border: "none" }}
-              >
-                Map
-              </button>
-            </div>
+      {/* Header */}
+      <header style={{ borderBottom: `1px solid ${RULE}` }}>
+        <div className="mx-auto flex flex-wrap items-start justify-between" style={{ maxWidth: 1180, padding: "28px 24px 0", gap: 20 }}>
+          <Link href="/" style={{ color: INK }}>
+            <div style={{ fontSize: 34, fontWeight: 800, lineHeight: 1.15, letterSpacing: "-0.01em" }}>Stanbuy</div>
+            <div style={{ fontSize: 17, fontWeight: 400, color: MUTED, marginTop: 2 }}>Neighborhood food, shared daily</div>
+          </Link>
+          <form action="/browse" method="GET" className="flex items-center" style={{ height: 42, minWidth: 240, borderRadius: 999, border: `1px solid ${RULE}`, padding: "0 6px 0 18px" }}>
+            <label htmlFor="site-search" className="sr-only">Search this site</label>
+            <input
+              id="site-search"
+              name="q"
+              type="text"
+              placeholder="Search this site"
+              className="min-w-0 flex-1"
+              style={{ border: "none", outline: "none", fontSize: 14, color: INK, background: "transparent" }}
+            />
+            <button
+              type="submit"
+              aria-label="Search"
+              className="flex flex-none cursor-pointer items-center justify-center border-none bg-transparent"
+              style={{ width: 32, height: 32 }}
+            >
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke={CRIMSON} strokeWidth="2.4">
+                <circle cx="11" cy="11" r="7" />
+                <path d="M21 21l-4.3-4.3" />
+              </svg>
+            </button>
+          </form>
+        </div>
+        <nav className="mx-auto flex flex-wrap items-center justify-end" style={{ maxWidth: 1180, padding: "18px 24px", gap: 28 }}>
+          <Link href="/" style={NAV_LINK}>About</Link>
+          <Link href="/browse" style={NAV_LINK}>Browse</Link>
+          <Link href="/sell" style={NAV_LINK}>Sell</Link>
+          <Link href="/legal" style={NAV_LINK}>Legal</Link>
+          <Link href="/auth" style={NAV_LINK}>Sign In</Link>
+        </nav>
+      </header>
+
+      {/* Article header */}
+      <div className="mx-auto" style={{ maxWidth: CONTAINER, padding: "48px 24px 0" }}>
+        <div style={{ color: CRIMSON, fontWeight: 700, fontSize: 13, marginBottom: 14 }}>Feature</div>
+        <h1 style={{ fontSize: "clamp(32px, 4.5vw, 48px)", fontWeight: 800, color: INK, lineHeight: 1.15, letterSpacing: "-0.01em", margin: 0 }}>
+          One neighbor&apos;s leftovers are another&apos;s dinner
+        </h1>
+        <p style={{ fontSize: 22, fontWeight: 400, color: "#3C3C3C", lineHeight: 1.5, margin: "20px 0" }}>
+          Stanbuy connects neighbors who have extra food with neighbors who could use it — free, in under an
+          hour, right around the corner.
+        </p>
+        <div
+          className="flex flex-wrap items-center"
+          style={{ gap: 16, fontSize: 14, color: MUTED, paddingBottom: 24, borderBottom: `1px solid ${RULE}` }}
+        >
+          <span>{PUBLISHED} · By the Stanbuy Team</span>
+          <div className="flex items-center" style={{ gap: 12 }}>
+            <ShareIcon path="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.4h-1.2c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12Z" />
+            <ShareIcon path="M22 5.9c-.7.3-1.5.6-2.3.7.8-.5 1.4-1.3 1.7-2.3-.8.5-1.7.8-2.6 1a4.1 4.1 0 0 0-7 3.7A11.6 11.6 0 0 1 3.4 4.9a4.1 4.1 0 0 0 1.3 5.5c-.7 0-1.3-.2-1.9-.5v.1c0 2 1.4 3.6 3.3 4a4.2 4.2 0 0 1-1.8.1 4.1 4.1 0 0 0 3.8 2.9A8.3 8.3 0 0 1 2 18.6a11.6 11.6 0 0 0 6.3 1.8c7.5 0 11.7-6.3 11.7-11.7v-.5c.8-.6 1.5-1.3 2-2.3Z" />
+            <ShareIcon path="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3V9Zm7 0h3.8v1.7h.1c.5-1 1.8-2 3.7-2 4 0 4.7 2.6 4.7 6V21h-4v-5.5c0-1.3 0-3-1.8-3s-2.1 1.4-2.1 2.9V21h-4V9Z" />
+            <ShareIcon path="M4 4h16a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Zm1 2.4V18h14V6.4l-7 5.4-7-5.4Zm.8-.4 6.2 4.8L18.2 6H5.8Z" />
           </div>
         </div>
       </div>
 
-      {view === "map" ? (
-        <div className="relative" style={{ height: "calc(100dvh - 200px)", margin: "0 16px 16px", borderRadius: 20, overflow: "hidden" }}>
-          <NeighborhoodMap items={visible} highlightedId={hoveredId} onHover={setHoveredId} />
-          <div
-            className="absolute rd-panel"
-            style={{ top: 16, right: 16, zIndex: 10, background: "#ffffff", borderRadius: 16, padding: "14px 18px", boxShadow: "0 12px 36px rgba(0,0,0,0.16)" }}
-          >
-            <div style={{ fontSize: 12, color: MUTED, fontWeight: 600 }}>Listings nearby</div>
-            <div style={{ fontSize: 22, fontWeight: 800, color: INK, letterSpacing: "-0.02em" }}>{visible.length}</div>
-            <a
-              href={`https://www.google.com/maps/dir/?api=1&destination=${CENTER[0]},${CENTER[1]}&travelmode=walking`}
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center"
-              style={{ gap: 5, marginTop: 6, fontSize: 12, fontWeight: 700, color: INK }}
+      {/* Feature image */}
+      <figure className="mx-auto" style={{ maxWidth: CONTAINER, padding: "28px 24px 0" }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/category-produce.jpg"
+          alt="A basket of surplus produce ready to be shared with a neighbor"
+          style={{ width: "100%", height: "auto", maxHeight: 420, objectFit: "cover", display: "block" }}
+        />
+        <figcaption className="text-center" style={{ fontSize: 13, color: MUTED, marginTop: 10, padding: "0 12px" }}>
+          A weekly haul of surplus produce, shared through Stanbuy instead of thrown away.
+        </figcaption>
+      </figure>
+
+      {/* Article body */}
+      <article className="mx-auto" style={{ maxWidth: CONTAINER, padding: "32px 24px 8px", fontSize: 19, lineHeight: 1.75, color: BODY_TEXT }}>
+        <p style={{ margin: "0 0 22px" }}>
+          Every night, kitchens up and down your street throw away food that is still good — a loaf going stale
+          before it&apos;s finished, a tray of dinner cooked for guests who never came, a garden that produced
+          more tomatoes than one household can eat. None of it is spoiled. All of it needs a neighbor before it
+          needs a landfill.
+        </p>
+        <p style={{ margin: "0 0 22px" }}>
+          Stanbuy exists to close that one-hour gap between &ldquo;I have extra&rdquo; and &ldquo;I could use
+          that.&rdquo; A neighbor posts what they have, a nearby neighbor reserves it, and the two of them
+          handle the rest — no delivery, no middleman, no charge for the food itself.
+        </p>
+        <p style={{ margin: "0 0 22px" }}>
+          &ldquo;You build yourself before you build your company,&rdquo; is how Y Combinator&apos;s Garry Tan
+          put it to a room of Stanford founders. The same is true of a neighborhood: it gets built one shared
+          meal at a time, not by a delivery fleet.
+        </p>
+
+        {/* Two things you can do — replaces the article's embedded video with Stanbuy's two real actions */}
+        <div style={{ border: `1px solid ${RULE}`, borderRadius: 4, padding: 28, margin: "8px 0 28px" }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: CRIMSON, marginBottom: 16, textTransform: "uppercase", letterSpacing: "0.06em" }}>
+            Two things you can do right now
+          </div>
+          <div className="flex flex-col sm:flex-row" style={{ gap: 14 }}>
+            <Link
+              href="/sell"
+              className="flex items-center justify-center"
+              style={{ height: 52, padding: "0 24px", fontSize: 15, fontWeight: 700, color: "#ffffff", background: CRIMSON }}
             >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={INK} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="m3 11 18-8-8 18-2-8-8-2Z" />
-              </svg>
-              Get directions
-            </a>
+              Get rid of your leftovers →
+            </Link>
+            <Link
+              href="/browse"
+              className="flex items-center justify-center"
+              style={{ height: 52, padding: "0 24px", fontSize: 15, fontWeight: 700, color: INK, background: "transparent", border: `1px solid ${INK}` }}
+            >
+              Find free food near you →
+            </Link>
           </div>
         </div>
-      ) : (
-        <div style={{ padding: "4px 16px 40px", maxWidth: 1280, margin: "0 auto" }}>
-          {loading ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4" style={{ gap: 16 }}>
-              {Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} style={{ borderRadius: 20, overflow: "hidden", border: "1px solid #E5E5E6" }}>
-                  <div style={{ aspectRatio: "4 / 3", background: "#F0F0F1" }} />
-                  <div style={{ padding: 14 }}>
-                    <div style={{ height: 14, borderRadius: 6, background: "#F0F0F1", marginBottom: 8 }} />
-                    <div style={{ height: 12, width: "60%", borderRadius: 6, background: "#F0F0F1" }} />
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : visible.length === 0 ? (
-            filtersActive || urlCategory ? (
-              <div className="text-center" style={{ padding: "56px 16px" }}>
-                <div style={{ fontSize: 18, fontWeight: 700 }}>Nothing matches</div>
-                <div style={{ fontSize: 14, color: MUTED, marginTop: 4 }}>Try a different search, category or filter.</div>
-                <Link
-                  href="/"
-                  onClick={() => {
-                    setQuery("");
-                    setMaxDistance(null);
-                    setMinRating(null);
-                  }}
-                  className="stan-chip mt-4 inline-flex items-center"
-                  style={{ ...PILL, height: 40, fontSize: 14, padding: "0 18px" }}
-                >
-                  Clear filters
-                </Link>
-              </div>
-            ) : (
-              <div className="flex items-center justify-center" style={{ padding: "40px 16px" }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/empty-listings.png" alt={`No listings near ${NEIGHBORHOOD} yet`} style={{ width: 260, height: "auto" }} />
-              </div>
-            )
-          ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4" style={{ gap: 16 }}>
-              {visible.map((item) => (
-                <GlovoItemCard
-                  key={item.id}
-                  item={item}
-                  saved={savedIds.includes(item.id)}
-                  onToggleSave={handleToggleSave}
-                  now={now}
-                  onHover={setHoveredId}
-                />
-              ))}
-            </div>
-          )}
+
+        <h2 style={{ fontSize: 28, fontWeight: 800, color: INK, margin: "8px 0 16px" }}>Why we exist</h2>
+        <p style={{ margin: "0 0 22px" }}>
+          Food doesn&apos;t go to waste because neighbors don&apos;t care. It goes to waste because there was
+          never a fast, low-friction way to hand it to someone who would actually use it. By the time you&apos;ve
+          thought about posting it somewhere, messaging a group chat, or driving it to a donation center, it&apos;s
+          easier to just throw it out. That gap — not indifference — is what Stanbuy is built to close.
+        </p>
+        <p style={{ margin: "0 0 22px" }}>
+          So we cut the app down to two buttons. If you have extra, you post it in under a minute. If you want
+          something, you browse what&apos;s free nearby and reserve it. Nothing else — no cart, no checkout, no
+          delivery fee — sits between a neighbor with too much and a neighbor with none.
+        </p>
+
+        <h2 style={{ fontSize: 28, fontWeight: 800, color: INK, margin: "8px 0 16px" }}>How it works</h2>
+        <p style={{ margin: "0 0 22px" }}>
+          Posting takes under a minute: snap a photo of the food you won&apos;t finish and share it with your
+          street. Anyone nearby can reserve a listing — it&apos;s held for them for one hour, so no one else can
+          claim it out from under them. The buyer walks over, shows their pickup code, and takes it home. No
+          fees, no delivery, no app to schedule around.
+        </p>
+        <p style={{ margin: "0 0 22px" }}>
+          If a reservation goes unclaimed, the listing quietly releases back to the neighborhood after an hour
+          so the food doesn&apos;t just sit there — and someone else can still catch it before it goes to waste.
+        </p>
+
+        <h2 style={{ fontSize: 28, fontWeight: 800, color: INK, margin: "36px 0 16px" }}>Built on trust between neighbors</h2>
+        <p style={{ margin: "0 0 22px" }}>
+          Every neighbor on Stanbuy carries a Reliability Score. Show up for what you reserve and it stays high.
+          Reserve something and never collect it, and it drops — fall far enough and reserving is paused for a
+          week. It&apos;s the only thing standing between an honor system and a marketplace nobody can rely on.
+        </p>
+        <p style={{ margin: "0 0 22px" }}>
+          Listings only ever show a neighborhood on the map, never an exact address — the precise pickup point is
+          shared with a buyer only after they&apos;ve reserved. And the food itself is free, full stop: during
+          this pilot and after it. A small $0.99 handoff fee will apply per pickup once the pilot ends, but it
+          covers logistics, never the meal.
+        </p>
+
+        <h2 style={{ fontSize: 28, fontWeight: 800, color: INK, margin: "36px 0 16px" }}>Common questions</h2>
+        {FAQS.map((item) => (
+          <div key={item.q} style={{ margin: "0 0 20px" }}>
+            <div style={{ fontWeight: 700, color: INK, marginBottom: 4 }}>{item.q}</div>
+            <p style={{ margin: 0, color: BODY_TEXT }}>{item.a}</p>
+          </div>
+        ))}
+        <p style={{ margin: "8px 0 0" }}>
+          Questions about how Stanbuy works?{" "}
+          <Link href="/legal" style={{ color: LINK_BLUE, textDecoration: "underline" }}>
+            Read our Terms &amp; policies
+          </Link>
+          .
+        </p>
+      </article>
+
+      {/* Footer */}
+      <footer style={{ borderTop: `1px solid ${RULE}`, marginTop: 56 }}>
+        <div className="mx-auto flex flex-wrap items-center justify-between" style={{ maxWidth: CONTAINER, padding: "24px 24px", gap: 12, fontSize: 13, color: MUTED }}>
+          <span>© {new Date().getFullYear()} Stanbuy, Inc.</span>
+          <div className="flex flex-wrap items-center" style={{ gap: 18 }}>
+            <Link href="/browse" style={{ color: MUTED }}>Browse listings</Link>
+            <Link href="/sell" style={{ color: MUTED }}>Post surplus food</Link>
+            <Link href="/legal?tab=privacy" style={{ color: MUTED }}>Privacy</Link>
+            <Link href="/legal?tab=terms" style={{ color: MUTED }}>Terms</Link>
+          </div>
         </div>
-      )}
+      </footer>
+
+      {/* Back to top */}
+      <a
+        href="#top"
+        className="fixed flex items-center"
+        style={{ bottom: 24, right: 24, gap: 8, background: CRIMSON, color: "#ffffff", fontWeight: 700, fontSize: 14, padding: "10px 18px", borderRadius: 6, boxShadow: "0 4px 14px rgba(0,0,0,0.2)" }}
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M6 15l6-6 6 6" />
+        </svg>
+        Back to Top
+      </a>
     </div>
   );
 }
