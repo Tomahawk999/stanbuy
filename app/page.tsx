@@ -1,11 +1,12 @@
 import Link from "next/link";
 
-// Stanbuy's public homepage — styled after institutional / VC-firm sites
-// (Xfund, Stanford, Harvard): a full-bleed hero, an old-style serif for
-// headlines paired with a modern sans for nav/body, crimson used only as
-// a sparing accent, and faceted line-art graphics in place of stock
-// photography (no real neighborhood photography is available yet — swap
-// the FacetPattern blocks for real photos once we have them).
+// Stanbuy's public homepage — matches the structure of the xfund.com
+// reference the user provided: a full-bleed photo hero, a two-column
+// "About us" block, and a "Partner with us"-style CTA block with a
+// full-width photo band. No photography is available yet, so image
+// areas are plain neutral placeholders (ImageSlot) — swap the src in
+// once real photos of neighbors/pickups exist. No food photography,
+// no decorative graphics standing in for it.
 
 const CRIMSON = "#8C1515"; // Stanford's published Cardinal Red (identity.stanford.edu/color)
 const INK = "#0A0A0A";
@@ -25,11 +26,7 @@ const FAQS = [
   },
   {
     q: "What happens if I don't collect my reservation?",
-    a: "The listing releases back to the neighborhood automatically after 1 hour, and your Reliability Score drops 15%. See the Reliability Score page for details.",
-  },
-  {
-    q: "Can businesses use Stanbuy?",
-    a: "Individual neighbors always share for free. Local shops and businesses that want to post surplus regularly can do so through a separate, paid Stanbuy for Business subscription.",
+    a: "The listing releases back to the neighborhood automatically after 1 hour, and your Reliability Score drops 15%. Show up and it stays high; miss enough and reserving pauses for a week.",
   },
   {
     q: "Is my exact address shared with everyone?",
@@ -37,26 +34,19 @@ const FAQS = [
   },
 ];
 
-// A faceted line-art graphic, standing in for photography we don't have.
-// `tone` picks the two stroke colors so it reads correctly on light or
-// dark backgrounds.
-function FacetPattern({ tone = "light", className }: { tone?: "light" | "dark"; className?: string }) {
-  const a = tone === "light" ? RULE : "rgba(255,255,255,0.14)";
-  const b = tone === "light" ? CRIMSON : "rgba(255,255,255,0.5)";
-  const lines: [number, number, number, number, string][] = [
-    [40, 0, 40, 600, a], [160, 0, 160, 600, a], [280, 0, 280, 600, a],
-    [0, 80, 400, 80, a], [0, 260, 400, 260, a], [0, 440, 400, 440, a],
-    [40, 0, 160, 80, b], [160, 80, 40, 260, a], [40, 260, 160, 440, b],
-    [160, 440, 40, 600, a], [160, 80, 280, 0, a], [280, 0, 400, 80, b],
-    [280, 260, 160, 440, a], [280, 260, 400, 440, b], [280, 440, 400, 600, a],
-    [40, 260, 0, 440, b],
-  ];
+// Plain placeholder for a photo we don't have yet. Swap the commented
+// <img> in for a real photo (team, neighbors, a pickup in progress —
+// never food close-ups) once one exists.
+function ImageSlot({ label, className }: { label: string; className?: string }) {
   return (
-    <svg viewBox="0 0 400 600" className={className} preserveAspectRatio="xMidYMid slice" style={{ width: "100%", height: "100%" }}>
-      {lines.map(([x1, y1, x2, y2, stroke], i) => (
-        <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke={stroke} strokeWidth={1.25} />
-      ))}
-    </svg>
+    <div
+      className={`flex items-center justify-center ${className ?? ""}`}
+      style={{ background: "#EDEDED", border: `1px solid ${RULE}`, width: "100%", height: "100%" }}
+    >
+      <span style={{ fontFamily: SANS, fontSize: 12, fontWeight: 600, letterSpacing: "0.08em", color: "#A3A3A3", textTransform: "uppercase" }}>
+        {label}
+      </span>
+    </div>
   );
 }
 
@@ -70,7 +60,6 @@ function HeroNav() {
         <Link href="/" style={{ ...NAV_LINK, color: "rgba(255,255,255,0.85)" }}>About</Link>
         <Link href="/browse" style={{ ...NAV_LINK, color: "rgba(255,255,255,0.85)" }}>Browse</Link>
         <Link href="/sell" style={{ ...NAV_LINK, color: "rgba(255,255,255,0.85)" }}>Sell</Link>
-        <Link href="/legal" style={{ ...NAV_LINK, color: "rgba(255,255,255,0.85)" }}>Legal</Link>
       </div>
       <div className="flex items-center" style={{ gap: 10 }}>
         <Link
@@ -128,45 +117,34 @@ function CTAButtons({ invert = false }: { invert?: boolean }) {
 export default function HomePage() {
   return (
     <div id="top" style={{ background: "#ffffff", color: INK, fontFamily: SANS }}>
-      {/* Hero — full-bleed, dark, faceted line-art standing in for photography */}
-      <section className="relative overflow-hidden" style={{ background: "linear-gradient(160deg, #101012 0%, #1c1c1f 55%, #141416 100%)" }}>
-        <div className="absolute inset-0" style={{ opacity: 0.5 }}>
-          <FacetPattern tone="dark" className="absolute" />
-          <div className="absolute" style={{ inset: 0, transform: "scaleX(-1) translateX(-20%)" }}>
-            <FacetPattern tone="dark" />
+      {/* Hero — full-bleed photo (placeholder until we have one) */}
+      <section className="relative overflow-hidden" style={{ background: "#16140F", minHeight: "88vh" }}>
+        <div className="absolute inset-0" style={{ background: "linear-gradient(0deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.15) 45%, rgba(0,0,0,0.35) 100%)" }} />
+
+        <div className="relative flex h-full flex-col" style={{ minHeight: "88vh" }}>
+          <HeroNav />
+          <div className="relative z-10 flex flex-1 flex-col justify-end" style={{ padding: "0 32px 9vh", maxWidth: 1180, margin: "0 auto", width: "100%" }}>
+            <h1
+              style={{
+                fontFamily: SERIF, fontWeight: 600, color: "#ffffff",
+                fontSize: "clamp(36px, 5.6vw, 68px)", lineHeight: 1.08, letterSpacing: "-0.01em",
+                maxWidth: 780, margin: "0 0 26px",
+              }}
+            >
+              The neighborhood marketplace for food that would otherwise go to waste.
+            </h1>
+            <p style={{ fontFamily: SANS, fontSize: 18, color: "rgba(255,255,255,0.78)", lineHeight: 1.6, maxWidth: 540, margin: "0 0 36px" }}>
+              Stanbuy connects neighbors who have extra food with neighbors who could use it — free, in under an
+              hour, right around the corner.
+            </p>
+            <CTAButtons invert />
           </div>
-        </div>
-        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 30% 100%, rgba(140,21,21,0.28), transparent 60%)" }} />
-
-        <HeroNav />
-
-        <div className="relative z-10" style={{ padding: "18vh 32px 9vh", maxWidth: 1180, margin: "0 auto" }}>
-          <h1
-            style={{
-              fontFamily: SERIF, fontWeight: 600, color: "#ffffff",
-              fontSize: "clamp(38px, 6vw, 72px)", lineHeight: 1.08, letterSpacing: "-0.01em",
-              maxWidth: 820, margin: "0 0 28px",
-            }}
-          >
-            The Neighborhood Marketplace for Food That Would Otherwise Go to Waste.
-          </h1>
-          <p style={{ fontFamily: SANS, fontSize: 18, color: "rgba(255,255,255,0.72)", lineHeight: 1.6, maxWidth: 560, margin: "0 0 40px" }}>
-            Stanbuy connects neighbors who have extra food with neighbors who could use it — free, in under an
-            hour, right around the corner.
-          </p>
-          <CTAButtons invert />
-        </div>
-
-        <div className="absolute flex items-center" style={{ bottom: 28, right: 32, gap: 6 }}>
-          {[0, 1, 2].map((i) => (
-            <span key={i} style={{ width: 6, height: 6, borderRadius: 999, background: i === 0 ? "#ffffff" : "rgba(255,255,255,0.35)" }} />
-          ))}
         </div>
       </section>
 
       {/* About us */}
-      <section className="mx-auto" style={{ maxWidth: 1180, padding: "120px 32px" }}>
-        <div className="grid grid-cols-1 lg:grid-cols-2 items-center" style={{ gap: 56 }}>
+      <section className="mx-auto" style={{ maxWidth: 1180, padding: "110px 32px" }}>
+        <div className="grid grid-cols-1 lg:grid-cols-2 items-center" style={{ gap: 64 }}>
           <div>
             <div className="flex items-center" style={{ gap: 8, marginBottom: 20 }}>
               <svg width="12" height="12" viewBox="0 0 24 24" fill={CRIMSON}><path d="M4 2h18l-7 9 7 9H4V2Z" /></svg>
@@ -174,19 +152,20 @@ export default function HomePage() {
                 About us
               </span>
             </div>
-            <h2 style={{ fontFamily: SERIF, fontWeight: 600, fontSize: "clamp(30px, 3.4vw, 44px)", lineHeight: 1.2, color: INK, margin: "0 0 24px" }}>
+            <h2 style={{ fontFamily: SERIF, fontWeight: 600, fontSize: "clamp(28px, 3.2vw, 42px)", lineHeight: 1.2, color: INK, margin: "0 0 24px" }}>
               Built to close the gap between having too much and needing enough.
             </h2>
-            <p style={{ fontSize: 17, color: MUTED, lineHeight: 1.7, margin: "0 0 16px", maxWidth: 480 }}>
+            <p style={{ fontSize: 17, color: MUTED, lineHeight: 1.7, margin: "0 0 16px", maxWidth: 460 }}>
               Food doesn&apos;t go to waste because neighbors don&apos;t care — it goes to waste because there
-              was never a fast, low-friction way to hand it to someone who would actually use it.
+              was never a fast, low-friction way to hand it to someone who would actually use it. So we cut the
+              app down to two buttons: post what you have, or browse what&apos;s free nearby.
             </p>
-            <p style={{ fontSize: 17, color: MUTED, lineHeight: 1.7, margin: "0 0 32px", maxWidth: 480 }}>
-              So we cut the app down to two buttons. If you have extra, post it. If you want something, browse
-              what&apos;s free nearby and reserve it. Nothing else sits in between.
+            <p style={{ fontSize: 17, color: MUTED, lineHeight: 1.7, margin: "0 0 32px", maxWidth: 460 }}>
+              Post it, a neighbor reserves it within the hour, you hand it off in person. Every neighbor carries
+              a Reliability Score, so the system stays honest without anyone policing it.
             </p>
             <Link
-              href="#how-it-works"
+              href="/legal"
               className="inline-flex items-center justify-center"
               style={{ height: 52, padding: "0 26px", borderRadius: 6, background: INK, color: "#ffffff", fontFamily: SANS, fontSize: 15, fontWeight: 700, gap: 10 }}
             >
@@ -194,81 +173,39 @@ export default function HomePage() {
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.4"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
             </Link>
           </div>
-          <div style={{ height: 420 }} className="hidden lg:block">
-            <FacetPattern tone="light" />
+          <div style={{ aspectRatio: "4 / 5" }} className="hidden lg:block">
+            <ImageSlot label="Photo: neighbors, team" />
           </div>
         </div>
       </section>
 
-      {/* How it works */}
-      <section id="how-it-works" style={{ borderTop: `1px solid ${RULE}`, background: "#FAFAFA" }}>
-        <div className="mx-auto" style={{ maxWidth: 1180, padding: "100px 32px" }}>
-          <h2 style={{ fontFamily: SERIF, fontWeight: 600, fontSize: "clamp(26px, 3vw, 36px)", color: INK, margin: "0 0 48px" }}>
+      {/* How it works — kept plain, no color/graphic treatment */}
+      <section style={{ borderTop: `1px solid ${RULE}`, background: "#FAFAFA" }}>
+        <div className="mx-auto" style={{ maxWidth: 780, padding: "90px 32px" }}>
+          <h2 style={{ fontFamily: SERIF, fontWeight: 600, fontSize: "clamp(24px, 2.8vw, 32px)", color: INK, margin: "0 0 32px" }}>
             How it works
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3" style={{ gap: 40 }}>
+          <ol style={{ margin: 0, padding: 0, listStyle: "none" }}>
             {[
-              ["01", "Post what you have", "Snap a photo of the food you won't finish and share it with your street in under a minute."],
-              ["02", "A neighbor reserves it", "Anyone nearby can reserve a listing. It's held for them for one hour, no one else can claim it."],
-              ["03", "Meet, hand off, done", "The buyer walks over, shows their pickup code, and takes it home. No fees, no delivery."],
-            ].map(([n, t, d]) => (
-              <div key={n}>
-                <div style={{ fontFamily: SERIF, fontSize: 40, fontWeight: 600, color: CRIMSON, marginBottom: 14 }}>{n}</div>
-                <div style={{ fontFamily: SANS, fontSize: 18, fontWeight: 700, color: INK, marginBottom: 8 }}>{t}</div>
-                <div style={{ fontSize: 15.5, color: MUTED, lineHeight: 1.65 }}>{d}</div>
-              </div>
+              ["Post what you have", "Snap a photo of the food you won't finish and share it with your street in under a minute."],
+              ["A neighbor reserves it", "Anyone nearby can reserve a listing. It's held for them for one hour, no one else can claim it."],
+              ["Meet, hand off, done", "The buyer walks over, shows their pickup code, and takes it home. No fees, no delivery."],
+            ].map(([t, d], i) => (
+              <li key={t} style={{ display: "flex", gap: 20, padding: "18px 0", borderTop: i > 0 ? `1px solid ${RULE}` : "none" }}>
+                <span style={{ fontFamily: SANS, fontSize: 14, fontWeight: 700, color: MUTED, flex: "none", width: 20, paddingTop: 2 }}>{i + 1}</span>
+                <div>
+                  <div style={{ fontFamily: SANS, fontSize: 16, fontWeight: 700, color: INK, marginBottom: 4 }}>{t}</div>
+                  <div style={{ fontSize: 15, color: MUTED, lineHeight: 1.6 }}>{d}</div>
+                </div>
+              </li>
             ))}
-          </div>
+          </ol>
         </div>
       </section>
 
-      {/* Trust / reliability */}
-      <section className="mx-auto" style={{ maxWidth: 1180, padding: "100px 32px" }}>
-        <div className="grid grid-cols-1 lg:grid-cols-2 items-center" style={{ gap: 56 }}>
-          <div style={{ height: 380 }} className="hidden lg:block order-2">
-            <FacetPattern tone="light" />
-          </div>
-          <div className="order-1">
-            <div className="flex items-center" style={{ gap: 8, marginBottom: 20 }}>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill={CRIMSON}><path d="M4 2h18l-7 9 7 9H4V2Z" /></svg>
-              <span style={{ fontFamily: SANS, fontSize: 12, fontWeight: 700, letterSpacing: "0.12em", color: CRIMSON, textTransform: "uppercase" }}>
-                Built on trust
-              </span>
-            </div>
-            <h2 style={{ fontFamily: SERIF, fontWeight: 600, fontSize: "clamp(28px, 3.2vw, 40px)", lineHeight: 1.2, color: INK, margin: "0 0 24px" }}>
-              Every neighbor carries a <span style={{ color: CRIMSON }}>Reliability Score.</span>
-            </h2>
-            <p style={{ fontSize: 17, color: MUTED, lineHeight: 1.7, margin: "0 0 16px", maxWidth: 480 }}>
-              Show up for what you reserve and it stays high. Miss it, and it drops — fall far enough and
-              reserving pauses for a week.
-            </p>
-            <p style={{ fontSize: 17, color: MUTED, lineHeight: 1.7, maxWidth: 480 }}>
-              Listings only ever show a neighborhood on the map, never an exact address. And the food itself is
-              free, full stop — during this pilot and after it.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* By the numbers */}
-      <section style={{ borderTop: `1px solid ${RULE}`, borderBottom: `1px solid ${RULE}` }}>
-        <div className="mx-auto grid grid-cols-1 sm:grid-cols-3" style={{ maxWidth: 1180, padding: "64px 32px" }}>
-          {[
-            ["Roughly a third", "of all food produced is never eaten — most of it still edible when it's thrown out."],
-            ["60 minutes", "is how long a reservation holds a listing before it's released back to the neighborhood."],
-            ["$0.00", "is what the food itself costs on Stanbuy, during the pilot and after it."],
-          ].map(([stat, desc], i) => (
-            <div key={stat} style={{ padding: "8px 28px", borderLeft: i > 0 ? `1px solid ${RULE}` : "none" }}>
-              <div style={{ fontFamily: SERIF, fontWeight: 600, fontSize: 38, color: INK }}>{stat}</div>
-              <div style={{ fontSize: 15, color: MUTED, marginTop: 8, lineHeight: 1.6 }}>{desc}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Partner-with-us style CTA band */}
-      <section className="mx-auto" style={{ maxWidth: 1180, padding: "120px 32px 60px" }}>
-        <h2 style={{ fontFamily: SERIF, fontWeight: 600, fontSize: "clamp(32px, 4vw, 52px)", color: INK, margin: "0 0 24px" }}>
+      {/* Partner-with-us style CTA, with a full-width photo band beneath */}
+      <section className="mx-auto" style={{ maxWidth: 1180, padding: "110px 32px 0" }}>
+        <h2 style={{ fontFamily: SERIF, fontWeight: 600, fontSize: "clamp(30px, 3.8vw, 48px)", color: INK, margin: "0 0 24px" }}>
           <span style={{ color: CRIMSON }}>Two buttons.</span> That&apos;s the app.
         </h2>
         <p style={{ fontSize: 17, color: MUTED, lineHeight: 1.7, maxWidth: 560, margin: "0 0 40px" }}>
@@ -276,29 +213,29 @@ export default function HomePage() {
         </p>
         <CTAButtons />
       </section>
-      <div style={{ height: 160 }}>
-        <FacetPattern tone="light" />
+      <div className="mx-auto" style={{ maxWidth: 1180, padding: "56px 32px 0", aspectRatio: "16 / 6" }}>
+        <ImageSlot label="Photo: a pickup, in person" />
       </div>
 
       {/* FAQ */}
-      <section className="mx-auto" style={{ maxWidth: 780, padding: "100px 32px 8px" }}>
-        <h2 style={{ fontFamily: SERIF, fontWeight: 600, fontSize: "clamp(26px, 3vw, 34px)", color: INK, margin: "0 0 8px" }}>
+      <section className="mx-auto" style={{ maxWidth: 720, padding: "110px 32px 8px" }}>
+        <h2 style={{ fontFamily: SERIF, fontWeight: 600, fontSize: "clamp(24px, 2.8vw, 32px)", color: INK, margin: "0 0 8px" }}>
           Common questions
         </h2>
         <div style={{ height: 1, background: RULE, margin: "24px 0" }} />
         {FAQS.map((item) => (
-          <details key={item.q} style={{ borderBottom: `1px solid ${RULE}`, padding: "18px 0" }}>
-            <summary className="flex cursor-pointer items-center justify-between" style={{ listStyle: "none", fontSize: 16.5, fontWeight: 700, color: INK }}>
+          <details key={item.q} style={{ borderBottom: `1px solid ${RULE}`, padding: "16px 0" }}>
+            <summary className="flex cursor-pointer items-center justify-between" style={{ listStyle: "none", fontSize: 16, fontWeight: 700, color: INK }}>
               {item.q}
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={MUTED} strokeWidth="2" className="flex-none">
                 <path d="M6 9l6 6 6-6" />
               </svg>
             </summary>
-            <p style={{ margin: "10px 0 0", fontSize: 15.5, color: MUTED, lineHeight: 1.7 }}>{item.a}</p>
+            <p style={{ margin: "10px 0 0", fontSize: 15, color: MUTED, lineHeight: 1.7 }}>{item.a}</p>
           </details>
         ))}
-        <div style={{ marginTop: 24, fontSize: 14.5, color: MUTED, paddingBottom: 8 }}>
-          Questions about how Stanbuy works?{" "}
+        <div style={{ marginTop: 22, fontSize: 14, color: MUTED, paddingBottom: 8 }}>
+          More questions?{" "}
           <Link href="/legal" style={{ color: CRIMSON, fontWeight: 600 }}>
             Read our Terms &amp; policies
           </Link>
