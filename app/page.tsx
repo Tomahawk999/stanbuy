@@ -1,18 +1,17 @@
 import Link from "next/link";
 
-// Stanbuy's public homepage — modeled closely on a Stanford news-site
-// article layout (red utility bar, logo + search + nav header, feature
-// eyebrow, bold sans headline, byline row, full-width photo, plain-text
-// article body, fixed "Back to top" button). The org name in the source
-// is swapped for Stanbuy's own so the page reads as Stanbuy's, not as
-// an actual Stanford property.
+// Stanbuy's public homepage — styled after institutional / VC-firm sites
+// (Xfund, Stanford, Harvard): a full-bleed hero, an old-style serif for
+// headlines paired with a modern sans for nav/body, crimson used only as
+// a sparing accent, and faceted line-art graphics in place of stock
+// photography (no real neighborhood photography is available yet — swap
+// the FacetPattern blocks for real photos once we have them).
 
 const CRIMSON = "#8C1515"; // Stanford's published Cardinal Red (identity.stanford.edu/color)
-const INK = "#1D1D1D";
-const BODY_TEXT = "#262626";
-const MUTED = "#5F5F5F";
-const RULE = "#E2E2E2";
-const LINK_BLUE = "#1B57B3";
+const INK = "#0A0A0A";
+const MUTED = "#63666A";
+const RULE = "#E5E5E6";
+const SERIF = "var(--font-editorial-serif)";
 const SANS = "var(--font-editorial-sans)";
 
 const FAQS = [
@@ -38,206 +37,280 @@ const FAQS = [
   },
 ];
 
-const PUBLISHED = new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
-
-const NAV_LINK: React.CSSProperties = { color: CRIMSON, fontWeight: 700, fontSize: 15 };
-const CONTAINER = 900;
-
-function ShareIcon({ path }: { path: string }) {
+// A faceted line-art graphic, standing in for photography we don't have.
+// `tone` picks the two stroke colors so it reads correctly on light or
+// dark backgrounds.
+function FacetPattern({ tone = "light", className }: { tone?: "light" | "dark"; className?: string }) {
+  const a = tone === "light" ? RULE : "rgba(255,255,255,0.14)";
+  const b = tone === "light" ? CRIMSON : "rgba(255,255,255,0.5)";
+  const lines: [number, number, number, number, string][] = [
+    [40, 0, 40, 600, a], [160, 0, 160, 600, a], [280, 0, 280, 600, a],
+    [0, 80, 400, 80, a], [0, 260, 400, 260, a], [0, 440, 400, 440, a],
+    [40, 0, 160, 80, b], [160, 80, 40, 260, a], [40, 260, 160, 440, b],
+    [160, 440, 40, 600, a], [160, 80, 280, 0, a], [280, 0, 400, 80, b],
+    [280, 260, 160, 440, a], [280, 260, 400, 440, b], [280, 440, 400, 600, a],
+    [40, 260, 0, 440, b],
+  ];
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill={INK}>
-      <path d={path} />
+    <svg viewBox="0 0 400 600" className={className} preserveAspectRatio="xMidYMid slice" style={{ width: "100%", height: "100%" }}>
+      {lines.map(([x1, y1, x2, y2, stroke], i) => (
+        <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke={stroke} strokeWidth={1.25} />
+      ))}
     </svg>
+  );
+}
+
+const NAV_LINK: React.CSSProperties = { fontFamily: SANS, fontWeight: 600, fontSize: 15 };
+
+function HeroNav() {
+  return (
+    <nav className="relative z-10 flex flex-wrap items-center justify-between" style={{ padding: "24px 32px", gap: 16 }}>
+      <div className="flex items-center" style={{ gap: 28 }}>
+        <Link href="/" style={{ ...NAV_LINK, color: "#ffffff" }}>Stanbuy</Link>
+        <Link href="/" style={{ ...NAV_LINK, color: "rgba(255,255,255,0.85)" }}>About</Link>
+        <Link href="/browse" style={{ ...NAV_LINK, color: "rgba(255,255,255,0.85)" }}>Browse</Link>
+        <Link href="/sell" style={{ ...NAV_LINK, color: "rgba(255,255,255,0.85)" }}>Sell</Link>
+        <Link href="/legal" style={{ ...NAV_LINK, color: "rgba(255,255,255,0.85)" }}>Legal</Link>
+      </div>
+      <div className="flex items-center" style={{ gap: 10 }}>
+        <Link
+          href="/auth"
+          className="flex items-center justify-center"
+          style={{ ...NAV_LINK, height: 42, padding: "0 22px", borderRadius: 6, background: "#ffffff", color: INK }}
+        >
+          Sign In
+        </Link>
+        <Link
+          href="/browse"
+          aria-label="Find free food near you"
+          className="flex items-center justify-center"
+          style={{ height: 42, width: 42, borderRadius: 6, background: CRIMSON }}
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M7 17 17 7M8 7h9v9" />
+          </svg>
+        </Link>
+      </div>
+    </nav>
+  );
+}
+
+function CTAButtons({ invert = false }: { invert?: boolean }) {
+  return (
+    <div className="flex flex-col sm:flex-row" style={{ gap: 14 }}>
+      <Link
+        href="/sell"
+        className="flex items-center justify-center"
+        style={{
+          height: 54, padding: "0 28px", fontFamily: SANS, fontSize: 15, fontWeight: 700, borderRadius: 6,
+          color: invert ? INK : "#ffffff",
+          background: invert ? "#ffffff" : INK,
+        }}
+      >
+        Get rid of your leftovers →
+      </Link>
+      <Link
+        href="/browse"
+        className="flex items-center justify-center"
+        style={{
+          height: 54, padding: "0 28px", fontFamily: SANS, fontSize: 15, fontWeight: 700, borderRadius: 6,
+          color: invert ? "#ffffff" : INK,
+          background: "transparent",
+          border: `1px solid ${invert ? "rgba(255,255,255,0.6)" : INK}`,
+        }}
+      >
+        Find free food near you →
+      </Link>
+    </div>
   );
 }
 
 export default function HomePage() {
   return (
-    <div style={{ background: "#ffffff", color: BODY_TEXT, fontFamily: SANS }}>
-      {/* Utility bar */}
-      <div style={{ background: CRIMSON }}>
-        <div className="mx-auto" style={{ maxWidth: 1180, padding: "9px 24px" }}>
-          <span style={{ color: "#ffffff", fontWeight: 700, fontSize: 13 }}>Stanbuy</span>
-        </div>
-      </div>
-
-      {/* Header */}
-      <header style={{ borderBottom: `1px solid ${RULE}` }}>
-        <div className="mx-auto flex flex-wrap items-start justify-between" style={{ maxWidth: 1180, padding: "28px 24px 0", gap: 20 }}>
-          <Link href="/" style={{ color: INK }}>
-            <div style={{ fontSize: 34, fontWeight: 800, lineHeight: 1.15, letterSpacing: "-0.01em" }}>Stanbuy</div>
-            <div style={{ fontSize: 17, fontWeight: 400, color: MUTED, marginTop: 2 }}>Neighborhood food, shared daily</div>
-          </Link>
-          <form action="/browse" method="GET" className="flex items-center" style={{ height: 42, minWidth: 240, borderRadius: 999, border: `1px solid ${RULE}`, padding: "0 6px 0 18px" }}>
-            <label htmlFor="site-search" className="sr-only">Search this site</label>
-            <input
-              id="site-search"
-              name="q"
-              type="text"
-              placeholder="Search this site"
-              className="min-w-0 flex-1"
-              style={{ border: "none", outline: "none", fontSize: 14, color: INK, background: "transparent" }}
-            />
-            <button
-              type="submit"
-              aria-label="Search"
-              className="flex flex-none cursor-pointer items-center justify-center border-none bg-transparent"
-              style={{ width: 32, height: 32 }}
-            >
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke={CRIMSON} strokeWidth="2.4">
-                <circle cx="11" cy="11" r="7" />
-                <path d="M21 21l-4.3-4.3" />
-              </svg>
-            </button>
-          </form>
-        </div>
-        <nav className="mx-auto flex flex-wrap items-center justify-end" style={{ maxWidth: 1180, padding: "18px 24px", gap: 28 }}>
-          <Link href="/" style={NAV_LINK}>About</Link>
-          <Link href="/browse" style={NAV_LINK}>Browse</Link>
-          <Link href="/sell" style={NAV_LINK}>Sell</Link>
-          <Link href="/legal" style={NAV_LINK}>Legal</Link>
-          <Link href="/auth" style={NAV_LINK}>Sign In</Link>
-        </nav>
-      </header>
-
-      {/* Article header */}
-      <div className="mx-auto" style={{ maxWidth: CONTAINER, padding: "48px 24px 0" }}>
-        <div style={{ color: CRIMSON, fontWeight: 700, fontSize: 13, marginBottom: 14 }}>Feature</div>
-        <h1 style={{ fontSize: "clamp(32px, 4.5vw, 48px)", fontWeight: 800, color: INK, lineHeight: 1.15, letterSpacing: "-0.01em", margin: 0 }}>
-          One neighbor&apos;s leftovers are another&apos;s dinner
-        </h1>
-        <p style={{ fontSize: 22, fontWeight: 400, color: "#3C3C3C", lineHeight: 1.5, margin: "20px 0" }}>
-          Stanbuy connects neighbors who have extra food with neighbors who could use it — free, in under an
-          hour, right around the corner.
-        </p>
-        <div
-          className="flex flex-wrap items-center"
-          style={{ gap: 16, fontSize: 14, color: MUTED, paddingBottom: 24, borderBottom: `1px solid ${RULE}` }}
-        >
-          <span>{PUBLISHED} · By the Stanbuy Team</span>
-          <div className="flex items-center" style={{ gap: 12 }}>
-            <ShareIcon path="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.4h-1.2c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12Z" />
-            <ShareIcon path="M22 5.9c-.7.3-1.5.6-2.3.7.8-.5 1.4-1.3 1.7-2.3-.8.5-1.7.8-2.6 1a4.1 4.1 0 0 0-7 3.7A11.6 11.6 0 0 1 3.4 4.9a4.1 4.1 0 0 0 1.3 5.5c-.7 0-1.3-.2-1.9-.5v.1c0 2 1.4 3.6 3.3 4a4.2 4.2 0 0 1-1.8.1 4.1 4.1 0 0 0 3.8 2.9A8.3 8.3 0 0 1 2 18.6a11.6 11.6 0 0 0 6.3 1.8c7.5 0 11.7-6.3 11.7-11.7v-.5c.8-.6 1.5-1.3 2-2.3Z" />
-            <ShareIcon path="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3V9Zm7 0h3.8v1.7h.1c.5-1 1.8-2 3.7-2 4 0 4.7 2.6 4.7 6V21h-4v-5.5c0-1.3 0-3-1.8-3s-2.1 1.4-2.1 2.9V21h-4V9Z" />
-            <ShareIcon path="M4 4h16a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Zm1 2.4V18h14V6.4l-7 5.4-7-5.4Zm.8-.4 6.2 4.8L18.2 6H5.8Z" />
+    <div id="top" style={{ background: "#ffffff", color: INK, fontFamily: SANS }}>
+      {/* Hero — full-bleed, dark, faceted line-art standing in for photography */}
+      <section className="relative overflow-hidden" style={{ background: "linear-gradient(160deg, #101012 0%, #1c1c1f 55%, #141416 100%)" }}>
+        <div className="absolute inset-0" style={{ opacity: 0.5 }}>
+          <FacetPattern tone="dark" className="absolute" />
+          <div className="absolute" style={{ inset: 0, transform: "scaleX(-1) translateX(-20%)" }}>
+            <FacetPattern tone="dark" />
           </div>
         </div>
-      </div>
+        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 30% 100%, rgba(140,21,21,0.28), transparent 60%)" }} />
 
-      {/* Feature image */}
-      <figure className="mx-auto" style={{ maxWidth: CONTAINER, padding: "28px 24px 0" }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/category-produce.jpg"
-          alt="A basket of surplus produce ready to be shared with a neighbor"
-          style={{ width: "100%", height: "auto", maxHeight: 420, objectFit: "cover", display: "block" }}
-        />
-        <figcaption className="text-center" style={{ fontSize: 13, color: MUTED, marginTop: 10, padding: "0 12px" }}>
-          A weekly haul of surplus produce, shared through Stanbuy instead of thrown away.
-        </figcaption>
-      </figure>
+        <HeroNav />
 
-      {/* Article body */}
-      <article className="mx-auto" style={{ maxWidth: CONTAINER, padding: "32px 24px 8px", fontSize: 19, lineHeight: 1.75, color: BODY_TEXT }}>
-        <p style={{ margin: "0 0 22px" }}>
-          Every night, kitchens up and down your street throw away food that is still good — a loaf going stale
-          before it&apos;s finished, a tray of dinner cooked for guests who never came, a garden that produced
-          more tomatoes than one household can eat. None of it is spoiled. All of it needs a neighbor before it
-          needs a landfill.
-        </p>
-        <p style={{ margin: "0 0 22px" }}>
-          Stanbuy exists to close that one-hour gap between &ldquo;I have extra&rdquo; and &ldquo;I could use
-          that.&rdquo; A neighbor posts what they have, a nearby neighbor reserves it, and the two of them
-          handle the rest — no delivery, no middleman, no charge for the food itself.
-        </p>
-        <p style={{ margin: "0 0 22px" }}>
-          &ldquo;You build yourself before you build your company,&rdquo; is how Y Combinator&apos;s Garry Tan
-          put it to a room of Stanford founders. The same is true of a neighborhood: it gets built one shared
-          meal at a time, not by a delivery fleet.
-        </p>
+        <div className="relative z-10" style={{ padding: "18vh 32px 9vh", maxWidth: 1180, margin: "0 auto" }}>
+          <h1
+            style={{
+              fontFamily: SERIF, fontWeight: 600, color: "#ffffff",
+              fontSize: "clamp(38px, 6vw, 72px)", lineHeight: 1.08, letterSpacing: "-0.01em",
+              maxWidth: 820, margin: "0 0 28px",
+            }}
+          >
+            The Neighborhood Marketplace for Food That Would Otherwise Go to Waste.
+          </h1>
+          <p style={{ fontFamily: SANS, fontSize: 18, color: "rgba(255,255,255,0.72)", lineHeight: 1.6, maxWidth: 560, margin: "0 0 40px" }}>
+            Stanbuy connects neighbors who have extra food with neighbors who could use it — free, in under an
+            hour, right around the corner.
+          </p>
+          <CTAButtons invert />
+        </div>
 
-        {/* Two things you can do — replaces the article's embedded video with Stanbuy's two real actions */}
-        <div style={{ border: `1px solid ${RULE}`, borderRadius: 4, padding: 28, margin: "8px 0 28px" }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: CRIMSON, marginBottom: 16, textTransform: "uppercase", letterSpacing: "0.06em" }}>
-            Two things you can do right now
-          </div>
-          <div className="flex flex-col sm:flex-row" style={{ gap: 14 }}>
+        <div className="absolute flex items-center" style={{ bottom: 28, right: 32, gap: 6 }}>
+          {[0, 1, 2].map((i) => (
+            <span key={i} style={{ width: 6, height: 6, borderRadius: 999, background: i === 0 ? "#ffffff" : "rgba(255,255,255,0.35)" }} />
+          ))}
+        </div>
+      </section>
+
+      {/* About us */}
+      <section className="mx-auto" style={{ maxWidth: 1180, padding: "120px 32px" }}>
+        <div className="grid grid-cols-1 lg:grid-cols-2 items-center" style={{ gap: 56 }}>
+          <div>
+            <div className="flex items-center" style={{ gap: 8, marginBottom: 20 }}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill={CRIMSON}><path d="M4 2h18l-7 9 7 9H4V2Z" /></svg>
+              <span style={{ fontFamily: SANS, fontSize: 12, fontWeight: 700, letterSpacing: "0.12em", color: CRIMSON, textTransform: "uppercase" }}>
+                About us
+              </span>
+            </div>
+            <h2 style={{ fontFamily: SERIF, fontWeight: 600, fontSize: "clamp(30px, 3.4vw, 44px)", lineHeight: 1.2, color: INK, margin: "0 0 24px" }}>
+              Built to close the gap between having too much and needing enough.
+            </h2>
+            <p style={{ fontSize: 17, color: MUTED, lineHeight: 1.7, margin: "0 0 16px", maxWidth: 480 }}>
+              Food doesn&apos;t go to waste because neighbors don&apos;t care — it goes to waste because there
+              was never a fast, low-friction way to hand it to someone who would actually use it.
+            </p>
+            <p style={{ fontSize: 17, color: MUTED, lineHeight: 1.7, margin: "0 0 32px", maxWidth: 480 }}>
+              So we cut the app down to two buttons. If you have extra, post it. If you want something, browse
+              what&apos;s free nearby and reserve it. Nothing else sits in between.
+            </p>
             <Link
-              href="/sell"
-              className="flex items-center justify-center"
-              style={{ height: 52, padding: "0 24px", fontSize: 15, fontWeight: 700, color: "#ffffff", background: CRIMSON }}
+              href="#how-it-works"
+              className="inline-flex items-center justify-center"
+              style={{ height: 52, padding: "0 26px", borderRadius: 6, background: INK, color: "#ffffff", fontFamily: SANS, fontSize: 15, fontWeight: 700, gap: 10 }}
             >
-              Get rid of your leftovers →
-            </Link>
-            <Link
-              href="/browse"
-              className="flex items-center justify-center"
-              style={{ height: 52, padding: "0 24px", fontSize: 15, fontWeight: 700, color: INK, background: "transparent", border: `1px solid ${INK}` }}
-            >
-              Find free food near you →
+              Learn more
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.4"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
             </Link>
           </div>
+          <div style={{ height: 420 }} className="hidden lg:block">
+            <FacetPattern tone="light" />
+          </div>
         </div>
+      </section>
 
-        <h2 style={{ fontSize: 28, fontWeight: 800, color: INK, margin: "8px 0 16px" }}>Why we exist</h2>
-        <p style={{ margin: "0 0 22px" }}>
-          Food doesn&apos;t go to waste because neighbors don&apos;t care. It goes to waste because there was
-          never a fast, low-friction way to hand it to someone who would actually use it. By the time you&apos;ve
-          thought about posting it somewhere, messaging a group chat, or driving it to a donation center, it&apos;s
-          easier to just throw it out. That gap — not indifference — is what Stanbuy is built to close.
-        </p>
-        <p style={{ margin: "0 0 22px" }}>
-          So we cut the app down to two buttons. If you have extra, you post it in under a minute. If you want
-          something, you browse what&apos;s free nearby and reserve it. Nothing else — no cart, no checkout, no
-          delivery fee — sits between a neighbor with too much and a neighbor with none.
-        </p>
+      {/* How it works */}
+      <section id="how-it-works" style={{ borderTop: `1px solid ${RULE}`, background: "#FAFAFA" }}>
+        <div className="mx-auto" style={{ maxWidth: 1180, padding: "100px 32px" }}>
+          <h2 style={{ fontFamily: SERIF, fontWeight: 600, fontSize: "clamp(26px, 3vw, 36px)", color: INK, margin: "0 0 48px" }}>
+            How it works
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3" style={{ gap: 40 }}>
+            {[
+              ["01", "Post what you have", "Snap a photo of the food you won't finish and share it with your street in under a minute."],
+              ["02", "A neighbor reserves it", "Anyone nearby can reserve a listing. It's held for them for one hour, no one else can claim it."],
+              ["03", "Meet, hand off, done", "The buyer walks over, shows their pickup code, and takes it home. No fees, no delivery."],
+            ].map(([n, t, d]) => (
+              <div key={n}>
+                <div style={{ fontFamily: SERIF, fontSize: 40, fontWeight: 600, color: CRIMSON, marginBottom: 14 }}>{n}</div>
+                <div style={{ fontFamily: SANS, fontSize: 18, fontWeight: 700, color: INK, marginBottom: 8 }}>{t}</div>
+                <div style={{ fontSize: 15.5, color: MUTED, lineHeight: 1.65 }}>{d}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-        <h2 style={{ fontSize: 28, fontWeight: 800, color: INK, margin: "8px 0 16px" }}>How it works</h2>
-        <p style={{ margin: "0 0 22px" }}>
-          Posting takes under a minute: snap a photo of the food you won&apos;t finish and share it with your
-          street. Anyone nearby can reserve a listing — it&apos;s held for them for one hour, so no one else can
-          claim it out from under them. The buyer walks over, shows their pickup code, and takes it home. No
-          fees, no delivery, no app to schedule around.
-        </p>
-        <p style={{ margin: "0 0 22px" }}>
-          If a reservation goes unclaimed, the listing quietly releases back to the neighborhood after an hour
-          so the food doesn&apos;t just sit there — and someone else can still catch it before it goes to waste.
-        </p>
+      {/* Trust / reliability */}
+      <section className="mx-auto" style={{ maxWidth: 1180, padding: "100px 32px" }}>
+        <div className="grid grid-cols-1 lg:grid-cols-2 items-center" style={{ gap: 56 }}>
+          <div style={{ height: 380 }} className="hidden lg:block order-2">
+            <FacetPattern tone="light" />
+          </div>
+          <div className="order-1">
+            <div className="flex items-center" style={{ gap: 8, marginBottom: 20 }}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill={CRIMSON}><path d="M4 2h18l-7 9 7 9H4V2Z" /></svg>
+              <span style={{ fontFamily: SANS, fontSize: 12, fontWeight: 700, letterSpacing: "0.12em", color: CRIMSON, textTransform: "uppercase" }}>
+                Built on trust
+              </span>
+            </div>
+            <h2 style={{ fontFamily: SERIF, fontWeight: 600, fontSize: "clamp(28px, 3.2vw, 40px)", lineHeight: 1.2, color: INK, margin: "0 0 24px" }}>
+              Every neighbor carries a <span style={{ color: CRIMSON }}>Reliability Score.</span>
+            </h2>
+            <p style={{ fontSize: 17, color: MUTED, lineHeight: 1.7, margin: "0 0 16px", maxWidth: 480 }}>
+              Show up for what you reserve and it stays high. Miss it, and it drops — fall far enough and
+              reserving pauses for a week.
+            </p>
+            <p style={{ fontSize: 17, color: MUTED, lineHeight: 1.7, maxWidth: 480 }}>
+              Listings only ever show a neighborhood on the map, never an exact address. And the food itself is
+              free, full stop — during this pilot and after it.
+            </p>
+          </div>
+        </div>
+      </section>
 
-        <h2 style={{ fontSize: 28, fontWeight: 800, color: INK, margin: "36px 0 16px" }}>Built on trust between neighbors</h2>
-        <p style={{ margin: "0 0 22px" }}>
-          Every neighbor on Stanbuy carries a Reliability Score. Show up for what you reserve and it stays high.
-          Reserve something and never collect it, and it drops — fall far enough and reserving is paused for a
-          week. It&apos;s the only thing standing between an honor system and a marketplace nobody can rely on.
-        </p>
-        <p style={{ margin: "0 0 22px" }}>
-          Listings only ever show a neighborhood on the map, never an exact address — the precise pickup point is
-          shared with a buyer only after they&apos;ve reserved. And the food itself is free, full stop: during
-          this pilot and after it. A small $0.99 handoff fee will apply per pickup once the pilot ends, but it
-          covers logistics, never the meal.
-        </p>
+      {/* By the numbers */}
+      <section style={{ borderTop: `1px solid ${RULE}`, borderBottom: `1px solid ${RULE}` }}>
+        <div className="mx-auto grid grid-cols-1 sm:grid-cols-3" style={{ maxWidth: 1180, padding: "64px 32px" }}>
+          {[
+            ["Roughly a third", "of all food produced is never eaten — most of it still edible when it's thrown out."],
+            ["60 minutes", "is how long a reservation holds a listing before it's released back to the neighborhood."],
+            ["$0.00", "is what the food itself costs on Stanbuy, during the pilot and after it."],
+          ].map(([stat, desc], i) => (
+            <div key={stat} style={{ padding: "8px 28px", borderLeft: i > 0 ? `1px solid ${RULE}` : "none" }}>
+              <div style={{ fontFamily: SERIF, fontWeight: 600, fontSize: 38, color: INK }}>{stat}</div>
+              <div style={{ fontSize: 15, color: MUTED, marginTop: 8, lineHeight: 1.6 }}>{desc}</div>
+            </div>
+          ))}
+        </div>
+      </section>
 
-        <h2 style={{ fontSize: 28, fontWeight: 800, color: INK, margin: "36px 0 16px" }}>Common questions</h2>
+      {/* Partner-with-us style CTA band */}
+      <section className="mx-auto" style={{ maxWidth: 1180, padding: "120px 32px 60px" }}>
+        <h2 style={{ fontFamily: SERIF, fontWeight: 600, fontSize: "clamp(32px, 4vw, 52px)", color: INK, margin: "0 0 24px" }}>
+          <span style={{ color: CRIMSON }}>Two buttons.</span> That&apos;s the app.
+        </h2>
+        <p style={{ fontSize: 17, color: MUTED, lineHeight: 1.7, maxWidth: 560, margin: "0 0 40px" }}>
+          Whatever brought you here, Stanbuy only asks you to do one of two things.
+        </p>
+        <CTAButtons />
+      </section>
+      <div style={{ height: 160 }}>
+        <FacetPattern tone="light" />
+      </div>
+
+      {/* FAQ */}
+      <section className="mx-auto" style={{ maxWidth: 780, padding: "100px 32px 8px" }}>
+        <h2 style={{ fontFamily: SERIF, fontWeight: 600, fontSize: "clamp(26px, 3vw, 34px)", color: INK, margin: "0 0 8px" }}>
+          Common questions
+        </h2>
+        <div style={{ height: 1, background: RULE, margin: "24px 0" }} />
         {FAQS.map((item) => (
-          <div key={item.q} style={{ margin: "0 0 20px" }}>
-            <div style={{ fontWeight: 700, color: INK, marginBottom: 4 }}>{item.q}</div>
-            <p style={{ margin: 0, color: BODY_TEXT }}>{item.a}</p>
-          </div>
+          <details key={item.q} style={{ borderBottom: `1px solid ${RULE}`, padding: "18px 0" }}>
+            <summary className="flex cursor-pointer items-center justify-between" style={{ listStyle: "none", fontSize: 16.5, fontWeight: 700, color: INK }}>
+              {item.q}
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={MUTED} strokeWidth="2" className="flex-none">
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+            </summary>
+            <p style={{ margin: "10px 0 0", fontSize: 15.5, color: MUTED, lineHeight: 1.7 }}>{item.a}</p>
+          </details>
         ))}
-        <p style={{ margin: "8px 0 0" }}>
+        <div style={{ marginTop: 24, fontSize: 14.5, color: MUTED, paddingBottom: 8 }}>
           Questions about how Stanbuy works?{" "}
-          <Link href="/legal" style={{ color: LINK_BLUE, textDecoration: "underline" }}>
+          <Link href="/legal" style={{ color: CRIMSON, fontWeight: 600 }}>
             Read our Terms &amp; policies
           </Link>
           .
-        </p>
-      </article>
+        </div>
+      </section>
 
       {/* Footer */}
-      <footer style={{ borderTop: `1px solid ${RULE}`, marginTop: 56 }}>
-        <div className="mx-auto flex flex-wrap items-center justify-between" style={{ maxWidth: CONTAINER, padding: "24px 24px", gap: 12, fontSize: 13, color: MUTED }}>
+      <footer style={{ borderTop: `1px solid ${RULE}`, marginTop: 64 }}>
+        <div className="mx-auto flex flex-wrap items-center justify-between" style={{ maxWidth: 1180, padding: "28px 32px", gap: 12, fontSize: 13.5, color: MUTED }}>
           <span>© {new Date().getFullYear()} Stanbuy, Inc.</span>
-          <div className="flex flex-wrap items-center" style={{ gap: 18 }}>
+          <div className="flex flex-wrap items-center" style={{ gap: 22 }}>
             <Link href="/browse" style={{ color: MUTED }}>Browse listings</Link>
             <Link href="/sell" style={{ color: MUTED }}>Post surplus food</Link>
             <Link href="/legal?tab=privacy" style={{ color: MUTED }}>Privacy</Link>
@@ -245,18 +318,6 @@ export default function HomePage() {
           </div>
         </div>
       </footer>
-
-      {/* Back to top */}
-      <a
-        href="#top"
-        className="fixed flex items-center"
-        style={{ bottom: 24, right: 24, gap: 8, background: CRIMSON, color: "#ffffff", fontWeight: 700, fontSize: 14, padding: "10px 18px", borderRadius: 6, boxShadow: "0 4px 14px rgba(0,0,0,0.2)" }}
-      >
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M6 15l6-6 6 6" />
-        </svg>
-        Back to Top
-      </a>
     </div>
   );
 }
